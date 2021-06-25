@@ -13,38 +13,39 @@
 \section{Introduction to \texttt{perf}}
 Per the wiki, "\texttt{perf} is a profiler tool for linux-based systems that abstracts away CPU hardware differences in Linux performance measurements and presents a simple command-line interface." There are numerous \texttt{perf} sub-commands to analyze performance and trace data. \texttt{perf} is very similar to \texttt{git}; There is a generic tool \texttt{perf} that
 implements a set of commands.
-\section{Measurable Events in \texttt{perf}}
-Events in this context are simply asynchronous actions that are external to the currently executing environment. \texttt{perf} has a list of measurable events. There are effectively four types of events:
+\section{Events and Environments}
+Events in this context are simply asynchronous actions that are external to the currently executing environment. The executing environment can be specified on a per-thread, per-process, per-cpu, or system-wide basis; e.g. in per-thread mode, the performance counters are only measured during execution of a designated thread. 
+\\\\
+\texttt{perf} has a list of measurable events. There are effectively four types of events:
 \begin{itemize}
     \item \textbf{Software Events}
-    \\ context-switches, minor-faults
     \item \textbf{Hardware PMU Events}
-    \\ the PMU (performance monitoring unit) measures micro-architectural events: L1 cache misses, cycles, instructions retired
     \item \textbf{Hardware Cache Events}
-    \\ %% TODO: NEED INFO %%
     \item \textbf{Tracepoint Events}
-    \\ %% TODO: NEED INFO %%
 \end{itemize}
-\section{QEMU Virtual Box}
-Considering that performance counters themselves are hardware-specific, and that our group is all using different virtual machines, we will be developing this project on a QEMU emulator running an x86 64-bit architecture.
 \subsection{Event Selection}
-%% types of events our perf will look at %%
+It is important to consider the events to be measured and distinguish their types. The scope of events we measure and their types are described via the following table:
 \begin{center}
-    \begin{tabular}{c|c}
+    \begin{tabular}{|c|c|}
         \hline
-        \textbf{Event} & \textbf{Event Type}  \\
-         cpu-cycles & \\
-         instructions & \\
-         context-switches & \\
-         page faults & \\
-         L1-dcache-loads & \\
-         cpu-clock & \\
-         task-clock & \\
-
+        \textbf{Event} & \textbf{Type}  \\
+        \hline
+         cpu-cycles & Hardware\\
+         instructions & Hardware\\
+         L1-dcache-loads & Hardware cache\\
+         L1-dcache-load-misses & Hardware cache\\
+         context-switches & Software\\
+         page faults & Software\\
+         cpu-clock & Software\\
+         task-clock & Software\\
+    \hline
     \end{tabular}
 \end{center}
+\pagebreak
 \subsection{Environment Selection}
 %% per-thread/per-process/per-cpu %%
+\section{QEMU Virtual Machine}
+The decision to use QEMU as a virtual machine is because performance counters are hardware-specific, and everyone in our group uses a different machine. The machine used in this project is the q35 chip, which was specified by using the \texttt{-machine type=q35} option when starting a QEMU virtual machine. %% TODO: SPECIFY MACHINE %% 
 \pagebreak
 \section{\texttt{perf stat}}
 \subsection{Introduction}
