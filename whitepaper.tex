@@ -1,0 +1,73 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{\texttt{perf} in Rust}
+\author{Timothy Maloney}
+\date{Summer 2021}
+
+\begin{document}
+
+\maketitle
+\section*{Abstract}
+\pagebreak
+\section{Introduction to \texttt{perf}}
+Per the wiki, "\texttt{perf} is a profiler tool for linux-based systems that abstracts away CPU hardware differences in Linux performance measurements and presents a simple command-line interface." There are numerous \texttt{perf} sub-commands to analyze performance and trace data. \texttt{perf} is very similar to \texttt{git}; There is a generic tool \texttt{perf} that
+implements a set of commands.
+\section{Measurable Events in \texttt{perf}}
+Events in this context are simply asynchronous actions that are external to the currently executing environment. \texttt{perf} has a list of measurable events. There are effectively four types of events:
+\begin{itemize}
+    \item \textbf{Software Events}
+    \\ context-switches, minor-faults
+    \item \textbf{Hardware PMU Events}
+    \\ the PMU (performance monitoring unit) measures micro-architectural events: L1 cache misses, cycles, instructions retired
+    \item \textbf{Hardware Cache Events}
+    \\ %% TODO: NEED INFO %%
+    \item \textbf{Tracepoint Events}
+    \\ %% TODO: NEED INFO %%
+\end{itemize}
+\section{QEMU Virtual Box}
+Considering that performance counters themselves are hardware-specific, and that our group is all using different virtual machines, we will be developing this project on a QEMU emulator running an x86 64-bit architecture.
+\subsection{Event Selection}
+%% types of events our perf will look at %%
+\begin{center}
+    \begin{tabular}{c|c}
+        \hline
+        \textbf{Event} & \textbf{Event Type}  \\
+         cpu-cycles & \\
+         instructions & \\
+         context-switches & \\
+         page faults & \\
+         L1-dcache-loads & \\
+         cpu-clock & \\
+         task-clock & \\
+
+    \end{tabular}
+\end{center}
+\subsection{Environment Selection}
+%% per-thread/per-process/per-cpu %%
+\pagebreak
+\section{\texttt{perf stat}}
+\subsection{Introduction}
+A very useful \verb|perf| command is \verb|stat|. More clearly, \texttt{perf stat <command>} executes \texttt{command} and gathers performance counter statistics associated with it. Performance counters are registers that store the counts of hardware-related activities. As an example, this command:
+\\\\
+\centerline{\texttt{perf stat dd if=/dev/zero of=/dev/null count=1000000}}
+\\\\
+has the following (partial) output:
+\\\\
+\texttt{..}\\
+\centerline{\texttt{ 5,099 cache-misses \hspace{5mm} \# \hspace{5mm} 0.005 M/sec (scaled from 66.58\%)}}\\
+\texttt{..}
+\\\\
+So, during the execution of \verb|dd..| there were 5,099 total cache misses, with one miss occurring every 5 milliseconds.
+One or more events may be measured by using the \texttt{-e} flag and their designated name. It is important to note that by default events are measured at both user and kernel levels. This can also be modified by specifying either the \texttt{-u} flag or the \texttt{-k} flag. e.g. Only checking cache misses that occurred during command execution at the user level looks like:
+\\\\
+\centerline{\texttt{perf stat -e cache-misses:u dd..}}
+\\\\
+\subsection{Output}
+\section{\texttt{perf test}}
+\section{Testing}
+\pagebreak
+\section{References}
+Eranian, Stephane, et al. “Main Page.” Perf Wiki, Kernel.org,
+\\perf.wiki.kernel.org/index.php/Main\_Page.
+\end{document}
