@@ -1,0 +1,31 @@
+#!/bin/bash
+ 
+# Boot a qemu virtual machine using qcow2 and iso files 
+# in current working directory.
+#
+# Note that `-monitor stdio` pipes the qemu monitor to standard terminal output.
+# normally the qemu monitor is accessed from within the qemu window itself.
+# This allows all qemu monitor interaction to be done from the command line.
+#
+# To save the state of your VM, first create a file named `vm-name` and add 
+# the name you will save your VM as. Anytime you wish to save your VM,
+# type `savevm <name>` on the commandline you booted qemu from. 
+# 
+# To load the saved VM, just run the script: `./boot-vm`.
+
+QCOW2_FILE="./*.qcow2"
+ISO_FILE="./*.iso"
+VM_NAME=$(cat ./vm-name)
+
+qemu-system-x86_64 \
+    -machine type=q35,accel=hvf \
+    -smp 2 \
+    -hda $QCOW2_FILE \
+    -cdrom $ISO_FILE \
+    -m 4G \
+    -vga virtio \
+    -usb \
+    -device usb-tablet \
+    -display default,show-cursor=on \
+    -monitor stdio \
+    -loadvm $VM_NAME
