@@ -13,6 +13,43 @@
 \section{Introduction to \texttt{perf}}
 Per the wiki, "\texttt{perf} is a profiler tool for linux-based systems that abstracts away CPU hardware differences in Linux performance measurements and presents a simple command-line interface." There are numerous \texttt{perf} sub-commands to analyze performance and trace data. \texttt{perf} is very similar to \texttt{git}; There is a generic tool \texttt{perf} that
 implements a set of commands.
+\section{Performance Analysis Tools}
+\subsection{VTune}
+VTune is a performance analysis tool provided by Intel. It identifies
+time-intensive functions, processor-heavy code, time spent on I/O,
+hardware-related issues such as cache misses and branch misprediction, among
+other profiling features. VTune is compatible with Linux, Windows, and macOS
+environments. VTune is compatible only with Intel chips. Also, it is not an
+open-source tool unlike the other tools discussed in this whitepaper so
+implementation details are not available for discussion.
+\subsection{Gprof}
+Gprof is a performance analysis tool for Unix applications which uses
+instrumentation and sampling to track code that takes most execution time in a
+program and determine program hot spots . Gprof determines the source of a
+function call each time it is made, counts how many times it is called, and
+watces the
+running program to keep a histogram of the program to see where the program
+counter is. Gprof does not indicate whether I/O or swapping slow a program so it
+may report short running time for programs that are in fact long running. Gprof
+is useful in identifying program hot spots.
+\subsection{DHAT: dynamic heap analysis tool}
+Part of Valgrind, DHAT examines programs use of heap allocation. It tracks
+allocated blocks, inspects memory access and returns a variety of information
+about each block's use. It identifies process-lifetime leaks, excessive
+turnover, short-lived blocks, unused or underused allocations and inefficiently
+laid-out blocks. It measures program progress by counting instructions.
+According to the \underline{Rust Performance Book}, DHAT is compatible with
+tracking the performance of Rust programs. The work DHAT does is a different way
+of looking at performance profiling than with \texttt{perf}, however it is
+included as a tool compatible with performance profiling Rust programs as a
+matter of interest.
+\subsection{flamegraph}
+FlameGraph is a tool pioneered and released by Brendan Gregg in December 2011.
+It's a visual representation of profiled software to help make it easier to
+understand where a program is spending its time. X-axis of a graph shows the
+stack profile in alphabetic order and the y-axis shows stack depth. FlameGraph
+can be used with any profiling tool that creates a stack trace, including
+\texttt{perf}. Crates.io includes an export of FlameGraph for the Rust community.
 \section{Events and Environments}
 Events in this context are simply asynchronous actions that are external to the currently executing environment. The executing environment can be specified on a per-thread, per-process, per-cpu, or system-wide basis; e.g. in per-thread mode, the performance counters are only measured during execution of a designated thread. 
 \\\\
@@ -71,4 +108,8 @@ One or more events may be measured by using the \texttt{-e} flag and their desig
 \section{References}
 Eranian, Stephane, et al. “Main Page.” Perf Wiki, Kernel.org,
 \\perf.wiki.kernel.org/index.php/Main\_Page.
+``GNU gprof'', sourceware.org,
+https://sourceware.org/binutils/docs/gprof/Implementation.html.
+Nethercote, Nicholas and others.''Profiling''. \underline{The Rust Performance Book}. November 2020.
+Gregg, Brendan. ``Flame Graphs''. http://www.brendangregg.com/flamegraphs.html.
 \end{document}
