@@ -18,14 +18,27 @@ ISO_FILE="./*.iso"
 VM_NAME=$(cat ./vm-name)
 
 qemu-system-x86_64 \
+    # Emulated machine and accelerator;
+    # HVF is MacOS native hypervisor
     -machine type=q35,accel=hvf \
+    # number of CPU's
     -smp 2 \
+    # disk drive 
     -hda $QCOW2_FILE \
+    # iso image to put into CD drive
     -cdrom $ISO_FILE \
+    # amount of memory
     -m 4G \
+    # graphics card to use
     -vga virtio \
+    # enable usb host controller
     -usb \
+    # mouse doesn't work without
     -device usb-tablet \
+    # show mouse cursor
     -display default,show-cursor=on \
+    # pipe qemu monitor to standard output
     -monitor stdio \
+    # load virtual machine saved as name 
+    # in specified `./vm-name`
     -loadvm $VM_NAME
