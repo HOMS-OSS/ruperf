@@ -1,0 +1,45 @@
+#!/bin/bash
+#
+# An example hook script to verify what is about to be committed.
+# Called by "git commit" with no arguments.  The hook should
+# exit with non-zero status after issuing an appropriate message if
+# it wants to stop the commit.
+#
+# To enable this hook, rename this file to "pre-commit".
+
+if git rev-parse --verify HEAD >/dev/null 2>&1
+then
+	against=HEAD
+else
+	# Initial commit: diff against an empty tree object
+	against=$(git hash-object -t tree /dev/null)
+fi
+
+#exec echo "Hello Workd"
+# Redirect output to stderr.
+#exec 1>&2
+
+#exec cargo clippy
+
+fmt_out=$(cargo fmt -- --check)
+if [ -n "$fmt_out" ]; then
+    fmt_out="Formatting Errors:\n$fmt_out\n"
+fi
+clippy_out="$((exec cargo clippy) 2>&1 > /dev/null)"
+clippy_test="$(echo $clippy_out | wc -l)"
+echo $clippy_test
+if [ $clippy_test < 3 ]; then
+    clippy_out="Clippy Errors:\n$clippy_out\n"
+else
+    clippy_out=
+fi
+
+out="$fmt_out$clippy_out"
+if [ -n "$out" ]
+then
+    echo -e "$out"
+    exec 1>&2
+    exit 1
+fi
+
+exit 0
