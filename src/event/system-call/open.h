@@ -17,7 +17,7 @@
 #include <unistd.h>
 
 static long 
-perf_event_open(struct perf_event_attr *hw_event,
+perf_event_open(struct perf_event_attr *event,
 		pid_t pid,
 		int cpu,
 		int group_fd,
