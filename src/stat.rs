@@ -3,14 +3,14 @@ use crate::utils::ParseError;
 use std::str::FromStr;
 extern crate structopt;
 use structopt::StructOpt;
-///enum of supported events
 
+/// Supported events
 #[derive(Debug)]
 pub enum StatEvent {
     Cycles,
 }
 
-///match on each supported event to parse from command line
+/// Match on each supported event to parse from command line
 impl FromStr for StatEvent {
     type Err = ParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -21,13 +21,15 @@ impl FromStr for StatEvent {
     }
 }
 
-///Configuration settings for running stat
+/// Configuration settings for running stat
 #[derive(Debug, StructOpt)]
 pub struct StatOptions {
-    #[structopt(short, long, help = "Event to collect")]
-    pub event: StatEvent,
-    //allows multiple arguments to be passed, collects everything after the event name
-    #[structopt(required = false, multiple = true, help = "Command to run")]
+    #[structopt(short, long, help = "Event to collect", number_of_values = 1)]
+    pub event: Vec<StatEvent>,
+
+    // Allows multiple arguments to be passed, collects everything remaining on
+    // the command line
+    #[structopt(required = false, help = "Command to run")]
     pub command: Vec<String>,
 }
 
