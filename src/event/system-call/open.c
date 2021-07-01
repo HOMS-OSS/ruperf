@@ -34,7 +34,7 @@ perf_event_open(struct perf_event_attr *event,
 {
 	int ret;
 	ret = syscall(__NR_perf_event_open,
-			hw_event,
+			event,
 			cpu,
 			group_fd,
 			flags);
