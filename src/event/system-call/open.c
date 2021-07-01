@@ -14,7 +14,7 @@
 //! * `ioctl()`
 //! * `prctl()`
 //!
-//! Disabled events maintain their existence and count value 
+//! Disabled events maintain their existence and count values 
 //! but they are not counted, nor do they generate overflows.
 //!
 //! Two types of events: counting and sampled. Counting events
