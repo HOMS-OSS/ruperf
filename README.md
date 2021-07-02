@@ -1,6 +1,6 @@
 # perf-rust
 
-Timothy Maloney, Briana Oursler, Greg Hairfield, Sam Little, Michael Scherrer
+Timothy Maloney, Briana Oursler, Greg Hairfield, Sam Little, Michael Scherrer 2021
 
 Perf-rust is a Rust adaptation of the [linux perf command][1], also called perf_events.
 
