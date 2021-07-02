@@ -15,7 +15,17 @@ performance analysis tools such as \texttt{perf}, Vtune, and flamegraph. We then
 and the capabiliies it provides. Lastly, we explain what \texttt{ruperf} will look like moving forward, and our goals for making it 
 fit into the current scope of performance analysis tools.
 \pagebreak
-\section{Introduction to \texttt{perf}}
+\section{Introduction to Performance Analysis}
+Analyzing performance is a key element of any serious endeavor. In the context of today's modern world, it is necessary
+that the software managing our lives performs at a high level; making sure that it does can only be done by having the tools
+necessary to find where performance may be improved. Events like hardware instructions, cache-misses,
+and context switches may seem like low-level things to not worry about. Given the capabilities of modern processors, you wouldn't be
+faulted for saying that. However, in the context of finely-tuning and improving software performance, they are mandatory considerations.
+\\\\
+Fortunately, there are many tools for performance analysis at a programmer's disposal. These tools can be used to provide a
+thorough background of what is going on at the lowest levels of your machine and software. There are many different tools to use, all with
+unique purposes and features. We provide a brief description of a few well-known tools in the following subsection.
+\subsection{\texttt{perf}}
 Per the wiki, "\texttt{perf} is a profiler tool for linux-based systems that abstracts away CPU hardware differences in Linux performance measurements and presents a simple command-line interface." There are numerous \texttt{perf} sub-commands to analyze performance and trace data. \texttt{perf} is very similar to \texttt{git}; There is a generic tool \texttt{perf} that
 implements a set of commands.
 \section{Performance Analysis Tools}
