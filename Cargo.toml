@@ -12,4 +12,4 @@ bindgen = "0.53.1"
 [dependencies]
 structopt = "0.3.21"
 thiserror= "1.0.24"
-
+libc = "0.2.97"

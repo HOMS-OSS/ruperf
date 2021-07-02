@@ -6,9 +6,11 @@
 //! <li>stat</li>
 //! </ul>
 
+mod event;
 mod stat;
 mod utils;
 
+use event::*;
 use stat::*;
 extern crate structopt;
 
@@ -31,4 +33,5 @@ fn main() {
     match opt {
         Opt::Stat(x) => run_stat(&x),
     }
+    perf_event_hello();
 }
