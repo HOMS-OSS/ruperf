@@ -1,6 +1,6 @@
 # perf-rust
 
-perf-rust is a Rust adaptation of the [linux perf command][1], also called perf_events.
+Perf-rust is a Rust adaptation of the [linux perf command][1], also called perf_events.
 
 ## Goals
 
@@ -27,7 +27,7 @@ Software events
 
 Rust is required for this project.
 
-for macOS, Linux, or other Unix-like OS, it is recommended to download Rustup and install Rust.
+For macOS, Linux, or other Unix-like OS, it is recommended to download Rustup and install Rust.
 
 In terminal type:
 
@@ -40,7 +40,7 @@ More information about installing Rust [here][3].
 
 ## Contributing Guidelines
 
-perf rust is an open source project and is open to recieving contributions in the form of tutorials, blog posts, submitting bug reports and feature requests!
+Perf rust is an open source project and is open to recieving contributions in the form of tutorials, blog posts, submitting bug reports and feature requests!
 
 ## Code of Conduct
 
