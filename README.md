@@ -12,13 +12,11 @@ Our goal is to create a fast, reliable translation of `perf` in the Rust languag
 *Minumum Viable Product* (MVP)
 
 Hardware events
----
 - cpu-cycles
 - instructions 
 - L1-dcache-loads
 
 Software events
----
 - context switches
 - cpu-clock
 - task-clock
