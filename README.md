@@ -5,10 +5,26 @@ perf-rust is a Rust adaptation of the [linux perf command][1], also called perf_
 
 ## Goals
 ---
+Our goal is to create a fast, reliable translation of `perf` in the Rust language with a least a couple software events implemented.
 
 
 ## RoadMap
 ---
+
+*Minumum Viable Product*(MVP)
+
+Hardware events
+---
+- cpu-cycles
+- instructions 
+- L1-dcache-loads
+
+Software events
+---
+- context switches
+- cpu-clock
+- task-clock
+
 
 
 ## Requirements
@@ -28,16 +44,19 @@ More information about installing Rust [here][3].
 
 
 ## Contributing Guidelines
+---
 
 perf rust is an open source project and is open to recieving contributions in the form of tutorials, blog posts, submitting bug reports and feature requests!
 
 ## Code of Conduct
+---
 
  We are committed to providing a friendly, safe and welcoming environment for all, regardless of level of experience, gender identity and expression, sexual orientation, disability, personal appearance, body size, race, ethnicity, age, religion, nationality, or other similar characteristic.
 
  See [Rust Community Code of Conduct][4]
 
 ## License
+---
 [Gplv2][2]
 
 
