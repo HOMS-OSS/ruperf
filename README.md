@@ -14,7 +14,7 @@ Our goal is to create a fast, reliable translation of `perf` in the Rust languag
 *Minumum Viable Product* (MVP)
 
 Hardware events
-- cpu-cycles
+- cpu-cycles OR cycles
 - instructions 
 - L1-dcache-loads
 
@@ -23,6 +23,9 @@ Software events
 - cpu-clock
 - task-clock
 
+Other
+- `perf-test`: runs assorted sanity tests
+- `perf stat`: gathers performance counter statistics
 
 
 ## Requirements
@@ -50,6 +53,18 @@ Perf rust is an open source project and is open to recieving contributions in th
 
  See [Rust Community Code of Conduct][4]
 
+## Further Reading
+
+See `whitepaper.tex`
+
+## References
+
+[Linux-kernel wiki][5]
+
+[The Rust Performance Book][6]
+
+[Flame Graphs][7]
+
 ## License
 [Gplv2][2]
 
@@ -64,3 +79,6 @@ Perf rust is an open source project and is open to recieving contributions in th
 [2]:https://choosealicense.com/licenses/gpl-2.0/
 [3]:https://www.rust-lang.org/tools/install
 [4]:https://www.rust-lang.org/policies/code-of-conduct
+[5]:https://perf.wiki.kernel.org/index.php/Tutorial
+[6]:https://nnethercote.github.io/perf-book/introduction.html
+[7]:http://www.brendangregg.com/flamegraphs.html
