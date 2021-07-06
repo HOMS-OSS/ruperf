@@ -11,6 +11,17 @@ Our goal is to create a fast, reliable translation of `perf` in the Rust languag
 
 ## RoadMap
 
+Wk 3
+*Prototype*
+
+Implement Rust support for necessary Linux system calls in order to return a hardware event. These are
+- `perf_event_open`
+- `ioctl`
+- `read`
+
+Confirm by returning the `cycles` event.
+
+Wk 6
 *Minumum Viable Product* (MVP)
 
 Hardware events
@@ -23,9 +34,21 @@ Software events
 - cpu-clock
 - task-clock
 
-Other
+Wk 8
+*Other support*
+
+Minimal support to proof of concept these high-level commands.
 - `perf-test`: runs assorted sanity tests
 - `perf stat`: gathers performance counter statistics
+- `perf record`: records a running program and outputs results to a file
+- `perf report`: formats results in a friendly way.
+
+The Future
+*Extend support*
+- Continue to build on `test`, `stat`, and `record` coverage. `Report` gathers
+  statistics about performance and returns interesting tables or graphs.
+- Support Windows and Mac platforms.
+- Custom support for Rust program profiling.
 
 
 ## Requirements
