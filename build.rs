@@ -4,7 +4,7 @@
 //! system call. What it does may evolve.
 extern crate bindgen;
 
-use std::path::PathBuf
+use std::path::PathBuf;
 
 fn main() {
 	let perf_bindings = bindgen::Builder::default()
