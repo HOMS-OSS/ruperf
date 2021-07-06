@@ -55,7 +55,7 @@ The Future
 
 Rust is required for this project.
 
-For macOS, Linux, or other Unix-like OS, it is recommended to download Rustup and install Rust.
+It is recommended to download Rustup and install Rust.
 
 In terminal type:
 
@@ -65,10 +65,11 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 More information about installing Rust [here][3].
 
+Linux 5.x+ is required to run this project.
 
 ## Contributing Guidelines
 
-Perf rust is an open source project and is open to recieving contributions in the form of tutorials, blog posts, submitting bug reports and feature requests!
+Ruperf is an open source project and is open to recieving contributions in the form of tutorials, blog posts, submitting bug reports and feature requests!
 
 ## Code of Conduct
 
