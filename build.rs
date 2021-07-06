@@ -1,36 +1,32 @@
-//example taken from the rust-lang for bindgen
-//source: https://rust-lang.github.io/rust-bindgen/tutorial-3.html
-
+//! This build script's primary purpose
+//! is to generate the bindings necessary
+//! for use in Linux's `perf_event_open()`
+//! system call. What it does may evolve.
 extern crate bindgen;
 
-use std::env;
-use std::path::PathBuf;
+use std::fs::create_dir;
+use std::path::{Path, PathBuf};
 
 fn main() {
-    //I do not know if this line is needed. Will revisit
-    //println!("cargo:rustc-link-lib=");
-
     // Tell cargo to invalidate the built crate whenever the wrapper changes
-    println!("cargo:rerun-if-changed=wrapper.h");
+    println!("cargo:rerun-if-changed=wrappers/perf_event.h");
 
-    // The bindgen::Builder is the main entry point
-    // to bindgen, and lets you build up options for
-    // the resulting bindings.
-    let bindings = bindgen::Builder::default()
-        // The input header we would like to generate
-        // bindings for.
-        .header("wrapper.h")
-        // Tell cargo to invalidate the built crate whenever any of the
-        // included header files changed.
+    if !Path::new("./src/bindings/").exists() {
+        match create_dir("./src/bindings") {
+            Err(err) => eprintln!("{:?}", err),
+            Ok(_) => (),
+        }
+    }
+    let perf_bindings = bindgen::Builder::default()
+        .header("./wrappers/perf_event.h")
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
-        // Finish the builder and generate the bindings.
+        .derive_default(true)
         .generate()
-        // Unwrap the Result and panic on failure.
-        .expect("Unable to generate bindings");
+        .expect("Unable to generate perf_event bindings");
 
-    // Write the bindings to the $OUT_DIR/bindings.rs file.
-    let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
-    bindings
-        .write_to_file(out_path.join("bindings.rs"))
-        .expect("Couldn't write bindings!");
+    let out_path = PathBuf::from("./src/bindings");
+
+    perf_bindings
+        .write_to_file(out_path.join("perf_event.rs"))
+        .expect("Unable to write perf_event bindings to ./src/bindings/perf_event.rs");
 }
