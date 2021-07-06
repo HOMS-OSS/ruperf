@@ -1,0 +1,22 @@
+//! This build script's primary purpose
+//! is to generate the bindings necessary
+//! for use in Linux's `perf_event_open()` 
+//! system call. What it does may evolve.
+extern crate bindgen;
+
+use std::path::PathBuf
+
+fn main() {
+	let perf_bindings = bindgen::Builder::default()
+		.header("./wrappers/perf_event.h")
+		.parse_callbacks(Box::new(bindgen::CargoCallbacks))
+		.derive_default(true)
+		.generate()
+		.expect("Unable to generate perf_event bindings");
+	
+	let out_path = PathBuf::from("./src/bindings");
+
+	perf_bindings
+		.write_to_file(out_path.join("perf_event.rs"))
+		.expect("Unable to write perf_event bindings to ./src/bindings/perf_event.rs");
+}
