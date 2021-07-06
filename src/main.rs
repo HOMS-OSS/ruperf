@@ -6,6 +6,7 @@
 //! <li>stat</li>
 //! </ul>
 
+mod event;
 mod stat;
 mod utils;
 
