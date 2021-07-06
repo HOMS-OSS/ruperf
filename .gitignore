@@ -1,0 +1,5 @@
+debug/
+target/
+# Remove Cargo.lock if building executable. Leave for libraries.
+# Cargo.lock
+**/*.rs

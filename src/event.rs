@@ -1,9 +1,18 @@
+//! Wrapper for `perf_event_open()` system call.
+//!
+//! A wrapper is not provided for the `perf_event_open()` system call.
+//! Necessitating the use of `unsafe { syscall(..) }`.
+//! See linux man-page NOTES for details.
+//!
+//! For notes about Rust bindings necessary for
+//! `perf_event_open()` see /src/bindings/perf_event.rs.
+
 //! Disable cargo build warnings created due to using bindgen
 #![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 #![allow(dead_code)]
-include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+include!("bindings/perf_event.rs");
 
 extern crate libc;
 
