@@ -40,3 +40,22 @@ pub fn perf_event_open(
 pub fn perf_event_hello() {
     println!("hello from your friendly perf_event file");
 }
+
+#[cfg(test)]
+#[test]
+fn syscall_test() {
+    let event = &mut perf_event_attr {
+        type_: perf_type_id_PERF_TYPE_HARDWARE,
+        size: std::mem::size_of::<perf_event_attr>() as u32,
+        // something to consider fixing. For now leave alone.
+        config: perf_hw_id_PERF_COUNT_HW_INSTRUCTIONS as u64,
+        ..Default::default()
+    };
+    event.set_disabled(1);
+    event.set_exclude_kernel(1);
+    event.set_exclude_hv(1);
+    let fd: isize;
+    fd = perf_event_open(&event, 0, -1, -1, 0);
+    assert_ne!(fd, -1, "Testing for failure");
+    assert_eq!(0, ioctl(fd, PERF_EVENT_IOC_RESET, 0));
+}
