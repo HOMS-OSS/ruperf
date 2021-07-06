@@ -16,7 +16,14 @@ include!("bindings/perf_event.rs");
 
 extern crate libc;
 
-use libc::{c_int, c_ulong, pid_t, syscall, SYS_perf_event_open};
+use libc::{
+	c_int, 
+	c_ulong, 
+	pid_t, 
+	syscall, 
+	SYS_perf_event_open,
+	ioctl,
+};
 
 pub fn perf_event_open(
     event: &perf_event_attr,
