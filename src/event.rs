@@ -16,7 +16,7 @@ include!("bindings/perf_event.rs");
 
 extern crate libc;
 
-use libc::{c_int, c_ulong, pid_t, syscall, SYS_perf_event_open};
+use libc::{c_int, c_ulong, ioctl, pid_t, syscall, SYS_perf_event_open};
 
 pub fn perf_event_open(
     event: &perf_event_attr,
@@ -57,5 +57,5 @@ fn syscall_test() {
     let fd: isize;
     fd = perf_event_open(&event, 0, -1, -1, 0);
     assert_ne!(fd, -1, "Testing for failure");
-    assert_eq!(0, ioctl(fd, PERF_EVENT_IOC_RESET, 0));
+    assert_eq!(0, ioctl(fd as i32, PERF_EVENT_IOC_RESET, 0));
 }
