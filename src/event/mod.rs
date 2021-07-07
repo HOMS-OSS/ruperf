@@ -15,7 +15,8 @@
 include!("../bindings/perf_event.rs");
 
 extern crate libc;
-use libc::{c_int, c_ulong, ioctl, pid_t, syscall, SYS_perf_event_open};
+
+use libc::{c_int, c_ulong, ioctl, pid_t, read, syscall, SYS_perf_event_open};
 
 mod constants;
 
@@ -61,4 +62,30 @@ fn syscall_test() {
     assert_eq!(0, unsafe {
         ioctl(fd as i32, constants::PERF_EVENT_IOC_RESET as u64, 0)
     });
+}
+#[test]
+fn read_test() {
+    let event = &mut perf_event_attr {
+        type_: perf_type_id_PERF_TYPE_HARDWARE,
+        size: std::mem::size_of::<perf_event_attr>() as u32,
+        // something to consider fixing. For now leave alone.
+        config: perf_hw_id_PERF_COUNT_HW_CPU_CYCLES as u64,
+        ..Default::default()
+    };
+    event.set_disabled(1);
+    event.set_exclude_kernel(1);
+    event.set_exclude_hv(1);
+    let fd: isize;
+    fd = perf_event_open(&event, 0, -1, -1, 0);
+    //read treats each counter as virtualized u64
+    let mut cnt: u64 = 0;
+    //buf must be *mut lbc::c_void type, mimics void pointer
+    //package count into buf so it is easy to read
+    let buf: *mut libc::c_void = &mut cnt as *mut _ as *mut libc::c_void;
+    unsafe {
+        ioctl(fd as i32, constants::PERF_EVENT_IOC_ENABLE as u64, 0);
+        read(fd as i32, buf, std::mem::size_of_val(&cnt));
+    }
+    assert_ne!(cnt, 0);
+    assert!(cnt > 0, "cnt = {}", cnt);
 }
