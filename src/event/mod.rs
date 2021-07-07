@@ -15,7 +15,6 @@
 include!("../bindings/perf_event.rs");
 
 extern crate libc;
-
 use libc::{c_int, c_ulong, ioctl, pid_t, syscall, SYS_perf_event_open};
 
 mod constants;
