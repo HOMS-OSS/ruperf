@@ -14,7 +14,7 @@ git config core.hooksPath "./git_hooks"
 ```
 
 
-2. Make sure it is directed to the `dev` branch
+2. Make sure your pull request is directed to the `dev` branch
 
 
 
