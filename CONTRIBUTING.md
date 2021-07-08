@@ -10,7 +10,7 @@ Before sending a Pull Request
 - description at the top of file
 - Data structures and methods
 
-2. Configure git hooks for formating and other pre-commit checks using clippy and `cargo format`.
+2. Configure git hooks for formatting and other pre-commit checks using clippy and `cargo format`.
 
 in the root directory, after pulling from upstream do
 ```
