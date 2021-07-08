@@ -7,10 +7,12 @@
 //! </ul>
 
 mod event;
+mod gui;
 mod stat;
 mod utils;
 
 use event::*;
+use gui::*;
 use stat::*;
 extern crate structopt;
 
@@ -23,15 +25,24 @@ enum Opt {
         setting = structopt::clap::AppSettings::TrailingVarArg,
         setting = structopt::clap::AppSettings::AllowLeadingHyphen,
         name = "stat",
-        about = "Collects hardware/software event counters"
+        about = "Collects hardware/software event counters",
     )]
     Stat(StatOptions),
+    #[structopt(
+        setting = structopt::clap::AppSettings::TrailingVarArg,
+        setting = structopt::clap::AppSettings::AllowLeadingHyphen,
+        name = "gui",
+        about = "Runs the gui",
+    )]
+    Gui(StatOptions),
 }
 
 fn main() {
     let opt = Opt::from_args();
     match opt {
         Opt::Stat(x) => run_stat(&x),
+        Opt::Gui(x) => {
+            run_gui().unwrap();
+        }
     }
-    perf_event_hello();
 }
