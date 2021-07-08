@@ -24,6 +24,6 @@ There are many different ways to contribute
 ---
 
 - Composing tutorials
-- Writing blog post
+- Writing blog posts
 - Submitting bug reports
 - Sharing and improving ideas
