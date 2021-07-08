@@ -6,7 +6,7 @@ Thanks for considering contibuting to Ruperf! Be sure to read the `whitepaper.te
 Before you commit
 ---
 
-1. Make sure to configure git hooks for formating and pre commit checks using clippy and `cargo format`.
+1. Make sure to configure git hooks for formating and pre-commit checks using clippy and `cargo format`.
 
 in the root directory, after pulling from upstream do
 ```
