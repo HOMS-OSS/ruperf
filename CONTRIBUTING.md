@@ -43,8 +43,8 @@ Code Review
 
 | Changes | Minumum to Merge |
 |:------------- | :-------------: |
-|Small  | single review  |
-|Major  |Full Team      |
+|Small  | Single review  |
+|Major  |Full team      |
 
 - Review must be from another person
 - Submitter must rebase and merge once reviewed.
