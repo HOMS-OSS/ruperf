@@ -49,15 +49,15 @@ const fn iocwr(nr: u32, sz: usize) -> u32 {
         | ((sz as u32) << _IOC_SIZESHIFT)
 }
 
-pub const PERF_EVENT_IOC_ENABLE: u32 = iocn(0);
-pub const PERF_EVENT_IOC_DISABLE: u32 = iocn(1);
-pub const PERF_EVENT_IOC_REFRESH: u32 = iocn(2);
-pub const PERF_EVENT_IOC_RESET: u32 = iocn(3);
-pub const PERF_EVENT_IOC_PERIOD: u32 = iocw(4, size_of::<u64>());
-pub const PERF_EVENT_IOC_SET_OUTPUT: u32 = iocn(5);
-pub const PERF_EVENT_IOC_SET_FILTER: u32 = iocw(6, size_of::<*const char>());
-pub const PERF_EVENT_IOC_ID: u32 = iocr(7, size_of::<*const u64>());
-pub const PERF_EVENT_IOC_SET_BPF: u32 = iocw(8, size_of::<u32>());
-pub const PERF_EVENT_IOC_PAUSE_OUTPUT: u32 = iocw(9, size_of::<u32>());
-pub const PERF_EVENT_IOC_QUERY_BPF: u32 = iocwr(10, size_of::<*const perf_event_query_bpf>());
-pub const PERF_EVENT_IOC_MODIFY_ATTRIBUTES: u32 = iocwr(11, size_of::<*const perf_event_attr>());
+pub const ENABLE: u32 = iocn(0);
+pub const DISABLE: u32 = iocn(1);
+pub const REFRESH: u32 = iocn(2);
+pub const RESET: u32 = iocn(3);
+pub const PERIOD: u32 = iocw(4, size_of::<u64>());
+pub const SET_OUTPUT: u32 = iocn(5);
+pub const SET_FILTER: u32 = iocw(6, size_of::<*const char>());
+pub const ID: u32 = iocr(7, size_of::<*const u64>());
+pub const SET_BPF: u32 = iocw(8, size_of::<u32>());
+pub const PAUSE_OUTPUT: u32 = iocw(9, size_of::<u32>());
+pub const QUERY_BPF: u32 = iocwr(10, size_of::<*const perf_event_query_bpf>());
+pub const MODIFY_ATTRIBUTES: u32 = iocwr(11, size_of::<*const perf_event_attr>());
