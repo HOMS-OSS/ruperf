@@ -41,9 +41,13 @@ resources
 Code Review
 ---
 
-- Minumum one persone other than yourselve must review code, For major changes, whole team must review.
+| Changes | Minumum to Merge |
+|:------------- | :-------------: |
+|Small  | single review  |
+|Major  |Full Team      |
 
-- Must rebase and merge once reviewed.
+- Review must be from another person
+- Submitter Must rebase and merge once reviewed.
 
 More ways to contribute
 ---
