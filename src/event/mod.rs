@@ -60,7 +60,7 @@ fn syscall_test() {
     fd = perf_event_open(&event, 0, -1, -1, 0);
     assert_ne!(fd, -1, "Testing for failure");
     assert_eq!(0, unsafe {
-        ioctl(fd as i32, constants::PERF_EVENT_IOC_RESET as u64, 0)
+        ioctl(fd as i32, constants::RESET as u64, 0)
     });
 }
 #[test]
@@ -83,7 +83,7 @@ fn read_test() {
     //package count into buf so it is easy to read
     let buf: *mut libc::c_void = &mut cnt as *mut _ as *mut libc::c_void;
     unsafe {
-        ioctl(fd as i32, constants::PERF_EVENT_IOC_ENABLE as u64, 0);
+        ioctl(fd as i32, constants::ENABLE as u64, 0);
         read(fd as i32, buf, std::mem::size_of_val(&cnt));
     }
     assert_ne!(cnt, 0);
