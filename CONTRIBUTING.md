@@ -6,7 +6,11 @@ Thanks for considering contibuting to Ruperf! Be sure to read the `whitepaper.te
 Before sending a Pull Request
 ---
 
-1. Configure git hooks for formating and other pre-commit checks using clippy and `cargo format`.
+1. Make sure all sourced files must be well documented. brief descriptions include:
+- description at the top of file
+- Data structures and methods
+
+2. Configure git hooks for formating and other pre-commit checks using clippy and `cargo format`.
 
 in the root directory, after pulling from upstream do
 ```
@@ -14,7 +18,7 @@ git config core.hooksPath "./git_hooks"
 ```
 
 
-2. Make sure your pull request is directed to the `dev` branch
+3. Make sure your pull request is directed to the `dev` branch
 
 For C code
 ---
@@ -34,6 +38,12 @@ resources
 - [General C guidelines][3]
 - [Using git hooks][4]
 
+Code Review
+---
+
+- Minumum one persone other than yourselve must review code, For major changes, whole team must review.
+
+- Must rebase and merge once reviewed.
 
 More ways to contribute
 ---
