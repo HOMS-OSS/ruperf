@@ -47,7 +47,7 @@ Code Review
 |Major  |Full Team      |
 
 - Review must be from another person
-- Submitter Must rebase and merge once reviewed.
+- Submitter must rebase and merge once reviewed.
 
 More ways to contribute
 ---
