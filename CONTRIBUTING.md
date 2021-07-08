@@ -19,11 +19,11 @@ git config core.hooksPath "./git_hooks"
 For C code
 ---
 
-- File comments must include @author and @date. use //!.
+- File comments must include `@author` and `@date.` use `//!`.
 
-- Function comments must be included in .h and .c files; require a description of arguments and purpose. use /*
+- Function comments must be included in .h and .c files; require a description of arguments and purpose. use `/*`
 
-- All other comments use //
+- All other comments use `//`
 
 - The amount of characters in a single-line should not exceed 60-70 characters in length.
 
