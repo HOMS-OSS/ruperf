@@ -1,7 +1,7 @@
 use iced::{
     executor,
-    widget::{Column, Container, Text},
-    Application, Clipboard, Command, Element, Length, Settings,
+    widget::{Column, Container, Row, Text},
+    Application, Background, Clipboard, Color, Command, Element, Length, Settings, Vector,
 };
 
 pub fn run_gui() -> iced::Result {
@@ -33,8 +33,15 @@ impl Application for Hello {
 
     fn view(&mut self) -> Element<Self::Message> {
         let content = Column::new()
+            .spacing(20)
+            .padding(20)
             .width(Length::Fill)
-            .push(Text::new("Hello, world!").size(40));
+            .push(Text::new("stat").size(40))
+            .push(Text::new("record").size(40))
+            .push(Text::new("report").size(40))
+            .push(Text::new("annotate").size(40))
+            .push(Text::new("top").size(40))
+            .push(Text::new("bench").size(40));
 
         Container::new(content)
             .width(Length::Fill)
@@ -42,5 +49,27 @@ impl Application for Hello {
             .center_x()
             .center_y()
             .into()
+    }
+}
+
+mod style {
+    use iced::{button, Background, Color, Vector};
+
+    pub enum Button {
+        Primary,
+    }
+
+    impl button::StyleSheet for Button {
+        fn active(&self) -> button::Style {
+            button::Style {
+                background: Some(Background::Color(match self {
+                    Button::Primary => Color::from_rgb(0.11, 0.42, 0.87),
+                })),
+                border_radius: 12.0,
+                shadow_offset: Vector::new(1.0, 1.0),
+                text_color: Color::WHITE,
+                ..button::Style::default()
+            }
+        }
     }
 }
