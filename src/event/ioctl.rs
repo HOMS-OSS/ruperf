@@ -122,16 +122,53 @@ pub fn ignore_output(fd: i32) -> Result(()) {
 pub fn set_filter(fd: i32) -> Result(()) {
 	todo!()
 }
-pub fn id(fd: i32) -> Result(i32) {
+
+/// Return event ID value
+/// associated with `fd`.
+pub fn id(fd: i32) -> Result(u64) {
+	let ret: i32;
+	// `ioctl()` writes the result of the
+	// `PERF_EVENT_IOC_ID` command to 
+	let result: *mut u64;
+	ret = unsafe { libc::ioctl(fd, constants::ID, result) }
+	if ret == -1 {
+		return Err(SysCallFail)
+	}
+	let value = unsafe { *result }
+	Ok(value)
+}
+
+/// Attach bpf program to existing kprobe
+/// tracepoint event. `bpfd` must be a BPF
+/// program file descriptor created by a 
+/// previous call to the `bpf(2)` system call.
+pub fn set_bpf(fd: i32, bpfd: i32) -> Result(()) {
 	todo!()
 }
-pub fn set_bpf(fd: i32) -> Result(()) {
-	todo!()
-}
+
+/// Pause writing to ring-buffer
+/// for associated file descriptor.
 pub fn pause_output(fd: i32) -> Result(()) {
-	todo!()
+	let ret: i32;
+	ret = unsafe { libc::ioctl(fd, constants::PAUSE_OUTPUT, 1) }
+	if ret == -1 {
+		return Err(SysCallFail)
+	}
+	Ok(())
 }
-pub fn query_bpf(fd: i32) -> Result(()) {
+
+/// Resume writing to ring-buffer
+/// for associated file descriptor.
+pub fn resume_output(fd: i32) -> Result(()) {
+	let ret: i32;
+	ret = unsafe { libc::ioctl(fd, constants::PAUSE_OUTPUT, 0) }
+	if ret == -1 {
+		return Err(SysCallFail)
+	}
+	Ok(())
+}
+
+pub fn query_bpf<'a>(fd: i32, event_query: *const <'a> perf_event_query_bpf) -> Result(()) {
 	todo!()
 }
 pub fn modify_attributes<'a>(fd: i32, event: *const <'a> perf_event_attr) -> Result(()) {
