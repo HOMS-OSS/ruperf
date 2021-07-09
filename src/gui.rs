@@ -1,22 +1,39 @@
 use iced::{
-    executor,
-    widget::{Column, Container, Row, Text},
-    Application, Background, Clipboard, Color, Command, Element, Length, Settings, Vector,
+    button, executor,
+    widget::{Button, Column, Container, Row, Text},
+    Application, Clipboard, Command, Element, Length, Settings,
 };
 
 pub fn run_gui() -> iced::Result {
-    Hello::run(Settings::default())
+    Menu::run(Settings::default())
 }
 
-struct Hello;
+#[derive(Debug, Default)]
+struct Events {
+    enabled: bool,
+    exit: button::State,
+    should_exit: bool,
+}
 
-impl Application for Hello {
+#[derive(Debug, Default)]
+struct Menu {
+    enabled: bool,
+    stat_button: button::State,
+    record_button: button::State,
+    report_button: button::State,
+    annotate_button: button::State,
+    top_button: button::State,
+    bench_button: button::State,
+    should_exit: bool,
+}
+
+impl Application for Menu {
     type Executor = executor::Default;
     type Message = ();
     type Flags = ();
 
-    fn new(_flags: ()) -> (Hello, Command<Self::Message>) {
-        (Hello, Command::none())
+    fn new(_flags: ()) -> (Menu, Command<Self::Message>) {
+        (Menu::default(), Command::none())
     }
 
     fn title(&self) -> String {
@@ -36,12 +53,15 @@ impl Application for Hello {
             .spacing(20)
             .padding(20)
             .width(Length::Fill)
-            .push(Text::new("stat").size(40))
-            .push(Text::new("record").size(40))
-            .push(Text::new("report").size(40))
-            .push(Text::new("annotate").size(40))
-            .push(Text::new("top").size(40))
-            .push(Text::new("bench").size(40));
+            .push(Button::new(&mut self.stat_button, Text::new("stat")))
+            .push(Button::new(&mut self.record_button, Text::new("record")))
+            .push(Button::new(&mut self.report_button, Text::new("report")))
+            .push(Button::new(
+                &mut self.annotate_button,
+                Text::new("annotate"),
+            ))
+            .push(Button::new(&mut self.top_button, Text::new("top")))
+            .push(Button::new(&mut self.bench_button, Text::new("bench")));
 
         Container::new(content)
             .width(Length::Fill)
@@ -49,27 +69,5 @@ impl Application for Hello {
             .center_x()
             .center_y()
             .into()
-    }
-}
-
-mod style {
-    use iced::{button, Background, Color, Vector};
-
-    pub enum Button {
-        Primary,
-    }
-
-    impl button::StyleSheet for Button {
-        fn active(&self) -> button::Style {
-            button::Style {
-                background: Some(Background::Color(match self {
-                    Button::Primary => Color::from_rgb(0.11, 0.42, 0.87),
-                })),
-                border_radius: 12.0,
-                shadow_offset: Vector::new(1.0, 1.0),
-                text_color: Color::WHITE,
-                ..button::Style::default()
-            }
-        }
     }
 }
