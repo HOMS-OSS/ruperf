@@ -28,5 +28,7 @@ fn main() {
 
     perf_bindings
         .write_to_file(out_path.join("perf_event.rs"))
-        .expect("Unable to write perf_event bindings to ./src/bindings/perf_event.rs");
+        .expect(
+        "Unable to write perf_event bindings to ./src/bindings/perf_event.rs",
+    );
 }
