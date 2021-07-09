@@ -16,7 +16,7 @@ pub fn test_check_for_libpfm4() -> Test {
                 return true;
             }
         }
-        return false;
+        false
     }
 
     Test {

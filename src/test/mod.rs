@@ -1,5 +1,7 @@
 //! Test driver
 use crate::utils::ParseError;
+use std::io::stdout;
+use std::io::Write;
 use std::str::FromStr;
 extern crate structopt;
 use structopt::StructOpt;
@@ -51,18 +53,19 @@ pub fn make_tests() -> Vec<Test> {
     // from basic.rs
     tests.push(basic::test_always_passes());
     tests.push(basic::test_always_fails());
+    tests.push(basic::test_passes_after_1sec());
 
     // from pfm.rs
     tests.push(pfm::test_check_for_libpfm4());
 
-    return tests;
+    tests
 }
 
 /// Runs all tests and outputs results to stdout
-pub fn run_all_tests() {
-    println!("Running Sanity Tests\n");
-    let tests: Vec<Test> = make_tests();
+pub fn run_all_tests(tests: &Vec<Test>) {
     for (index, test) in tests.iter().enumerate() {
+        print!("{:>2}: {:<60} : ", index, test.description);
+        stdout().flush().unwrap();
         let result = (test.call)();
         let result_text: String;
         if result {
@@ -70,13 +73,31 @@ pub fn run_all_tests() {
         } else {
             result_text = "\x1b[0;31mFAILED!\x1b[0m".to_string();
         }
-        println!("{:<2}: {:<60} : {}", index, test.description, result_text);
+        print!("{}\n", result_text);
+    }
+}
+
+/// Lists all tests and outputs results to stdout
+pub fn list_all_tests(tests: &Vec<Test>) {
+    for (index, test) in tests.iter().enumerate() {
+        println!("{:>2}: {:<60}", index, test.description);
     }
 }
 
 /// Handles the running of the "test" command.
 pub fn run_test(options: &TestOptions) {
-    println!("event: {:#?}", options.event);
-    println!("command: {:#?}", options.command);
-    run_all_tests();
+    let tests = make_tests();
+    let mut events = Vec::new();
+    if options.command.is_empty() {
+        events.push(TestEvent::RunAll);
+    }
+    for command in &options.command {
+        events.push(TestEvent::from_str(command).unwrap());
+    }
+    for event in &events {
+        match event {
+            TestEvent::RunAll => run_all_tests(&tests),
+            TestEvent::List => list_all_tests(&tests),
+        }
+    }
 }
