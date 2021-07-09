@@ -35,7 +35,7 @@ const fn iocw(nr: u32, sz: usize) -> u32 {
 /// User: read
 /// Kernel: write
 const fn iocr(nr: u32, sz: usize) -> u32 {
-    (_IOC_WRITE << _IOC_DIRSHIFT)
+    (_IOC_READ << _IOC_DIRSHIFT)
         | (_IO_TYPE << _IOC_TYPESHIFT)
         | (nr << _IOC_NRSHIFT)
         | ((sz as u32) << _IOC_SIZESHIFT)
