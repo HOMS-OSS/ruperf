@@ -73,7 +73,7 @@ pub fn run_all_tests(tests: &Vec<Test>) {
         } else {
             result_text = "\x1b[0;31mFAILED!\x1b[0m".to_string();
         }
-        print!("{}\n", result_text);
+        println!("{}", result_text);
     }
 }
 
