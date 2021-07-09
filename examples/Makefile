@@ -3,7 +3,7 @@
 
 CC=rustc
 
-all : file-test fp-test
+all : file-io fp-calc
 
 file-io : file-io.rs 
 	$(CC) $< -o file-io
