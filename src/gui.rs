@@ -1,57 +1,46 @@
-use iced::{button, Align, Button, Column, Element, Sandbox, Settings, Text};
+use iced::{
+    executor,
+    widget::{Column, Container, Text},
+    Application, Clipboard, Command, Element, Length, Settings,
+};
 
 pub fn run_gui() -> iced::Result {
-    Counter::run(Settings::default())
+    Hello::run(Settings::default())
 }
 
-#[derive(Default)]
-pub struct Counter {
-    value: i32,
-    increment_button: button::State,
-    decrement_button: button::State,
-}
+struct Hello;
 
-#[derive(Debug, Clone, Copy)]
-pub enum Message {
-    IncrementPressed,
-    DecrementPressed,
-}
+impl Application for Hello {
+    type Executor = executor::Default;
+    type Message = ();
+    type Flags = ();
 
-impl Sandbox for Counter {
-    type Message = Message;
-
-    fn new() -> Self {
-        Self::default()
+    fn new(_flags: ()) -> (Hello, Command<Self::Message>) {
+        (Hello, Command::none())
     }
 
     fn title(&self) -> String {
-        String::from("Counter - Iced")
+        String::from("Ruperf")
     }
 
-    fn update(&mut self, message: Message) {
-        match message {
-            Message::IncrementPressed => {
-                self.value += 1;
-            }
-            Message::DecrementPressed => {
-                self.value -= 1;
-            }
-        }
+    fn update(
+        &mut self,
+        _message: Self::Message,
+        _clipboard: &mut Clipboard,
+    ) -> Command<Self::Message> {
+        Command::none()
     }
 
-    fn view(&mut self) -> Element<Message> {
-        Column::new()
-            .padding(20)
-            .align_items(Align::Center)
-            .push(
-                Button::new(&mut self.increment_button, Text::new("Increment"))
-                    .on_press(Message::IncrementPressed),
-            )
-            .push(Text::new(self.value.to_string()).size(50))
-            .push(
-                Button::new(&mut self.decrement_button, Text::new("Decrement"))
-                    .on_press(Message::DecrementPressed),
-            )
+    fn view(&mut self) -> Element<Self::Message> {
+        let content = Column::new()
+            .width(Length::Fill)
+            .push(Text::new("Hello, world!").size(40));
+
+        Container::new(content)
+            .width(Length::Fill)
+            .height(Length::Fill)
+            .center_x()
+            .center_y()
             .into()
     }
 }
