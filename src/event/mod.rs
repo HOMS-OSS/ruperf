@@ -27,20 +27,20 @@ fn wrapper_test() {
     event.set_exclude_hv(1);
     // Panic on failure.
     let fd = perf::FileDesc::new(event, 0, -1, -1);
-	// Make sure ioctls are working.
-	fd.reset().unwrap();
-	fd.disable().unwrap();
-	fd.enable().unwrap();
-	fd.id().unwrap();
+    // Make sure ioctls are working.
+    fd.reset().unwrap();
+    fd.disable().unwrap();
+    fd.enable().unwrap();
+    fd.id().unwrap();
 
-	/* CURRENTLY FAILS */
-	// fd.refresh(5).unwrap();
+    /* CURRENTLY FAILS */
+    // fd.refresh(5).unwrap();
     //
-	// let interval: u64 = 5;
-	// let ptr: *const u64 = &interval;
-	// fd.overflow_period(ptr).unwrap();
+    // let interval: u64 = 5;
+    // let ptr: *const u64 = &interval;
+    // fd.overflow_period(ptr).unwrap();
     //
-	// fd.pause_output().unwrap();
+    // fd.pause_output().unwrap();
     //
-	// fd.resume_output().unwrap();
+    // fd.resume_output().unwrap();
 }
