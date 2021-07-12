@@ -16,15 +16,13 @@ pub fn perf_event_hello() {
 #[cfg(test)]
 #[test]
 fn wrapper_test() {
-	let sample_struct = perf::perf_event_attr__bindgen_ty_1 {
-		sample_period: 1,	
-	};
+    let sample_struct = perf::perf_event_attr__bindgen_ty_1 { sample_period: 1 };
     let event = &mut perf::perf_event_attr {
         type_: perf::perf_type_id_PERF_TYPE_HARDWARE,
         size: std::mem::size_of::<perf::perf_event_attr>() as u32,
         config: perf::perf_hw_id_PERF_COUNT_HW_INSTRUCTIONS as u64,
-		__bindgen_anon_1: sample_struct,
-		sample_type: perf::perf_event_sample_format_PERF_SAMPLE_IP, 
+        __bindgen_anon_1: sample_struct,
+        sample_type: perf::perf_event_sample_format_PERF_SAMPLE_IP,
         ..Default::default()
     };
     event.set_disabled(1);
@@ -37,7 +35,7 @@ fn wrapper_test() {
     fd.disable().unwrap();
     fd.enable().unwrap();
     fd.id().unwrap();
-	// change overflow sampling period
-	fd.overflow_period(2).unwrap();
-	fd.refresh(3).unwrap();
+    // change overflow sampling period
+    fd.overflow_period(2).unwrap();
+    fd.refresh(3).unwrap();
 }
