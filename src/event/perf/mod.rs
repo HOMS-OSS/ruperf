@@ -122,14 +122,14 @@ impl FileDesc {
     /// Report counter information to
     /// specific file descriptor.
     pub fn set_output(&self) -> Result<()> {
-    	todo!()
-	}
+        todo!()
+    }
 
     /// Ignore counter output for event
     /// associated with `fd`.
     pub fn ignore_output(&self) -> Result<()> {
-    	todo!()
-	}
+        todo!()
+    }
 
     /// Return event ID value
     /// associated with `fd`.
@@ -152,14 +152,14 @@ impl FileDesc {
     /// Pause writing to ring-buffer
     /// for associated file descriptor.
     pub fn pause_output(&self) -> Result<()> {
-    	todo!()
-	}
+        todo!()
+    }
 
     /// Resume writing to ring-buffer
     /// for associated file descriptor.
     pub fn resume_output(&self) -> Result<()> {
-    	todo!()
-	}
+        todo!()
+    }
 
     /// Modify the attributes for
     /// a specified event.
