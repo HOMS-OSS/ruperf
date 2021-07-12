@@ -71,7 +71,7 @@ Linux 5.x+ is required to run this project.
 
 Ruperf is an open source project and is open to recieving contributions!
 
-Please see [`CONTRIBUTING.md](https://github.com/HOMS-OSS/ruperf/blob/main/CONTRIBUTING.md)
+Please see [`CONTRIBUTING.md`](https://github.com/HOMS-OSS/ruperf/blob/main/CONTRIBUTING.md)
 
 ## Code of Conduct
 
