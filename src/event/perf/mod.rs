@@ -40,11 +40,6 @@ impl FileDesc {
     /// Set up performance monitoring for
     /// configured event without any flags.
     /// Panics if `perf_event_open()` fails.
-    ///
-    /// # examples
-    /// ```
-    ///	let fd = PerfEventFd::new(event, 0, -1, -1);
-    /// ```
     pub fn new(event: &mut perf_event_attr, pid: i32, cpu: i32, group_fd: i32) -> Self {
         let ret: i32;
         ret = perf_event_open(event, pid as pid_t, cpu, group_fd, 0) as i32;
@@ -127,24 +122,14 @@ impl FileDesc {
     /// Report counter information to
     /// specific file descriptor.
     pub fn set_output(&self) -> Result<()> {
-        let ret: i32;
-        ret = unsafe { libc::ioctl(self.0, constants::SET_OUTPUT as u64, 0) };
-        if ret == -1 {
-            return Err(IoError::SysCallFail);
-        }
-        Ok(())
-    }
+    	todo!()
+	}
 
     /// Ignore counter output for event
     /// associated with `fd`.
     pub fn ignore_output(&self) -> Result<()> {
-        let ret: i32;
-        ret = unsafe { libc::ioctl(self.0, constants::SET_OUTPUT as u64, -1) };
-        if ret == -1 {
-            return Err(IoError::SysCallFail);
-        }
-        Ok(())
-    }
+    	todo!()
+	}
 
     /// Return event ID value
     /// associated with `fd`.
@@ -167,24 +152,14 @@ impl FileDesc {
     /// Pause writing to ring-buffer
     /// for associated file descriptor.
     pub fn pause_output(&self) -> Result<()> {
-        let ret: i32;
-        ret = unsafe { libc::ioctl(self.0, constants::PAUSE_OUTPUT as u64, 1) };
-        if ret == -1 {
-            return Err(IoError::SysCallFail);
-        }
-        Ok(())
-    }
+    	todo!()
+	}
 
     /// Resume writing to ring-buffer
     /// for associated file descriptor.
     pub fn resume_output(&self) -> Result<()> {
-        let ret: i32;
-        ret = unsafe { libc::ioctl(self.0, constants::PAUSE_OUTPUT as u64, 0) };
-        if ret == -1 {
-            return Err(IoError::SysCallFail);
-        }
-        Ok(())
-    }
+    	todo!()
+	}
 
     /// Modify the attributes for
     /// a specified event.
@@ -216,7 +191,7 @@ fn perf_event_open(
 
 #[cfg(test)]
 #[test]
-fn syscall_test() {
+fn perf_event_open_test() {
     let event = &mut perf_event_attr {
         type_: perf_type_id_PERF_TYPE_HARDWARE,
         size: std::mem::size_of::<perf_event_attr>() as u32,
