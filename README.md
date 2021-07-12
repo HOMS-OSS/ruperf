@@ -69,13 +69,15 @@ Linux 5.x+ is required to run this project.
 
 ## Contributing Guidelines
 
-Ruperf is an open source project and is open to recieving contributions in the form of tutorials, blog posts, submitting bug reports and feature requests!
+Ruperf is an open source project and is open to recieving contributions!
+
+Please see [`CONTRIBUTING.md`](https://github.com/HOMS-OSS/ruperf/blob/main/CONTRIBUTING.md)
 
 ## Code of Conduct
 
  We are committed to providing a friendly, safe and welcoming environment for all, regardless of level of experience, gender identity and expression, sexual orientation, disability, personal appearance, body size, race, ethnicity, age, religion, nationality, or other similar characteristic.
 
- See [Rust Community Code of Conduct][4]
+ More from [Rust Community Code of Conduct][4]
 
 ## Further Reading
 
