@@ -86,10 +86,10 @@ impl FileDesc {
         let ret: i32;
         // passing an argument of 0
         // with this ioctl is undefined behavior.
-        if count <= 0 {
+        if count == 0 {
             return Err(IoError::InvalidArg);
         }
-		let arg: *const u64 = &count;
+        let arg: *const u64 = &count;
         ret = unsafe { libc::ioctl(self.0, constants::REFRESH as u64, arg) };
         if ret == -1 {
             return Err(IoError::SysCallFail);
@@ -111,12 +111,12 @@ impl FileDesc {
     /// The interval argument to the
     /// `ioctl()` must be a pointer to
     /// an unsigned 64-bit integer.
-	/// NOTE: The `__bindgen_anon_1` and `sample_type` fields 
-	/// must be initialized for the `perf_event_attr` 
-	/// struct that is passed to `FileDesc::new()`.
+    /// NOTE: The `__bindgen_anon_1` and `sample_type` fields
+    /// must be initialized for the `perf_event_attr`
+    /// struct that is passed to `FileDesc::new()`.
     pub fn overflow_period(&self, interval: u64) -> Result<()> {
         let ret: i32;
-		let arg: *const u64 = &interval;
+        let arg: *const u64 = &interval;
         ret = unsafe { libc::ioctl(self.0, constants::PERIOD as u64, arg) };
         if ret == -1 {
             return Err(IoError::SysCallFail);
