@@ -107,11 +107,12 @@ impl Application for Menu {
             .split(pane_grid::Axis::Vertical, &first_pane, Content::new(1))
             .unwrap();
 
-        panes_state
+        let (third_pane, horz_split) = panes_state
             .split(pane_grid::Axis::Horizontal, &second_pane, Content::new(1))
             .unwrap();
 
-        panes_state.resize(&vert_split, 0.5);
+        panes_state.resize(&vert_split, 0.17);
+        panes_state.resize(&horz_split, 0.88);
 
         (
             Menu {
@@ -134,6 +135,7 @@ impl Application for Menu {
         match message {
             Message::Resized(pane_grid::ResizeEvent { split, ratio }) => {
                 self.panes_state.resize(&split, ratio);
+                println!("ratio: {}", ratio);
             }
 
             _ => {
