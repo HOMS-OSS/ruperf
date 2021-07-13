@@ -5,30 +5,13 @@
 //! A wrapper is not provided for the `perf_event_open()` system call.
 //! Necessitating the use of `unsafe { syscall(..) }`.
 //! See linux man-page NOTES for details.
-include!("../../bindings/perf_event.rs");
+include!("../bindings/perf_event.rs");
 
 extern crate libc;
 
+use crate::event::sys::sys;
+use crate::event::utils::*;
 use libc::{c_int, c_ulong, ioctl, pid_t, read, syscall, SYS_perf_event_open};
-
-mod constants;
-
-/// Result type for anytime
-/// `ioctl()` returns -1.
-// TODO: get value of `errno`
-// for more accurate error handling.
-type Result<T> = std::result::Result<T, IoError>;
-
-/// This error type should
-/// eventually be used to
-/// provide information
-/// based on value of `errno`.
-#[derive(Debug)]
-pub enum IoError {
-    SysCallFail,
-    InvalidArg,
-    InvalidId,
-}
 
 /// Stores a raw file descriptor
 /// for use in various `perf_event_open()`
@@ -51,9 +34,9 @@ impl FileDesc {
 
     /// Enable the performance counter
     /// associated with `fd`.
-    pub fn enable(&self) -> Result<()> {
+    pub fn enable(&self) -> Result<(), IoError> {
         let ret: i32;
-        ret = unsafe { libc::ioctl(self.0, constants::ENABLE as u64, 0) };
+        ret = unsafe { libc::ioctl(self.0, sys::ENABLE as u64, 0) };
         if ret == -1 {
             return Err(IoError::SysCallFail);
         }
@@ -62,9 +45,9 @@ impl FileDesc {
 
     /// Disable the performance counter
     /// associated with `fd`.
-    pub fn disable(&self) -> Result<()> {
+    pub fn disable(&self) -> Result<(), IoError> {
         let ret: i32;
-        ret = unsafe { libc::ioctl(self.0, constants::DISABLE as u64, 0) };
+        ret = unsafe { libc::ioctl(self.0, sys::DISABLE as u64, 0) };
         if ret == -1 {
             return Err(IoError::SysCallFail);
         }
@@ -77,7 +60,7 @@ impl FileDesc {
     /// the counter for the event associated
     /// with `fd` overflows. When the counter
     /// reaches 0, the event is disabled.
-    pub fn refresh(&self, count: u64) -> Result<()> {
+    pub fn refresh(&self, count: u64) -> Result<(), IoError> {
         let ret: i32;
         // passing an argument of 0
         // with this ioctl is undefined behavior.
@@ -85,7 +68,7 @@ impl FileDesc {
             return Err(IoError::InvalidArg);
         }
         let arg: *const u64 = &count;
-        ret = unsafe { libc::ioctl(self.0, constants::REFRESH as u64, arg) };
+        ret = unsafe { libc::ioctl(self.0, sys::REFRESH as u64, arg) };
         if ret == -1 {
             return Err(IoError::SysCallFail);
         }
@@ -93,9 +76,9 @@ impl FileDesc {
     }
 
     /// Reset the performance counter to 0.
-    pub fn reset(&self) -> Result<()> {
+    pub fn reset(&self) -> Result<(), IoError> {
         let ret: i32;
-        ret = unsafe { libc::ioctl(self.0, constants::RESET as u64, 0) };
+        ret = unsafe { libc::ioctl(self.0, sys::RESET as u64, 0) };
         if ret == -1 {
             return Err(IoError::SysCallFail);
         }
@@ -109,10 +92,10 @@ impl FileDesc {
     /// NOTE: The `__bindgen_anon_1` and `sample_type` fields
     /// must be initialized for the `perf_event_attr`
     /// struct that is passed to `FileDesc::new()`.
-    pub fn overflow_period(&self, interval: u64) -> Result<()> {
+    pub fn overflow_period(&self, interval: u64) -> Result<(), IoError> {
         let ret: i32;
         let arg: *const u64 = &interval;
-        ret = unsafe { libc::ioctl(self.0, constants::PERIOD as u64, arg) };
+        ret = unsafe { libc::ioctl(self.0, sys::PERIOD as u64, arg) };
         if ret == -1 {
             return Err(IoError::SysCallFail);
         }
@@ -121,24 +104,24 @@ impl FileDesc {
 
     /// Report counter information to
     /// specific file descriptor.
-    pub fn set_output(&self) -> Result<()> {
+    pub fn set_output(&self) -> Result<(), IoError> {
         todo!()
     }
 
     /// Ignore counter output for event
     /// associated with `fd`.
-    pub fn ignore_output(&self) -> Result<()> {
+    pub fn ignore_output(&self) -> Result<(), IoError> {
         todo!()
     }
 
     /// Return event ID value
     /// associated with `fd`.
-    pub fn id(&self) -> Result<u64> {
+    pub fn id(&self) -> Result<u64, IoError> {
         // forgive me father.
         let mut ret: u64 = 0;
         ret = unsafe {
             let result: *mut u64 = &mut ret;
-            if libc::ioctl(self.0, constants::ID as u64, result) == -1 {
+            if libc::ioctl(self.0, sys::ID as u64, result) == -1 {
                 return Err(IoError::SysCallFail);
             }
             *result
@@ -151,19 +134,19 @@ impl FileDesc {
 
     /// Pause writing to ring-buffer
     /// for associated file descriptor.
-    pub fn pause_output(&self) -> Result<()> {
+    pub fn pause_output(&self) -> Result<(), IoError> {
         todo!()
     }
 
     /// Resume writing to ring-buffer
     /// for associated file descriptor.
-    pub fn resume_output(&self) -> Result<()> {
+    pub fn resume_output(&self) -> Result<(), IoError> {
         todo!()
     }
 
     /// Modify the attributes for
     /// a specified event.
-    pub fn modify_attributes(&self, _event: *const perf_event_attr) -> Result<()> {
+    pub fn modify_attributes(&self, _event: *const perf_event_attr) -> Result<(), IoError> {
         todo!()
     }
 }
@@ -227,7 +210,7 @@ fn read_test() {
     //package count into buf so it is easy to read
     let buf: *mut libc::c_void = &mut cnt as *mut _ as *mut libc::c_void;
     unsafe {
-        ioctl(fd as i32, constants::ENABLE as u64, 0);
+        ioctl(fd as i32, sys::ENABLE as u64, 0);
         read(fd as i32, buf, std::mem::size_of_val(&cnt));
     }
     assert_ne!(cnt, 0);
