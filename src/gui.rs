@@ -1,6 +1,6 @@
 use iced::{
     button, executor, pane_grid,
-    widget::{Button, Column, Container, PaneGrid, Row, Scrollable, Text},
+    widget::{Button, Column, Container, PaneGrid, Row, Text},
     Align, Application, Clipboard, Command, Element, Length, Settings,
 };
 
@@ -18,12 +18,12 @@ struct Menu {
 
 #[derive(Debug, Clone, Copy)]
 enum Message {
-    stat_pressed,
-    record_pressed,
-    report_pressed,
-    annotate_pressed,
-    top_pressed,
-    bench_pressed,
+    StatPressed,
+    RecordPressed,
+    ReportPressed,
+    AnnotatePressed,
+    TopPressed,
+    BenchPressed,
     Resized(pane_grid::ResizeEvent),
 }
 
@@ -80,32 +80,32 @@ impl Application for Menu {
                 self.panes_state.resize(&split, ratio);
             }
 
-            Message::stat_pressed => {
+            Message::StatPressed => {
                 let data_state = self.panes_state.get_mut(&self.data_pane).unwrap();
                 data_state.data = "stat".to_string();
                 println!("stat pressed");
             }
-            Message::record_pressed => {
+            Message::RecordPressed => {
                 let data_state = self.panes_state.get_mut(&self.data_pane).unwrap();
                 data_state.data = "record".to_string();
                 println!("record pressed")
             }
-            Message::report_pressed => {
+            Message::ReportPressed => {
                 let data_state = self.panes_state.get_mut(&self.data_pane).unwrap();
                 data_state.data = "record".to_string();
                 println!("report pressed")
             }
-            Message::annotate_pressed => {
+            Message::AnnotatePressed => {
                 let data_state = self.panes_state.get_mut(&self.data_pane).unwrap();
                 data_state.data = "annotate".to_string();
                 println!("annotate pressed")
             }
-            Message::top_pressed => {
+            Message::TopPressed => {
                 let data_state = self.panes_state.get_mut(&self.data_pane).unwrap();
                 data_state.data = "top".to_string();
                 println!("top pressed")
             }
-            Message::bench_pressed => {
+            Message::BenchPressed => {
                 let data_state = self.panes_state.get_mut(&self.data_pane).unwrap();
                 data_state.data = "bench".to_string();
                 println!("bench pressed")
@@ -134,32 +134,32 @@ impl Application for Menu {
                         .align_items(Align::Center)
                         .push(
                             Button::new(&mut content.stat_button, Text::new("stat"))
-                                .on_press(Message::stat_pressed)
+                                .on_press(Message::StatPressed)
                                 .width(Length::FillPortion(100)),
                         )
                         .push(
                             Button::new(&mut content.record_button, Text::new("record"))
-                                .on_press(Message::record_pressed)
+                                .on_press(Message::RecordPressed)
                                 .width(Length::FillPortion(100)),
                         )
                         .push(
                             Button::new(&mut content.report_button, Text::new("report"))
-                                .on_press(Message::report_pressed)
+                                .on_press(Message::ReportPressed)
                                 .width(Length::FillPortion(100)),
                         )
                         .push(
                             Button::new(&mut content.annotate_button, Text::new("annotate"))
-                                .on_press(Message::annotate_pressed)
+                                .on_press(Message::AnnotatePressed)
                                 .width(Length::FillPortion(100)),
                         )
                         .push(
                             Button::new(&mut content.top_button, Text::new("top"))
-                                .on_press(Message::top_pressed)
+                                .on_press(Message::TopPressed)
                                 .width(Length::FillPortion(100)),
                         )
                         .push(
                             Button::new(&mut content.bench_button, Text::new("bench"))
-                                .on_press(Message::bench_pressed)
+                                .on_press(Message::BenchPressed)
                                 .width(Length::FillPortion(100)),
                         ),
                 )
@@ -219,7 +219,7 @@ impl Application for Menu {
 }
 
 mod style {
-    use iced::{button, container, Background, Color, Vector};
+    use iced::{container, Background, Color};
 
     const SURFACE: Color = Color::from_rgb(
         0xF2 as f32 / 255.0,
@@ -282,7 +282,7 @@ impl Content {
         Content {
             pane_type,
             id,
-            data: "data".to_string(),
+            data: "".to_string(),
             stat_button: button::State::new(),
             record_button: button::State::new(),
             report_button: button::State::new(),
