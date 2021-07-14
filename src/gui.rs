@@ -11,6 +11,9 @@ pub fn run_gui() -> iced::Result {
 struct Menu {
     panes_state: pane_grid::State<Content>,
     panes_created: usize,
+    data_pane: pane_grid::Pane,
+    log_pane: pane_grid::Pane,
+    task_pane: pane_grid::Pane,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -30,22 +33,20 @@ impl Application for Menu {
     type Flags = ();
 
     fn new(_flags: ()) -> (Menu, Command<Self::Message>) {
-        //state list
-        //TODO: instead of using Content, split it up for different panes.
-        let (mut panes_state, first_pane) = pane_grid::State::new(Content::new(PaneType::Task, 0));
+        let (mut panes_state, task_pane) = pane_grid::State::new(Content::new(PaneType::Task, 0));
 
-        let (second_pane, vert_split) = panes_state
+        let (data_pane, vert_split) = panes_state
             .split(
                 pane_grid::Axis::Vertical,
-                &first_pane,
+                &task_pane,
                 Content::new(PaneType::Data, 1),
             )
             .unwrap();
 
-        let (third_pane, horz_split) = panes_state
+        let (log_pane, horz_split) = panes_state
             .split(
                 pane_grid::Axis::Horizontal,
-                &second_pane,
+                &data_pane,
                 Content::new(PaneType::Log, 2),
             )
             .unwrap();
@@ -57,6 +58,9 @@ impl Application for Menu {
             Menu {
                 panes_state,
                 panes_created: 1,
+                data_pane,
+                task_pane,
+                log_pane,
             },
             Command::none(),
         )
@@ -74,7 +78,37 @@ impl Application for Menu {
         match message {
             Message::Resized(pane_grid::ResizeEvent { split, ratio }) => {
                 self.panes_state.resize(&split, ratio);
-                println!("ratio: {}", ratio);
+            }
+
+            Message::stat_pressed => {
+                let data_state = self.panes_state.get_mut(&self.data_pane).unwrap();
+                data_state.data = "stat".to_string();
+                println!("stat pressed");
+            }
+            Message::record_pressed => {
+                let data_state = self.panes_state.get_mut(&self.data_pane).unwrap();
+                data_state.data = "record".to_string();
+                println!("record pressed")
+            }
+            Message::report_pressed => {
+                let data_state = self.panes_state.get_mut(&self.data_pane).unwrap();
+                data_state.data = "record".to_string();
+                println!("report pressed")
+            }
+            Message::annotate_pressed => {
+                let data_state = self.panes_state.get_mut(&self.data_pane).unwrap();
+                data_state.data = "annotate".to_string();
+                println!("annotate pressed")
+            }
+            Message::top_pressed => {
+                let data_state = self.panes_state.get_mut(&self.data_pane).unwrap();
+                data_state.data = "top".to_string();
+                println!("top pressed")
+            }
+            Message::bench_pressed => {
+                let data_state = self.panes_state.get_mut(&self.data_pane).unwrap();
+                data_state.data = "bench".to_string();
+                println!("bench pressed")
             }
 
             _ => {
@@ -91,9 +125,79 @@ impl Application for Menu {
 
             let title_bar = pane_grid::TitleBar::new(title).padding(10);
 
-            pane_grid::Content::new(content.view(pane))
-                .title_bar(title_bar)
-                .style(style::Pane { is_focused: true })
+            pane_grid::Content::new(match content.pane_type {
+                PaneType::Task => Container::new(
+                    Column::new()
+                        .spacing(5)
+                        .padding(5)
+                        .width(Length::Fill)
+                        .align_items(Align::Center)
+                        .push(
+                            Button::new(&mut content.stat_button, Text::new("stat"))
+                                .on_press(Message::stat_pressed)
+                                .width(Length::FillPortion(100)),
+                        )
+                        .push(
+                            Button::new(&mut content.record_button, Text::new("record"))
+                                .on_press(Message::record_pressed)
+                                .width(Length::FillPortion(100)),
+                        )
+                        .push(
+                            Button::new(&mut content.report_button, Text::new("report"))
+                                .on_press(Message::report_pressed)
+                                .width(Length::FillPortion(100)),
+                        )
+                        .push(
+                            Button::new(&mut content.annotate_button, Text::new("annotate"))
+                                .on_press(Message::annotate_pressed)
+                                .width(Length::FillPortion(100)),
+                        )
+                        .push(
+                            Button::new(&mut content.top_button, Text::new("top"))
+                                .on_press(Message::top_pressed)
+                                .width(Length::FillPortion(100)),
+                        )
+                        .push(
+                            Button::new(&mut content.bench_button, Text::new("bench"))
+                                .on_press(Message::bench_pressed)
+                                .width(Length::FillPortion(100)),
+                        ),
+                )
+                .width(Length::Fill)
+                .height(Length::Fill)
+                .padding(5)
+                .center_x()
+                .center_y(),
+
+                PaneType::Data => Container::new(
+                    Column::new()
+                        .spacing(5)
+                        .padding(5)
+                        .width(Length::Fill)
+                        .align_items(Align::Center)
+                        .push(Text::new(&content.data)),
+                ),
+
+                PaneType::Log => Container::new(
+                    Column::new()
+                        .spacing(5)
+                        .padding(5)
+                        .width(Length::Fill)
+                        .align_items(Align::Center)
+                        .push(Text::new("Logs")),
+                ),
+
+                _ => Container::new(
+                    Column::new()
+                        .spacing(5)
+                        .padding(5)
+                        .width(Length::Fill)
+                        .align_items(Align::Center)
+                        .push(Text::new("Other")),
+                ),
+            })
+            .title_bar(title_bar)
+            .style(style::Pane { is_focused: true })
         })
         .width(Length::Fill)
         .height(Length::Fill)
@@ -157,6 +261,7 @@ mod style {
 
 struct Content {
     id: usize,
+    data: String,
     pane_type: PaneType,
     stat_button: button::State,
     record_button: button::State,
@@ -177,6 +282,7 @@ impl Content {
         Content {
             pane_type,
             id,
+            data: "data".to_string(),
             stat_button: button::State::new(),
             record_button: button::State::new(),
             report_button: button::State::new(),
@@ -184,65 +290,5 @@ impl Content {
             top_button: button::State::new(),
             bench_button: button::State::new(),
         }
-    }
-
-    fn view(&mut self, pane: pane_grid::Pane) -> Element<Message> {
-        let mut content = Column::new()
-            .spacing(5)
-            .padding(5)
-            .width(Length::Fill)
-            .align_items(Align::Center);
-
-        match self.pane_type {
-            PaneType::Task => {
-                content = content
-                    .push(
-                        Button::new(&mut self.stat_button, Text::new("stat"))
-                            .on_press(Message::stat_pressed)
-                            .width(Length::FillPortion(100)),
-                    )
-                    .push(
-                        Button::new(&mut self.record_button, Text::new("record"))
-                            .on_press(Message::record_pressed)
-                            .width(Length::FillPortion(100)),
-                    )
-                    .push(
-                        Button::new(&mut self.report_button, Text::new("report"))
-                            .on_press(Message::report_pressed)
-                            .width(Length::FillPortion(100)),
-                    )
-                    .push(
-                        Button::new(&mut self.annotate_button, Text::new("annotate"))
-                            .on_press(Message::annotate_pressed)
-                            .width(Length::FillPortion(100)),
-                    )
-                    .push(
-                        Button::new(&mut self.top_button, Text::new("top"))
-                            .on_press(Message::top_pressed)
-                            .width(Length::FillPortion(100)),
-                    )
-                    .push(
-                        Button::new(&mut self.bench_button, Text::new("bench"))
-                            .on_press(Message::bench_pressed)
-                            .width(Length::FillPortion(100)),
-                    );
-            }
-
-            PaneType::Log => {
-                content = content.push(Text::new("log"));
-            }
-
-            PaneType::Data => {
-                content = content.push(Text::new("data"));
-            }
-        }
-
-        Container::new(content)
-            .width(Length::Fill)
-            .height(Length::Fill)
-            .padding(5)
-            .center_x()
-            .center_y()
-            .into()
     }
 }
