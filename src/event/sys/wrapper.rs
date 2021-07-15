@@ -1,7 +1,7 @@
 extern crate libc;
 use libc::{c_void, read};
 
-pub fn read_wrap(fd: i32, mut count: u64) -> u64 {
+pub fn read_wrap(fd: i32, mut count: isize) -> isize {
     unsafe {
         let buf: *mut libc::c_void = &mut count as *mut _ as *mut libc::c_void;
         read(fd, buf, std::mem::size_of_val(&count));
@@ -26,7 +26,7 @@ fn read_wrapper_test() {
     event.set_exclude_hv(1);
     let fd = fd::FileDesc::new(event, 0, -1, -1);
     //read treats each counter as virtualized u64
-    let mut cnt: u64 = 0;
+    let mut cnt: isize = 0;
     //buf must be *mut lbc::c_void type, mimics void pointer
     //package count into buf so it is easy to read
     unsafe {
