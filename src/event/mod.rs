@@ -7,6 +7,7 @@
 #![allow(non_snake_case)]
 #![allow(dead_code)]
 
+pub mod event;
 mod fd;
 mod sys;
 mod utils;
@@ -36,8 +37,11 @@ fn wrapper_test() {
     fd.reset().unwrap();
     fd.disable().unwrap();
     fd.enable().unwrap();
+    let cnt: isize = fd.read().unwrap();
     fd.id().unwrap();
     // change overflow sampling period
     fd.overflow_period(2).unwrap();
     fd.refresh(3).unwrap();
+    assert_ne!(cnt, 0);
+    assert!(cnt > 0, "cnt = {}", cnt);
 }

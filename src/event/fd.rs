@@ -10,6 +10,7 @@ include!("../bindings/perf_event.rs");
 extern crate libc;
 
 use crate::event::sys::sys;
+use crate::event::sys::wrapper::*;
 use crate::event::utils::*;
 use libc::{c_int, c_ulong, ioctl, pid_t, read, syscall, SYS_perf_event_open};
 
@@ -148,6 +149,14 @@ impl FileDesc {
     /// a specified event.
     pub fn modify_attributes(&self, _event: *const perf_event_attr) -> Result<(), IoError> {
         todo!()
+    }
+
+    pub fn read(&self) -> Result<isize, IoError> {
+        let ret = read_wrap(self.0);
+        if ret == -1 {
+            return Err(IoError::SysCallFail);
+        }
+        Ok(ret)
     }
 }
 
