@@ -1,6 +1,6 @@
 use iced::{
-    button, executor, pane_grid,
-    widget::{Button, Column, Container, PaneGrid, Row, Text},
+    button, executor, pane_grid, pick_list, scrollable,
+    widget::{Button, Column, Container, PaneGrid, PickList, Row, Scrollable, Text},
     Align, Application, Clipboard, Command, Element, Length, Settings,
 };
 
@@ -16,6 +16,7 @@ enum Gui {
 }
 
 struct State {
+    selected_command: PerfCommand,
     tasks: Vec<Task>,
     panes_state: pane_grid::State<Content>,
     panes_created: usize,
@@ -50,7 +51,12 @@ impl Default for State {
 
         let tasks = Vec::new();
 
+        let selected_command = PerfCommand::default();
+
+        let scroll = scrollable::State::default();
+
         State {
+            selected_command,
             tasks,
             panes_state,
             panes_created: 3,
@@ -68,6 +74,7 @@ enum Message {
     InputChanged(String),
     NewAppPressed,
     Resized(pane_grid::ResizeEvent),
+    CommandSelected(PerfCommand),
 }
 
 impl Application for Gui {
@@ -138,9 +145,7 @@ impl Application for Gui {
                 tasks,
                 panes_state,
                 panes_created,
-                data_pane,
-                task_pane,
-                log_pane,
+                selected_command,
                 ..
             }) => {
                 let panes = PaneGrid::new(panes_state, |pane, content| {
@@ -148,6 +153,20 @@ impl Application for Gui {
                         .spacing(5);
 
                     let title_bar = pane_grid::TitleBar::new(title).padding(10);
+
+                    let pick_list = PickList::new(
+                        &mut content.pick_list,
+                        &PerfCommand::ALL[..],
+                        Some(*selected_command),
+                        Message::CommandSelected,
+                    );
+
+                    let mut list = Scrollable::new(&mut content.scroll)
+                        .width(Length::Fill)
+                        .align_items(Align::Center)
+                        .spacing(10)
+                        .push(Text::new("Which is your favorite language?"))
+                        .push(pick_list);
 
                     pane_grid::Content::new(match content.pane_type {
                         PaneType::Task => Container::new(
@@ -190,7 +209,8 @@ impl Application for Gui {
                                         Text::new(&content.data).into(),
                                         Button::new(&mut content.stat_button, Text::new("Launch"))
                                             .into(),
-                                    ])),
+                                    ]))
+                                    .push(list),
                             ),
                         },
 
@@ -233,6 +253,53 @@ impl Application for Gui {
                     .into()
             }
         }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PerfCommand {
+    Stat,
+    Record,
+    Report,
+    Annotate,
+    Top,
+    Bench,
+    Test,
+}
+
+impl PerfCommand {
+    const ALL: [PerfCommand; 7] = [
+        PerfCommand::Annotate,
+        PerfCommand::Bench,
+        PerfCommand::Record,
+        PerfCommand::Report,
+        PerfCommand::Stat,
+        PerfCommand::Test,
+        PerfCommand::Top,
+    ];
+}
+
+impl Default for PerfCommand {
+    fn default() -> PerfCommand {
+        PerfCommand::Test
+    }
+}
+
+impl std::fmt::Display for PerfCommand {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                PerfCommand::Annotate => "Annotate",
+                PerfCommand::Bench => "Bench",
+                PerfCommand::Record => "Record",
+                PerfCommand::Report => "Report",
+                PerfCommand::Stat => "Stat",
+                PerfCommand::Test => "Test",
+                PerfCommand::Top => "Top",
+            }
+        )
     }
 }
 
@@ -286,6 +353,8 @@ fn loading_message<'a>() -> Element<'a, Message> {
 }
 
 struct Content {
+    scroll: scrollable::State,
+    pick_list: pick_list::State<PerfCommand>,
     id: usize,
     data: String,
     application: String,
@@ -308,6 +377,8 @@ enum PaneType {
 impl Content {
     fn new(pane_type: PaneType, id: usize) -> Self {
         Content {
+            scroll: scrollable::State::new(),
+            pick_list: pick_list::State::default(),
             pane_type,
             id,
             data: "".to_string(),
