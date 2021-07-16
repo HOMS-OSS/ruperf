@@ -1,6 +1,8 @@
 use iced::{
     button, executor, pane_grid, pick_list, scrollable, text_input,
-    widget::{Button, Column, Container, PaneGrid, PickList, Row, Scrollable, Text, Rule, TextInput},
+    widget::{
+        Button, Column, Container, PaneGrid, PickList, Row, Rule, Scrollable, Text, TextInput,
+    },
     Align, Application, Clipboard, Command, Element, Length, Settings,
 };
 use serde::{Deserialize, Serialize};
@@ -158,40 +160,38 @@ impl Application for Gui {
                     }
 
                     Message::LaunchCommand => {
-
                         match data_state.selected_command {
                             PerfCommand::Stat => {
                                 //TODO: Add program here
-                        data_state.data = format!("Stat");
+                                data_state.data = format!("Stat");
                             }
                             PerfCommand::Record => {
                                 //TODO: Add program here
-                        data_state.data = format!("record");
+                                data_state.data = format!("record");
                             }
                             PerfCommand::Report => {
                                 //TODO: Add program here
-                        data_state.data = format!("report");
+                                data_state.data = format!("report");
                             }
                             PerfCommand::Annotate => {
                                 //TODO: Add program here
-                        data_state.data = format!("Annotate");
+                                data_state.data = format!("Annotate");
                             }
                             PerfCommand::Top => {
                                 //TODO: Add program here
-                        data_state.data = format!("Top");
+                                data_state.data = format!("Top");
                             }
                             PerfCommand::Bench => {
                                 //TODO: Add program here
-                        data_state.data = format!("Bench");
+                                data_state.data = format!("Bench");
                             }
                             PerfCommand::Test => {
-                        data_state.data = format!("Test");
+                                data_state.data = format!("Test");
                                 //TODO: Add program here
                             }
                         }
 
                         data_state.context = Context::Main;
-                        
                     }
 
                     _ => {
@@ -232,10 +232,10 @@ impl Application for Gui {
                         .push(pick_list);
 
                     let input = TextInput::new(
-                        &mut content.input , 
-                        "", 
-                        &mut content.input_value, 
-                        Message::InputChanged
+                        &mut content.input,
+                        "",
+                        &mut content.input_value,
+                        Message::InputChanged,
                     );
 
                     pane_grid::Content::new(match content.pane_type {
