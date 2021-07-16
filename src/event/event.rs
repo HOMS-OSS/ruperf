@@ -11,7 +11,7 @@ pub struct Event {
 
 /// Initialize perf attributes. Currently set up to match on intended event.
 /// Returns the initialized perf_event_attr data structure or an error.
-pub fn event_open(event: &StatEvent) -> Result<fd::perf_event_attr, IoError> {
+pub fn event_open(event: &StatEvent) -> Result<fd::perf_event_attr, EventErr> {
     match &event {
         StatEvent::Cycles => {
             let event_open = &mut fd::perf_event_attr {
@@ -25,7 +25,7 @@ pub fn event_open(event: &StatEvent) -> Result<fd::perf_event_attr, IoError> {
             event_open.set_exclude_hv(1);
             Ok(*event_open)
         }
-        _ => return Err(IoError::InvalidArg),
+        _ => return Err(EventErr::InvalidEvent),
     }
 }
 impl Event {
@@ -40,15 +40,20 @@ impl Event {
     }
 
     /// Start the counter on an event
-    pub fn start_counter(&self) -> Result<isize, IoError> {
-        self.fd.enable().unwrap();
-        self.fd.read()
+
+    pub fn start_counter(&self) -> Result<isize, SysErr> {
+        match self.fd.enable() {
+            Ok(_) => self.fd.read(),
+            Err(e) => Err(e),
+        }
     }
 
     ///Stop the counter on an event
-    pub fn stop_counter(&self) -> Result<isize, IoError> {
-        self.fd.disable().unwrap();
-        self.fd.read()
+    pub fn stop_counter(&self) -> Result<isize, SysErr> {
+        match self.fd.disable() {
+            Ok(_) => self.fd.read(),
+            Err(e) => Err(e),
+        }
     }
 }
 

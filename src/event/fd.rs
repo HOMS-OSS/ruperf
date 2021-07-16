@@ -35,22 +35,22 @@ impl FileDesc {
 
     /// Enable the performance counter
     /// associated with `fd`.
-    pub fn enable(&self) -> Result<(), IoError> {
+    pub fn enable(&self) -> Result<(), SysErr> {
         let ret: i32;
         ret = unsafe { libc::ioctl(self.0, sys::ENABLE as u64, 0) };
         if ret == -1 {
-            return Err(IoError::SysCallFail);
+            return Err(SysErr::IoFail);
         }
         Ok(())
     }
 
     /// Disable the performance counter
     /// associated with `fd`.
-    pub fn disable(&self) -> Result<(), IoError> {
+    pub fn disable(&self) -> Result<(), SysErr> {
         let ret: i32;
         ret = unsafe { libc::ioctl(self.0, sys::DISABLE as u64, 0) };
         if ret == -1 {
-            return Err(IoError::SysCallFail);
+            return Err(SysErr::IoFail);
         }
         Ok(())
     }
@@ -61,27 +61,27 @@ impl FileDesc {
     /// the counter for the event associated
     /// with `fd` overflows. When the counter
     /// reaches 0, the event is disabled.
-    pub fn refresh(&self, count: u64) -> Result<(), IoError> {
+    pub fn refresh(&self, count: u64) -> Result<(), SysErr> {
         let ret: i32;
         // passing an argument of 0
         // with this ioctl is undefined behavior.
         if count == 0 {
-            return Err(IoError::InvalidArg);
+            return Err(SysErr::IoArg);
         }
         let arg: *const u64 = &count;
         ret = unsafe { libc::ioctl(self.0, sys::REFRESH as u64, arg) };
         if ret == -1 {
-            return Err(IoError::SysCallFail);
+            return Err(SysErr::IoFail);
         }
         Ok(())
     }
 
     /// Reset the performance counter to 0.
-    pub fn reset(&self) -> Result<(), IoError> {
+    pub fn reset(&self) -> Result<(), SysErr> {
         let ret: i32;
         ret = unsafe { libc::ioctl(self.0, sys::RESET as u64, 0) };
         if ret == -1 {
-            return Err(IoError::SysCallFail);
+            return Err(SysErr::IoFail);
         }
         Ok(())
     }
@@ -93,68 +93,68 @@ impl FileDesc {
     /// NOTE: The `__bindgen_anon_1` and `sample_type` fields
     /// must be initialized for the `perf_event_attr`
     /// struct that is passed to `FileDesc::new()`.
-    pub fn overflow_period(&self, interval: u64) -> Result<(), IoError> {
+    pub fn overflow_period(&self, interval: u64) -> Result<(), SysErr> {
         let ret: i32;
         let arg: *const u64 = &interval;
         ret = unsafe { libc::ioctl(self.0, sys::PERIOD as u64, arg) };
         if ret == -1 {
-            return Err(IoError::SysCallFail);
+            return Err(SysErr::IoFail);
         }
         Ok(())
     }
 
     /// Report counter information to
     /// specific file descriptor.
-    pub fn set_output(&self) -> Result<(), IoError> {
+    pub fn set_output(&self) -> Result<(), SysErr> {
         todo!()
     }
 
     /// Ignore counter output for event
     /// associated with `fd`.
-    pub fn ignore_output(&self) -> Result<(), IoError> {
+    pub fn ignore_output(&self) -> Result<(), SysErr> {
         todo!()
     }
 
     /// Return event ID value
     /// associated with `fd`.
-    pub fn id(&self) -> Result<u64, IoError> {
+    pub fn id(&self) -> Result<u64, SysErr> {
         // forgive me father.
         let mut ret: u64 = 0;
         ret = unsafe {
             let result: *mut u64 = &mut ret;
             if libc::ioctl(self.0, sys::ID as u64, result) == -1 {
-                return Err(IoError::SysCallFail);
+                return Err(SysErr::IoFail);
             }
             *result
         };
         if ret == 0 {
-            return Err(IoError::InvalidId);
+            return Err(SysErr::IoId);
         }
         Ok(ret)
     }
 
     /// Pause writing to ring-buffer
     /// for associated file descriptor.
-    pub fn pause_output(&self) -> Result<(), IoError> {
+    pub fn pause_output(&self) -> Result<(), SysErr> {
         todo!()
     }
 
     /// Resume writing to ring-buffer
     /// for associated file descriptor.
-    pub fn resume_output(&self) -> Result<(), IoError> {
+    pub fn resume_output(&self) -> Result<(), SysErr> {
         todo!()
     }
 
     /// Modify the attributes for
     /// a specified event.
-    pub fn modify_attributes(&self, _event: *const perf_event_attr) -> Result<(), IoError> {
+    pub fn modify_attributes(&self, _event: *const perf_event_attr) -> Result<(), SysErr> {
         todo!()
     }
 
-    pub fn read(&self) -> Result<isize, IoError> {
+    pub fn read(&self) -> Result<isize, SysErr> {
         let ret = read_wrap(self.0);
         if ret == -1 {
-            return Err(IoError::SysCallFail);
+            return Err(SysErr::ReadFail);
         }
         Ok(ret)
     }
