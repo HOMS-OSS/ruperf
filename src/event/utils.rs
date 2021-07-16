@@ -1,16 +1,16 @@
-/// Result type for anytime
-/// `ioctl()` returns -1.
-// TODO: get value of `errno`
-// for more accurate error handling.
-type Result<T> = std::result::Result<T, IoError>;
+type Result<T, E> = std::result::Result<T, E>;
 
-/// This error type should
-/// eventually be used to
-/// provide information
-/// based on value of `errno`.
+/// Errors related to system calls.
 #[derive(Debug)]
-pub enum IoError {
-    SysCallFail,
-    InvalidArg,
-    InvalidId,
+pub enum SysErr {
+    ReadFail,
+    IoFail,
+    IoArg,
+    IoId,
+}
+
+/// Errors related to handling specific events.
+#[derive(Debug)]
+pub enum EventErr {
+    InvalidEvent,
 }
