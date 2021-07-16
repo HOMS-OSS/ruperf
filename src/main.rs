@@ -33,29 +33,24 @@ enum Opt {
     #[structopt(
         setting = structopt::clap::AppSettings::TrailingVarArg,
         setting = structopt::clap::AppSettings::AllowLeadingHyphen,
-<<<<<<< HEAD
-        name = "gui",
-        about = "Runs the gui",
-    )]
-    Gui(StatOptions),
-=======
         name = "test",
         about = "Runs sanity tests"
     )]
     Test(TestOptions),
->>>>>>> 50499bd4c3b5631fe63001da4c41f9ad267fa161
+    #[structopt(
+        setting = structopt::clap::AppSettings::TrailingVarArg,
+        setting = structopt::clap::AppSettings::AllowLeadingHyphen,
+        name = "gui",
+        about = "Runs the gui",
+    )]
+    Gui(StatOptions),
 }
 
 fn main() {
     let opt = Opt::from_args();
     match opt {
         Opt::Stat(x) => run_stat(&x),
-<<<<<<< HEAD
-        Opt::Gui(x) => {
-            run_gui().unwrap();
-        }
-=======
         Opt::Test(x) => run_test(&x),
->>>>>>> 50499bd4c3b5631fe63001da4c41f9ad267fa161
+        Opt::Gui(x) => run_gui().unwrap(),
     }
 }
