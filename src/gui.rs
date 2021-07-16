@@ -1,11 +1,9 @@
 use iced::{
-    button, executor, pane_grid, pick_list, scrollable,
-    widget::{Button, Column, Container, PaneGrid, PickList, Row, Scrollable, Text},
+    button, executor, pane_grid, pick_list, scrollable, text_input,
+    widget::{Button, Column, Container, PaneGrid, PickList, Row, Scrollable, Text, Rule, TextInput},
     Align, Application, Clipboard, Command, Element, Length, Settings,
 };
 use serde::{Deserialize, Serialize};
-
-use crate::stat::*;
 
 pub fn run_gui() -> iced::Result {
     Gui::run(Settings::default())
@@ -50,10 +48,6 @@ impl Default for State {
         panes_state.resize(&horz_split, 0.88);
 
         let tasks = Vec::new();
-
-        let selected_command = PerfCommand::default();
-
-        let scroll = scrollable::State::default();
 
         State {
             tasks,
@@ -118,82 +112,86 @@ impl Application for Gui {
             Gui::Loaded(state) => {
                 let mut saved = false;
 
+                let data_state = state.panes_state.get_mut(&state.data_pane).unwrap();
+
                 match message {
                     Message::Resized(pane_grid::ResizeEvent { split, ratio }) => {
                         state.panes_state.resize(&split, ratio);
                     }
 
                     Message::NewAppPressed => {
-                        let data_state = state.panes_state.get_mut(&state.data_pane).unwrap();
                         data_state.context = Context::NewProgram;
                         println!("new app pressed");
                     }
 
                     Message::CommandSelected(PerfCommand::Stat) => {
-                        let data_state = state.panes_state.get_mut(&state.data_pane).unwrap();
                         data_state.selected_command = PerfCommand::Stat;
                         println!("stat selected")
                     }
                     Message::CommandSelected(PerfCommand::Record) => {
-                        let data_state = state.panes_state.get_mut(&state.data_pane).unwrap();
                         data_state.selected_command = PerfCommand::Record;
                         println!("record selected")
                     }
                     Message::CommandSelected(PerfCommand::Report) => {
-                        let data_state = state.panes_state.get_mut(&state.data_pane).unwrap();
                         data_state.selected_command = PerfCommand::Report;
                         println!("report selected")
                     }
                     Message::CommandSelected(PerfCommand::Annotate) => {
-                        let data_state = state.panes_state.get_mut(&state.data_pane).unwrap();
                         data_state.selected_command = PerfCommand::Annotate;
                         println!("annotate selected")
                     }
                     Message::CommandSelected(PerfCommand::Top) => {
-                        let data_state = state.panes_state.get_mut(&state.data_pane).unwrap();
                         data_state.selected_command = PerfCommand::Top;
                         println!("top selected")
                     }
                     Message::CommandSelected(PerfCommand::Bench) => {
-                        let data_state = state.panes_state.get_mut(&state.data_pane).unwrap();
                         data_state.selected_command = PerfCommand::Bench;
                         println!("bench selected")
                     }
                     Message::CommandSelected(PerfCommand::Test) => {
-                        let data_state = state.panes_state.get_mut(&state.data_pane).unwrap();
                         data_state.selected_command = PerfCommand::Test;
                         println!("test selected")
                     }
 
+                    Message::InputChanged(value) => {
+                        data_state.input_value = value;
+                    }
+
                     Message::LaunchCommand => {
-                        let data_state = state.panes_state.get_mut(&state.data_pane).unwrap();
 
                         match data_state.selected_command {
                             PerfCommand::Stat => {
                                 //TODO: Add program here
+                        data_state.data = format!("Stat");
                             }
                             PerfCommand::Record => {
                                 //TODO: Add program here
+                        data_state.data = format!("record");
                             }
                             PerfCommand::Report => {
                                 //TODO: Add program here
+                        data_state.data = format!("report");
                             }
                             PerfCommand::Annotate => {
                                 //TODO: Add program here
+                        data_state.data = format!("Annotate");
                             }
                             PerfCommand::Top => {
                                 //TODO: Add program here
+                        data_state.data = format!("Top");
                             }
                             PerfCommand::Bench => {
                                 //TODO: Add program here
+                        data_state.data = format!("Bench");
                             }
                             PerfCommand::Test => {
+                        data_state.data = format!("Test");
                                 //TODO: Add program here
                             }
-                            _ => println!("running program")
                         }
 
                         data_state.context = Context::Main;
+                        
                     }
 
                     _ => {
@@ -209,7 +207,6 @@ impl Application for Gui {
         match self {
             Gui::Loading => loading_message(),
             Gui::Loaded(State {
-                tasks,
                 panes_state,
                 panes_created,
                 ..
@@ -234,13 +231,20 @@ impl Application for Gui {
                         .push(Text::new("Select a program to run"))
                         .push(pick_list);
 
+                    let input = TextInput::new(
+                        &mut content.input , 
+                        "", 
+                        &mut content.input_value, 
+                        Message::InputChanged
+                    );
+
                     pane_grid::Content::new(match content.pane_type {
                         PaneType::Task => Container::new(
                             Column::new()
                                 .spacing(5)
                                 .padding(5)
                                 .width(Length::Fill)
-                                .align_items(Align::Center)
+                                .align_items(Align::Start)
                                 .push(
                                     Button::new(&mut content.create_button, Text::new("new"))
                                         .on_press(Message::NewAppPressed)
@@ -249,9 +253,7 @@ impl Application for Gui {
                         )
                         .width(Length::Fill)
                         .height(Length::Fill)
-                        .padding(5)
-                        .center_x()
-                        .center_y(),
+                        .padding(5),
 
                         // context for the data panel
                         PaneType::Data => match content.context {
@@ -271,12 +273,21 @@ impl Application for Gui {
                                     .padding(5)
                                     .width(Length::Fill)
                                     .align_items(Align::Center)
-                                    .push(Row::with_children(vec![
+                                    .push(Column::with_children(vec![
                                         list.into(),
-                                        Button::new(&mut content.launch_button, Text::new("Launch"))
+                                        Rule::horizontal(100).into(),
+                                        Text::new("Program to run:").into(),
+                                        input.into(),
+                                        Rule::horizontal(100).into(),
+                                        Text::new("Options:").into(),
+                                        Rule::horizontal(100).into(),
+                                        Button::new(
+                                            &mut content.launch_button,
+                                            Text::new("Launch"),
+                                        )
                                         .on_press(Message::LaunchCommand)
-                                            .into(),
-                                    ]))
+                                        .into(),
+                                    ])),
                             ),
                         },
 
@@ -369,18 +380,6 @@ mod style {
         0xF5 as f32 / 255.0,
     );
 
-    const ACTIVE: Color = Color::from_rgb(
-        0x72 as f32 / 255.0,
-        0x89 as f32 / 255.0,
-        0xDA as f32 / 255.0,
-    );
-
-    const HOVERED: Color = Color::from_rgb(
-        0x67 as f32 / 255.0,
-        0x7B as f32 / 255.0,
-        0xC4 as f32 / 255.0,
-    );
-
     pub struct Pane {
         pub is_focused: bool,
     }
@@ -421,6 +420,8 @@ enum PaneType {
 }
 
 struct Content {
+    input_value: String,
+    input: text_input::State,
     selected_command: PerfCommand,
     scroll: scrollable::State,
     pick_list: pick_list::State<PerfCommand>,
@@ -433,19 +434,20 @@ struct Content {
     context: Context,
 }
 
-
 impl Content {
     fn new(pane_type: PaneType, id: usize) -> Self {
         Content {
+            input_value: String::new(),
+            input: text_input::State::new(),
             selected_command: PerfCommand::default(),
             scroll: scrollable::State::new(),
             pick_list: pick_list::State::default(),
             pane_type,
             id,
-            data: "".to_string(),
+            data: String::new(),
             create_button: button::State::new(),
             launch_button: button::State::new(),
-            application: "".to_string(),
+            application: String::new(),
             context: Context::Main,
         }
     }
