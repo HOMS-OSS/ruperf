@@ -3,8 +3,9 @@ use iced::{
     widget::{Button, Column, Container, PaneGrid, PickList, Row, Scrollable, Text},
     Align, Application, Clipboard, Command, Element, Length, Settings,
 };
-
 use serde::{Deserialize, Serialize};
+
+use crate::stat::*;
 
 pub fn run_gui() -> iced::Result {
     Gui::run(Settings::default())
@@ -16,7 +17,6 @@ enum Gui {
 }
 
 struct State {
-    selected_command: PerfCommand,
     tasks: Vec<Task>,
     panes_state: pane_grid::State<Content>,
     panes_created: usize,
@@ -56,7 +56,6 @@ impl Default for State {
         let scroll = scrollable::State::default();
 
         State {
-            selected_command,
             tasks,
             panes_state,
             panes_created: 3,
@@ -75,6 +74,7 @@ enum Message {
     NewAppPressed,
     Resized(pane_grid::ResizeEvent),
     CommandSelected(PerfCommand),
+    LaunchCommand,
 }
 
 impl Application for Gui {
@@ -129,6 +129,73 @@ impl Application for Gui {
                         println!("new app pressed");
                     }
 
+                    Message::CommandSelected(PerfCommand::Stat) => {
+                        let data_state = state.panes_state.get_mut(&state.data_pane).unwrap();
+                        data_state.selected_command = PerfCommand::Stat;
+                        println!("stat selected")
+                    }
+                    Message::CommandSelected(PerfCommand::Record) => {
+                        let data_state = state.panes_state.get_mut(&state.data_pane).unwrap();
+                        data_state.selected_command = PerfCommand::Record;
+                        println!("record selected")
+                    }
+                    Message::CommandSelected(PerfCommand::Report) => {
+                        let data_state = state.panes_state.get_mut(&state.data_pane).unwrap();
+                        data_state.selected_command = PerfCommand::Report;
+                        println!("report selected")
+                    }
+                    Message::CommandSelected(PerfCommand::Annotate) => {
+                        let data_state = state.panes_state.get_mut(&state.data_pane).unwrap();
+                        data_state.selected_command = PerfCommand::Annotate;
+                        println!("annotate selected")
+                    }
+                    Message::CommandSelected(PerfCommand::Top) => {
+                        let data_state = state.panes_state.get_mut(&state.data_pane).unwrap();
+                        data_state.selected_command = PerfCommand::Top;
+                        println!("top selected")
+                    }
+                    Message::CommandSelected(PerfCommand::Bench) => {
+                        let data_state = state.panes_state.get_mut(&state.data_pane).unwrap();
+                        data_state.selected_command = PerfCommand::Bench;
+                        println!("bench selected")
+                    }
+                    Message::CommandSelected(PerfCommand::Test) => {
+                        let data_state = state.panes_state.get_mut(&state.data_pane).unwrap();
+                        data_state.selected_command = PerfCommand::Test;
+                        println!("test selected")
+                    }
+
+                    Message::LaunchCommand => {
+                        let data_state = state.panes_state.get_mut(&state.data_pane).unwrap();
+
+                        match data_state.selected_command {
+                            PerfCommand::Stat => {
+                                //TODO: Add program here
+                            }
+                            PerfCommand::Record => {
+                                //TODO: Add program here
+                            }
+                            PerfCommand::Report => {
+                                //TODO: Add program here
+                            }
+                            PerfCommand::Annotate => {
+                                //TODO: Add program here
+                            }
+                            PerfCommand::Top => {
+                                //TODO: Add program here
+                            }
+                            PerfCommand::Bench => {
+                                //TODO: Add program here
+                            }
+                            PerfCommand::Test => {
+                                //TODO: Add program here
+                            }
+                            _ => println!("running program")
+                        }
+
+                        data_state.context = Context::Main;
+                    }
+
                     _ => {
                         println!("other")
                     }
@@ -145,7 +212,6 @@ impl Application for Gui {
                 tasks,
                 panes_state,
                 panes_created,
-                selected_command,
                 ..
             }) => {
                 let panes = PaneGrid::new(panes_state, |pane, content| {
@@ -157,15 +223,15 @@ impl Application for Gui {
                     let pick_list = PickList::new(
                         &mut content.pick_list,
                         &PerfCommand::ALL[..],
-                        Some(*selected_command),
+                        Some(content.selected_command),
                         Message::CommandSelected,
                     );
 
-                    let mut list = Scrollable::new(&mut content.scroll)
+                    let list = Scrollable::new(&mut content.scroll)
                         .width(Length::Fill)
-                        .align_items(Align::Center)
+                        .align_items(Align::Start)
                         .spacing(10)
-                        .push(Text::new("Which is your favorite language?"))
+                        .push(Text::new("Select a program to run"))
                         .push(pick_list);
 
                     pane_grid::Content::new(match content.pane_type {
@@ -176,7 +242,7 @@ impl Application for Gui {
                                 .width(Length::Fill)
                                 .align_items(Align::Center)
                                 .push(
-                                    Button::new(&mut content.stat_button, Text::new("new"))
+                                    Button::new(&mut content.create_button, Text::new("new"))
                                         .on_press(Message::NewAppPressed)
                                         .width(Length::FillPortion(100)),
                                 ),
@@ -206,11 +272,11 @@ impl Application for Gui {
                                     .width(Length::Fill)
                                     .align_items(Align::Center)
                                     .push(Row::with_children(vec![
-                                        Text::new(&content.data).into(),
-                                        Button::new(&mut content.stat_button, Text::new("Launch"))
+                                        list.into(),
+                                        Button::new(&mut content.launch_button, Text::new("Launch"))
+                                        .on_press(Message::LaunchCommand)
                                             .into(),
                                     ]))
-                                    .push(list),
                             ),
                         },
 
@@ -221,15 +287,6 @@ impl Application for Gui {
                                 .width(Length::Fill)
                                 .align_items(Align::Center)
                                 .push(Text::new("Logs")),
-                        ),
-
-                        _ => Container::new(
-                            Column::new()
-                                .spacing(5)
-                                .padding(5)
-                                .width(Length::Fill)
-                                .align_items(Align::Center)
-                                .push(Text::new("Other")),
                         ),
                     })
                     .title_bar(title_bar)
@@ -352,17 +409,6 @@ fn loading_message<'a>() -> Element<'a, Message> {
         .into()
 }
 
-struct Content {
-    scroll: scrollable::State,
-    pick_list: pick_list::State<PerfCommand>,
-    id: usize,
-    data: String,
-    application: String,
-    pane_type: PaneType,
-    stat_button: button::State,
-    context: Context,
-}
-
 enum Context {
     Main,
     NewProgram,
@@ -374,15 +420,31 @@ enum PaneType {
     Log,
 }
 
+struct Content {
+    selected_command: PerfCommand,
+    scroll: scrollable::State,
+    pick_list: pick_list::State<PerfCommand>,
+    id: usize,
+    data: String,
+    application: String,
+    pane_type: PaneType,
+    create_button: button::State,
+    launch_button: button::State,
+    context: Context,
+}
+
+
 impl Content {
     fn new(pane_type: PaneType, id: usize) -> Self {
         Content {
+            selected_command: PerfCommand::default(),
             scroll: scrollable::State::new(),
             pick_list: pick_list::State::default(),
             pane_type,
             id,
             data: "".to_string(),
-            stat_button: button::State::new(),
+            create_button: button::State::new(),
+            launch_button: button::State::new(),
             application: "".to_string(),
             context: Context::Main,
         }
