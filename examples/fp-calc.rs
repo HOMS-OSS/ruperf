@@ -4,9 +4,24 @@
 //!
 //! usage:
 //!     ruperf stat ./fp-calc
+use structopt::StructOpt;
+
+#[derive(StructOpt)]
+#[structopt(name = "fp-calc", about = "A test program to run ruperf against")]
+struct Opt {
+    // Starting position
+    #[structopt(short, long, default_value="100")]
+    start: i32,
+
+    // Ending position
+    #[structopt(short, long, default_value="10000000")]
+    end: i32,
+}
+
 fn main() {
-    let start: i32 = 100;
-    let end: i32 = 100000000;
+    let opt = Opt::from_args();
+    let start: i32 = opt.start;
+    let end: i32 = opt.end;
 
     for i in start..end {
         let a: f64 = i as f64;
