@@ -1,4 +1,5 @@
 use crate::event::fd;
+use crate::event::sys::sys;
 use crate::event::utils::*;
 use crate::stat::StatEvent;
 
@@ -15,9 +16,9 @@ pub fn event_open(event: &StatEvent) -> Result<fd::perf_event_attr, EventErr> {
     match &event {
         StatEvent::Cycles => {
             let event_open = &mut fd::perf_event_attr {
-                type_: fd::perf_type_id_PERF_TYPE_HARDWARE,
+                type_: sys::perf_type_id_PERF_TYPE_HARDWARE,
                 size: std::mem::size_of::<fd::perf_event_attr>() as u32,
-                config: fd::perf_hw_id_PERF_COUNT_HW_CPU_CYCLES as u64,
+                config: sys::perf_hw_id_PERF_COUNT_HW_CPU_CYCLES as u64,
                 ..Default::default()
             };
             event_open.set_disabled(1);
@@ -40,7 +41,6 @@ impl Event {
     }
 
     /// Start the counter on an event
-
     pub fn start_counter(&self) -> Result<isize, SysErr> {
         match self.fd.enable() {
             Ok(_) => self.fd.read(),

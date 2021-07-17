@@ -1,9 +1,9 @@
-//! Rust implementations of `_IO()` macros
-//! defined in `/usr/include/asm-generic/ioctl.h`.
-//! Note that some constant values defined
-//! here vary by architecture, and that these constants
-//! are produced by `bindgen`. These macros are used to
-//! define the constants for use in perf-related ioctls.
+//! This module contains the various `ioctl()`
+//! commands related to performance monitoring;
+//! and a wrapper for the `perf_event_open()` system call.
+//!
+//! Note that the constants defined in this file
+//! vary by architecture.
 include!("../../bindings/perf_event.rs");
 use std::mem::size_of;
 
@@ -64,3 +64,42 @@ pub const PAUSE_OUTPUT: u32 = iocw(9, size_of::<u32>());
 /** NOT SUPPORTED **/
 pub const QUERY_BPF: u32 = iocwr(10, size_of::<*const perf_event_query_bpf>());
 pub const MODIFY_ATTRIBUTES: u32 = iocwr(11, size_of::<*const perf_event_attr>());
+
+/// For documentation on `perf_event_open()`
+/// system call, see the Linux man page.
+pub fn perf_event_open(
+    event: &perf_event_attr,
+    pid: i32,
+    cpu: i32,
+    group_fd: i32,
+    flags: usize,
+) -> isize {
+    unsafe {
+        libc::syscall(
+            libc::SYS_perf_event_open,
+            event,
+            pid as libc::pid_t,
+            cpu as libc::c_int,
+            group_fd as libc::c_int,
+            flags as libc::c_ulong,
+        ) as isize
+    }
+}
+
+#[cfg(test)]
+#[test]
+fn perf_event_open_test() {
+    let event = &mut perf_event_attr {
+        type_: perf_type_id_PERF_TYPE_HARDWARE,
+        size: std::mem::size_of::<perf_event_attr>() as u32,
+        // something to consider fixing. For now leave alone.
+        config: perf_hw_id_PERF_COUNT_HW_INSTRUCTIONS as u64,
+        ..Default::default()
+    };
+    event.set_disabled(1);
+    event.set_exclude_kernel(1);
+    event.set_exclude_hv(1);
+    let fd: isize;
+    fd = perf_event_open(&event, 0, -1, -1, 0);
+    assert_ne!(fd, -1, "Testing for failure");
+}

@@ -1,11 +1,18 @@
-extern crate libc;
-use libc::{c_void, read};
+//! Non-perf related system call wrappers.
 
 pub fn read_wrap(fd: i32) -> isize {
+    //read treats each counter as virtualized u64
     let mut count: isize = 0;
     unsafe {
+        //buf must be *mut lbc::c_void type, mimics void pointer
+        //package count into buf so it is easy to read
         let buf: *mut libc::c_void = &mut count as *mut _ as *mut libc::c_void;
-        read(fd, buf, std::mem::size_of_val(&count));
+        libc::read(fd, buf, std::mem::size_of_val(&count));
     }
     count
+}
+
+// A generally generic system call.
+pub fn ioctl_wrap<T>(fd: i32, command: u32, arg: T) -> i32 {
+    unsafe { libc::ioctl(fd, command as u64, arg) }
 }
