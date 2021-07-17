@@ -4,6 +4,7 @@
 //!<ul>
 //! <li>test</li>
 //! <li>stat</li>
+//! <li>gui</li>
 //! </ul>
 
 mod event;
