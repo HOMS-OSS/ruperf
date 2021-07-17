@@ -42,15 +42,9 @@ enum Opt {
         setting = structopt::clap::AppSettings::TrailingVarArg,
         setting = structopt::clap::AppSettings::AllowLeadingHyphen,
         name = "gui",
-<<<<<<< HEAD
         about = "Launches gui"
     )]
     Gui(TestOptions),
-=======
-        about = "Runs the gui",
-    )]
-    Gui(StatOptions),
->>>>>>> move: modified file structure for gui
 }
 
 fn main() {
@@ -58,12 +52,8 @@ fn main() {
     match opt {
         Opt::Stat(x) => run_stat(&x),
         Opt::Test(x) => run_test(&x),
-<<<<<<< HEAD
         Opt::Gui(x) => {
             run_gui().unwrap();
         }
-=======
-        Opt::Gui(x) => run_gui().unwrap(),
->>>>>>> move: modified file structure for gui
     }
 }
