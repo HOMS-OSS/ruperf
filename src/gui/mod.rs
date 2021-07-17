@@ -79,7 +79,7 @@ enum Message {
     InputChanged(String),
     NewAppPressed,
     Resized(pane_grid::ResizeEvent),
-    CommandSelected(PerfCommand),
+    CommandSelected(PerfEvent),
     LaunchCommand,
 }
 /// Provide methods for Gui renderer
@@ -143,32 +143,32 @@ impl Application for Gui {
                         println!("new app pressed");
                     }
 
-                    Message::CommandSelected(PerfCommand::Stat) => {
-                        data_state.selected_command = PerfCommand::Stat;
+                    Message::CommandSelected(PerfEvent::Stat) => {
+                        data_state.selected_command = PerfEvent::Stat;
                         println!("stat selected")
                     }
-                    Message::CommandSelected(PerfCommand::Record) => {
-                        data_state.selected_command = PerfCommand::Record;
+                    Message::CommandSelected(PerfEvent::Record) => {
+                        data_state.selected_command = PerfEvent::Record;
                         println!("record selected")
                     }
-                    Message::CommandSelected(PerfCommand::Report) => {
-                        data_state.selected_command = PerfCommand::Report;
+                    Message::CommandSelected(PerfEvent::Report) => {
+                        data_state.selected_command = PerfEvent::Report;
                         println!("report selected")
                     }
-                    Message::CommandSelected(PerfCommand::Annotate) => {
-                        data_state.selected_command = PerfCommand::Annotate;
+                    Message::CommandSelected(PerfEvent::Annotate) => {
+                        data_state.selected_command = PerfEvent::Annotate;
                         println!("annotate selected")
                     }
-                    Message::CommandSelected(PerfCommand::Top) => {
-                        data_state.selected_command = PerfCommand::Top;
+                    Message::CommandSelected(PerfEvent::Top) => {
+                        data_state.selected_command = PerfEvent::Top;
                         println!("top selected")
                     }
-                    Message::CommandSelected(PerfCommand::Bench) => {
-                        data_state.selected_command = PerfCommand::Bench;
+                    Message::CommandSelected(PerfEvent::Bench) => {
+                        data_state.selected_command = PerfEvent::Bench;
                         println!("bench selected")
                     }
-                    Message::CommandSelected(PerfCommand::Test) => {
-                        data_state.selected_command = PerfCommand::Test;
+                    Message::CommandSelected(PerfEvent::Test) => {
+                        data_state.selected_command = PerfEvent::Test;
                         println!("test selected")
                     }
 
@@ -178,38 +178,38 @@ impl Application for Gui {
 
                     Message::LaunchCommand => {
                         match data_state.selected_command {
-                            PerfCommand::Stat => {
+                            PerfEvent::Stat => {
                                 //TODO: Add program here
                                 data_state.data = format!("Stat output:");
                             }
-                            PerfCommand::Record => {
+                            PerfEvent::Record => {
                                 //TODO: Add program here
                                 data_state.data = format!("Record output:");
                             }
-                            PerfCommand::Report => {
+                            PerfEvent::Report => {
                                 //TODO: Add program here
                                 data_state.data = format!("Report output:");
                             }
-                            PerfCommand::Annotate => {
+                            PerfEvent::Annotate => {
                                 //TODO: Add program here
                                 data_state.data = format!("Annotate output:");
                             }
-                            PerfCommand::Top => {
+                            PerfEvent::Top => {
                                 //TODO: Add program here
                                 data_state.data = format!("Top output:");
                             }
-                            PerfCommand::Bench => {
+                            PerfEvent::Bench => {
                                 //TODO: Add program here
                                 data_state.data = format!("Bench output:");
                             }
-                            PerfCommand::Test => {
+                            PerfEvent::Test => {
                                 data_state.data = format!("Test output:");
                                 //TODO: Add program here
                             }
                         }
 
                         // Switch data panel to main view,
-                        // and PerfCommand output
+                        // and PerfEvent output
                         data_state.context = Context::Main;
                     }
 
@@ -242,7 +242,7 @@ impl Application for Gui {
                     // Initialize list of elements
                     let list = PickList::new(
                         &mut content.pick_list,
-                        &PerfCommand::ALL[..],
+                        &PerfEvent::ALL[..],
                         Some(content.selected_command),
                         Message::CommandSelected,
                     );
@@ -362,7 +362,7 @@ impl Application for Gui {
 
 /// Perf Commands to be used
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum PerfCommand {
+pub enum PerfEvent {
     Stat,
     Record,
     Report,
@@ -372,40 +372,40 @@ pub enum PerfCommand {
     Test,
 }
 
-/// Holds an enumerated array of PerfCommands
-impl PerfCommand {
-    const ALL: [PerfCommand; 7] = [
-        PerfCommand::Annotate,
-        PerfCommand::Bench,
-        PerfCommand::Record,
-        PerfCommand::Report,
-        PerfCommand::Stat,
-        PerfCommand::Test,
-        PerfCommand::Top,
+/// Holds an enumerated array of PerfEvents
+impl PerfEvent {
+    const ALL: [PerfEvent; 7] = [
+        PerfEvent::Annotate,
+        PerfEvent::Bench,
+        PerfEvent::Record,
+        PerfEvent::Report,
+        PerfEvent::Stat,
+        PerfEvent::Test,
+        PerfEvent::Top,
     ];
 }
 
-/// Default PerfCommand
-impl Default for PerfCommand {
-    fn default() -> PerfCommand {
-        PerfCommand::Test
+/// Default PerfEvent
+impl Default for PerfEvent {
+    fn default() -> PerfEvent {
+        PerfEvent::Test
     }
 }
 
-/// Provide PerfCommands as String data types
-impl std::fmt::Display for PerfCommand {
+/// Provide PerfEvents as String data types
+impl std::fmt::Display for PerfEvent {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
             "{}",
             match self {
-                PerfCommand::Annotate => "Annotate",
-                PerfCommand::Bench => "Bench",
-                PerfCommand::Record => "Record",
-                PerfCommand::Report => "Report",
-                PerfCommand::Stat => "Stat",
-                PerfCommand::Test => "Test",
-                PerfCommand::Top => "Top",
+                PerfEvent::Annotate => "Annotate",
+                PerfEvent::Bench => "Bench",
+                PerfEvent::Record => "Record",
+                PerfEvent::Report => "Report",
+                PerfEvent::Stat => "Stat",
+                PerfEvent::Test => "Test",
+                PerfEvent::Top => "Top",
             }
         )
     }
@@ -468,9 +468,9 @@ enum PaneType {
 struct Content {
     input_value: String,
     input: text_input::State,
-    selected_command: PerfCommand,
+    selected_command: PerfEvent,
     scroll: scrollable::State,
-    pick_list: pick_list::State<PerfCommand>,
+    pick_list: pick_list::State<PerfEvent>,
     id: usize,
     data: String,
     application: String,
@@ -486,7 +486,7 @@ impl Content {
         Content {
             input_value: String::new(),
             input: text_input::State::new(),
-            selected_command: PerfCommand::default(),
+            selected_command: PerfEvent::default(),
             scroll: scrollable::State::new(),
             pick_list: pick_list::State::default(),
             pane_type,
