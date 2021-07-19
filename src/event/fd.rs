@@ -51,14 +51,14 @@ impl FileDesc {
     /// the counter for the event associated
     /// with `fd` overflows. When the counter
     /// reaches 0, the event is disabled.
-    pub fn refresh(&self, count: u64) -> Result<(), SysErr> {
+    pub fn refresh(&self, count: usize) -> Result<(), SysErr> {
         // passing an argument of 0
         // along with `sys::REFRESH`
         // introduces undefined behavior.
         if count == 0 {
             return Err(SysErr::IoArg);
         }
-        let arg: *const u64 = &count;
+        let arg: *const usize = &count;
         if ioctl_wrap(self.0, sys::REFRESH, arg) == -1 {
             return Err(SysErr::IoFail);
         }
@@ -80,8 +80,8 @@ impl FileDesc {
     /// NOTE: The `__bindgen_anon_1` and `sample_type` fields
     /// must be initialized for the `perf_event_attr`
     /// struct that is passed to `FileDesc::new()`.
-    pub fn overflow_period(&self, interval: u64) -> Result<(), SysErr> {
-        let arg: *const u64 = &interval;
+    pub fn overflow_period(&self, interval: usize) -> Result<(), SysErr> {
+        let arg: *const usize = &interval;
         if ioctl_wrap(self.0, sys::PERIOD, arg) == -1 {
             return Err(SysErr::IoFail);
         }
@@ -102,11 +102,11 @@ impl FileDesc {
 
     /// Return event ID value
     /// associated with `fd`.
-    pub fn id(&self) -> Result<u64, SysErr> {
+    pub fn id(&self) -> Result<usize, SysErr> {
         // Write event id value
         // to location specified by arg.
-        let mut ret: u64 = 0;
-        let arg: *mut u64 = &mut ret;
+        let mut ret: usize = 0;
+        let arg: *mut usize = &mut ret;
         if ioctl_wrap(self.0, sys::ID, arg) == -1 {
             return Err(SysErr::IoFail);
         }
