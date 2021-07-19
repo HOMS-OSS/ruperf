@@ -23,5 +23,7 @@ pub fn test_check_for_libpfm4() -> Test {
         name: "has_libpfm4".to_string(),
         description: "Checks for presence of libpfm4".to_string(),
         call: check_for_libpfm4,
+        subtests: Vec::new(),
+        is_subtest: false,
     }
 }
