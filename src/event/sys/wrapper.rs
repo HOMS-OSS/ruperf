@@ -11,8 +11,3 @@ pub fn read_wrap(fd: i32) -> isize {
     }
     count
 }
-
-// A generally generic system call.
-pub fn ioctl_wrap<T>(fd: i32, command: u32, arg: T) -> i32 {
-    unsafe { libc::ioctl(fd, command as u64, arg) }
-}

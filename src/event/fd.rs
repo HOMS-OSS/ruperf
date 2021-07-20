@@ -3,7 +3,7 @@
 //! and `ioctl()` system calls;
 //! and their raw file descriptors.
 use crate::event::sys::sys;
-use crate::event::sys::wrapper::{ioctl_wrap, read_wrap};
+use crate::event::sys::wrapper::read_wrap;
 use crate::event::utils::*;
 
 pub type perf_event_attr = sys::perf_event_attr;
@@ -30,8 +30,10 @@ impl FileDesc {
     /// Enable the performance counter
     /// associated with `fd`.
     pub fn enable(&self) -> Result<(), SysErr> {
-        if ioctl_wrap(self.0, sys::ENABLE, 0) == -1 {
-            return Err(SysErr::IoFail);
+        unsafe {
+            if libc::ioctl(self.0, sys::ENABLE as u64, 0) == -1 {
+                return Err(SysErr::IoFail);
+            }
         }
         Ok(())
     }
@@ -39,8 +41,10 @@ impl FileDesc {
     /// Disable the performance counter
     /// associated with `fd`.
     pub fn disable(&self) -> Result<(), SysErr> {
-        if ioctl_wrap(self.0, sys::DISABLE, 0) == -1 {
-            return Err(SysErr::IoFail);
+        unsafe {
+            if libc::ioctl(self.0, sys::DISABLE as u64, 0) == -1 {
+                return Err(SysErr::IoFail);
+            }
         }
         Ok(())
     }
@@ -59,16 +63,20 @@ impl FileDesc {
             return Err(SysErr::IoArg);
         }
         let arg: *const usize = &count;
-        if ioctl_wrap(self.0, sys::REFRESH, arg) == -1 {
-            return Err(SysErr::IoFail);
+        unsafe {
+            if libc::ioctl(self.0, sys::REFRESH as u64, arg) == -1 {
+                return Err(SysErr::IoFail);
+            }
         }
         Ok(())
     }
 
     /// Reset the performance counter to 0.
     pub fn reset(&self) -> Result<(), SysErr> {
-        if ioctl_wrap(self.0, sys::RESET, 0) == -1 {
-            return Err(SysErr::IoFail);
+        unsafe {
+            if libc::ioctl(self.0, sys::RESET as u64, 0) == -1 {
+                return Err(SysErr::IoFail);
+            }
         }
         Ok(())
     }
@@ -82,8 +90,10 @@ impl FileDesc {
     /// struct that is passed to `FileDesc::new()`.
     pub fn overflow_period(&self, interval: usize) -> Result<(), SysErr> {
         let arg: *const usize = &interval;
-        if ioctl_wrap(self.0, sys::PERIOD, arg) == -1 {
-            return Err(SysErr::IoFail);
+        unsafe {
+            if libc::ioctl(self.0, sys::PERIOD as u64, arg) == -1 {
+                return Err(SysErr::IoFail);
+            }
         }
         Ok(())
     }
@@ -107,8 +117,10 @@ impl FileDesc {
         // to location specified by arg.
         let mut ret: usize = 0;
         let arg: *mut usize = &mut ret;
-        if ioctl_wrap(self.0, sys::ID, arg) == -1 {
-            return Err(SysErr::IoFail);
+        unsafe {
+            if libc::ioctl(self.0, sys::ID as u64, arg) == -1 {
+                return Err(SysErr::IoFail);
+            }
         }
         if ret == 0 {
             return Err(SysErr::IoId);

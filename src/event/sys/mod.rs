@@ -19,7 +19,9 @@ fn read_test() {
     event.set_exclude_hv(1);
     let fd: isize;
     fd = sys::perf_event_open(&event, 0, -1, -1, 0);
-    wrapper::ioctl_wrap(fd as i32, sys::ENABLE, 0);
+    unsafe {
+        libc::ioctl(fd as i32, sys::ENABLE as u64, 0);
+    }
     let cnt = wrapper::read_wrap(fd as i32);
     assert_ne!(cnt, 0);
     assert!(cnt > 0, "cnt = {}", cnt);
