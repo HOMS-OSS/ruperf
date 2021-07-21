@@ -1,2 +1,3 @@
-pub mod sys;
+#![allow(dead_code)]
+pub mod linux;
 pub mod wrapper;

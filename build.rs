@@ -12,9 +12,8 @@ fn main() {
     println!("cargo:rerun-if-changed=wrappers/perf_event.h");
 
     if !Path::new("./src/bindings/").exists() {
-        match create_dir("./src/bindings") {
-            Err(err) => eprintln!("{:?}", err),
-            Ok(_) => (),
+        if let Err(err) = create_dir("./src/bindings") {
+            eprintln!("{:?}", err)
         }
     }
     let perf_bindings = bindgen::Builder::default()

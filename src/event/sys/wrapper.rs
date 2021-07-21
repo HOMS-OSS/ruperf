@@ -1,5 +1,5 @@
 extern crate libc;
-use libc::{c_void, read};
+use libc::read;
 
 pub fn read_wrap(fd: i32) -> isize {
     let mut count: isize = 0;

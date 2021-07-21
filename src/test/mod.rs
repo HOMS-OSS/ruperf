@@ -48,21 +48,18 @@ pub struct TestOptions {
 
 /// Gathers all tests and returns a Vec with them all
 pub fn make_tests() -> Vec<Test> {
-    let mut tests: Vec<Test> = Vec::new();
-
-    // from basic.rs
-    tests.push(basic::test_always_passes());
-    tests.push(basic::test_always_fails());
-    tests.push(basic::test_passes_after_1sec());
-
-    // from pfm.rs
-    tests.push(pfm::test_check_for_libpfm4());
+    let tests: Vec<Test> = vec![
+        basic::test_always_passes(),
+        basic::test_always_fails(),
+        basic::test_passes_after_1sec(),
+        pfm::test_check_for_libpfm4(),
+    ];
 
     tests
 }
 
 /// Runs all tests and outputs results to stdout
-pub fn run_all_tests(tests: &Vec<Test>) {
+pub fn run_all_tests(tests: &[Test]) {
     for (index, test) in tests.iter().enumerate() {
         print!("{:>2}: {:<60} : ", index, test.description);
         stdout().flush().unwrap();
@@ -78,7 +75,7 @@ pub fn run_all_tests(tests: &Vec<Test>) {
 }
 
 /// Lists all tests and outputs results to stdout
-pub fn list_all_tests(tests: &Vec<Test>) {
+pub fn list_all_tests(tests: &[Test]) {
     for (index, test) in tests.iter().enumerate() {
         println!("{:>2}: {:<60}", index, test.description);
     }

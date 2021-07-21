@@ -26,7 +26,7 @@ pub fn event_open(event: &StatEvent) -> Result<perf_event_attr, EventErr> {
             event_open.set_exclude_hv(1);
             Ok(*event_open)
         }
-        _ => return Err(EventErr::InvalidEvent),
+        _ => Err(EventErr::InvalidEvent),
     }
 }
 impl Event {
@@ -34,10 +34,7 @@ impl Event {
     pub fn new(event: StatEvent) -> Self {
         let e: &mut perf_event_attr = &mut event_open(&event).unwrap();
         let fd = fd::FileDesc::new(e, 0, -1, -1);
-        Self {
-            fd: fd,
-            event: event,
-        }
+        Self { fd, event }
     }
 
     /// Start the counter on an event

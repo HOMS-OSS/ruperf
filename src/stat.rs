@@ -1,5 +1,5 @@
 //! Stat driver
-use crate::event::event::*;
+use crate::event::open::*;
 use crate::utils::ParseError;
 use std::str::FromStr;
 extern crate structopt;
