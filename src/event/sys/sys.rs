@@ -4,7 +4,7 @@
 //! here vary by architecture, and that these constants
 //! are produced by `bindgen`. These macros are used to
 //! define the constants for use in perf-related ioctls.
-include!("../../bindings/perf_event.rs");
+use crate::bindings::*;
 use std::mem::size_of;
 
 /// '$' is the ioctl number for `linux/perf_event`.

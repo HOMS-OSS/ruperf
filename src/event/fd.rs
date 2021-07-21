@@ -5,13 +5,13 @@
 //! A wrapper is not provided for the `perf_event_open()` system call.
 //! Necessitating the use of `unsafe { syscall(..) }`.
 //! See linux man-page NOTES for details.
-include!("../bindings/perf_event.rs");
-
 extern crate libc;
 
+use crate::bindings::*;
 use crate::event::sys::sys;
 use crate::event::sys::wrapper::*;
 use crate::event::utils::*;
+
 use libc::{c_int, c_ulong, ioctl, pid_t, read, syscall, SYS_perf_event_open};
 
 /// Stores a raw file descriptor

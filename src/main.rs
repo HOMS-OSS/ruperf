@@ -12,6 +12,7 @@ mod gui;
 mod stat;
 mod test;
 mod utils;
+mod bindings;
 
 use event::*;
 use gui::*;

@@ -1,3 +1,4 @@
+use crate::bindings::*;
 use crate::event::fd;
 use crate::event::utils::*;
 use crate::stat::StatEvent;
@@ -11,13 +12,13 @@ pub struct Event {
 
 /// Initialize perf attributes. Currently set up to match on intended event.
 /// Returns the initialized perf_event_attr data structure or an error.
-pub fn event_open(event: &StatEvent) -> Result<fd::perf_event_attr, EventErr> {
+pub fn event_open(event: &StatEvent) -> Result<perf_event_attr, EventErr> {
     match &event {
         StatEvent::Cycles => {
-            let event_open = &mut fd::perf_event_attr {
-                type_: fd::perf_type_id_PERF_TYPE_HARDWARE,
-                size: std::mem::size_of::<fd::perf_event_attr>() as u32,
-                config: fd::perf_hw_id_PERF_COUNT_HW_CPU_CYCLES as u64,
+            let event_open = &mut perf_event_attr {
+                type_: perf_type_id_PERF_TYPE_HARDWARE,
+                size: std::mem::size_of::<perf_event_attr>() as u32,
+                config: perf_hw_id_PERF_COUNT_HW_CPU_CYCLES as u64,
                 ..Default::default()
             };
             event_open.set_disabled(1);
@@ -31,7 +32,7 @@ pub fn event_open(event: &StatEvent) -> Result<fd::perf_event_attr, EventErr> {
 impl Event {
     /// Construct a new event
     pub fn new(event: StatEvent) -> Self {
-        let e: &mut fd::perf_event_attr = &mut event_open(&event).unwrap();
+        let e: &mut perf_event_attr = &mut event_open(&event).unwrap();
         let fd = fd::FileDesc::new(e, 0, -1, -1);
         Self {
             fd: fd,
