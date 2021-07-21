@@ -2,8 +2,9 @@
 //! `perf_event_open()` see /src/bindings/perf_event.rs.
 
 //! Disable cargo build warnings created due to using bindgen
-pub mod event;
+#![allow(dead_code)]
 mod fd;
+pub mod open;
 mod sys;
 mod utils;
 

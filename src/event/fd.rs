@@ -8,11 +8,11 @@
 extern crate libc;
 
 use crate::bindings::*;
-use crate::event::sys::sys;
+use crate::event::sys::linux::*;
 use crate::event::sys::wrapper::*;
 use crate::event::utils::*;
 
-use libc::{c_int, c_ulong, ioctl, pid_t, read, syscall, SYS_perf_event_open};
+use libc::{c_int, c_ulong, pid_t, syscall, SYS_perf_event_open};
 
 /// Stores a raw file descriptor
 /// for use in various `perf_event_open()`
@@ -37,7 +37,7 @@ impl FileDesc {
     /// associated with `fd`.
     pub fn enable(&self) -> Result<(), SysErr> {
         let ret: i32;
-        ret = unsafe { libc::ioctl(self.0, sys::ENABLE as u64, 0) };
+        ret = unsafe { libc::ioctl(self.0, ENABLE as u64, 0) };
         if ret == -1 {
             return Err(SysErr::IoFail);
         }
@@ -48,7 +48,7 @@ impl FileDesc {
     /// associated with `fd`.
     pub fn disable(&self) -> Result<(), SysErr> {
         let ret: i32;
-        ret = unsafe { libc::ioctl(self.0, sys::DISABLE as u64, 0) };
+        ret = unsafe { libc::ioctl(self.0, DISABLE as u64, 0) };
         if ret == -1 {
             return Err(SysErr::IoFail);
         }
@@ -69,7 +69,7 @@ impl FileDesc {
             return Err(SysErr::IoArg);
         }
         let arg: *const u64 = &count;
-        ret = unsafe { libc::ioctl(self.0, sys::REFRESH as u64, arg) };
+        ret = unsafe { libc::ioctl(self.0, REFRESH as u64, arg) };
         if ret == -1 {
             return Err(SysErr::IoFail);
         }
@@ -79,7 +79,7 @@ impl FileDesc {
     /// Reset the performance counter to 0.
     pub fn reset(&self) -> Result<(), SysErr> {
         let ret: i32;
-        ret = unsafe { libc::ioctl(self.0, sys::RESET as u64, 0) };
+        ret = unsafe { libc::ioctl(self.0, RESET as u64, 0) };
         if ret == -1 {
             return Err(SysErr::IoFail);
         }
@@ -96,7 +96,7 @@ impl FileDesc {
     pub fn overflow_period(&self, interval: u64) -> Result<(), SysErr> {
         let ret: i32;
         let arg: *const u64 = &interval;
-        ret = unsafe { libc::ioctl(self.0, sys::PERIOD as u64, arg) };
+        ret = unsafe { libc::ioctl(self.0, PERIOD as u64, arg) };
         if ret == -1 {
             return Err(SysErr::IoFail);
         }
@@ -122,7 +122,7 @@ impl FileDesc {
         let mut ret: u64 = 0;
         ret = unsafe {
             let result: *mut u64 = &mut ret;
-            if libc::ioctl(self.0, sys::ID as u64, result) == -1 {
+            if libc::ioctl(self.0, ID as u64, result) == -1 {
                 return Err(SysErr::IoFail);
             }
             *result
@@ -201,6 +201,7 @@ fn perf_event_open_test() {
 
 #[test]
 fn read_test() {
+    use libc::{ioctl, read};
     let event = &mut perf_event_attr {
         type_: perf_type_id_PERF_TYPE_HARDWARE,
         size: std::mem::size_of::<perf_event_attr>() as u32,
@@ -219,7 +220,7 @@ fn read_test() {
     //package count into buf so it is easy to read
     let buf: *mut libc::c_void = &mut cnt as *mut _ as *mut libc::c_void;
     unsafe {
-        ioctl(fd as i32, sys::ENABLE as u64, 0);
+        ioctl(fd as i32, ENABLE as u64, 0);
         read(fd as i32, buf, std::mem::size_of_val(&cnt));
     }
     assert_ne!(cnt, 0);
