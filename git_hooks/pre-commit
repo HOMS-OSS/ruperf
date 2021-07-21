@@ -27,8 +27,7 @@ if [ -n "$fmt_out" ]; then
 fi
 clippy_out="$((exec cargo clippy) 2>&1 > /dev/null)"
 clippy_test="$(echo $clippy_out | wc -l)"
-echo $clippy_test
-if [ $clippy_test < 3 ]; then
+if (( $clippy_test > 3 )); then
     clippy_out="Clippy Errors:\n$clippy_out\n"
 else
     clippy_out=
