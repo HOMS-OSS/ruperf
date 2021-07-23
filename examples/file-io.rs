@@ -15,9 +15,12 @@ use structopt::StructOpt;
 #[derive(Debug, StructOpt)]
 #[structopt(name = "File-io", about = "A test program to run ruperf against")]
 struct Opt {
-    /// Number of write to a file
+    /// Number of writes to a file
     #[structopt(short, long, default_value = "100000")]
     count: usize,
+    /// File name prepended with PID
+    #[structopt(short, long, default_value = "ruperf-fileio-test.txt")]
+    file_name: String,
 }
 
 static WRITE_STRING: &str = "The quick brown fox jumped over the lazy dog\n";
@@ -27,7 +30,7 @@ fn main() {
     let writes = opt.count;
     let tmp_dir = env::temp_dir();
     let mut path = PathBuf::from(tmp_dir);
-    path.push(format!("ruperf-fileio-test_{}", process::id()));
+    path.push(format!("{}_{}", process::id(), opt.file_name));
     path.set_extension("txt");
 
     if path.exists() {
@@ -45,7 +48,10 @@ fn main() {
 
     for _ in 0..writes {
         match file.write_all(WRITE_STRING.as_bytes()) {
-            Err(e) => panic!("Failed to write to file because {}", e),
+            Err(e) => {
+                fs::remove_file(&path).unwrap();
+                panic!("Failed to write to file because {}", e);
+            },
             Ok(_) => (),
         }
     }
@@ -55,14 +61,20 @@ fn main() {
 
     // Open same file and read from it.
     let mut file = match fs::File::open(&path) {
-        Err(e) => panic!("Could not open the file because {}", e),
+        Err(e) => {
+            fs::remove_file(&path).unwrap();
+            panic!("Could not open the file because {}", e);
+        },
         Ok(file) => file,
     };
 
     let mut contents: Vec::<u8> = Vec::new();
     let size: usize;
     match file.read_to_end(&mut contents) {
-        Err(e) => panic!("Could not read the entire file because {}", e),
+        Err(e) => {
+            fs::remove_file(&path).unwrap();
+            panic!("Could not read the entire file because {}", e);
+        },
         Ok(sz) => size = sz,
     }
 
