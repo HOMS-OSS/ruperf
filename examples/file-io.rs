@@ -7,6 +7,7 @@
 //!     ruperf stat ./file-io
 use std::fs;
 use std::io::prelude::*;
+use std::process;
 use std::path::PathBuf;
 use std::env;
 use structopt::StructOpt;
@@ -26,7 +27,7 @@ fn main() {
     let writes = opt.count;
     let tmp_dir = env::temp_dir();
     let mut path = PathBuf::from(tmp_dir);
-    path.push("ruperf-fileio-test");
+    path.push(format!("ruperf-fileio-test_{}", process::id()));
     path.set_extension("txt");
 
     if path.exists() {
@@ -66,4 +67,9 @@ fn main() {
     }
 
     assert!(size == contents.len());
+
+    match fs::remove_file(&path) {
+        Err(e) => panic!("Could not remove file {} because {}", path.display(), e),
+        Ok(_) => ()
+    }
 }
