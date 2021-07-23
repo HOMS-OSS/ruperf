@@ -61,14 +61,14 @@ impl FileDesc {
     /// the counter for the event associated
     /// with `fd` overflows. When the counter
     /// reaches 0, the event is disabled.
-    pub fn refresh(&self, count: u64) -> Result<(), SysErr> {
+    pub fn refresh(&self, count: usize) -> Result<(), SysErr> {
         let ret: i32;
         // passing an argument of 0
         // with this ioctl is undefined behavior.
         if count == 0 {
             return Err(SysErr::IoArg);
         }
-        let arg: *const u64 = &count;
+        let arg: *const usize = &count;
         ret = unsafe { libc::ioctl(self.0, REFRESH as u64, arg) };
         if ret == -1 {
             return Err(SysErr::IoFail);
@@ -87,15 +87,12 @@ impl FileDesc {
     }
 
     /// Set the overflow period.
-    /// The interval argument to the
-    /// `ioctl()` must be a pointer to
-    /// an unsigned 64-bit integer.
     /// NOTE: The `__bindgen_anon_1` and `sample_type` fields
     /// must be initialized for the `perf_event_attr`
     /// struct that is passed to `FileDesc::new()`.
-    pub fn overflow_period(&self, interval: u64) -> Result<(), SysErr> {
+    pub fn overflow_period(&self, interval: usize) -> Result<(), SysErr> {
         let ret: i32;
-        let arg: *const u64 = &interval;
+        let arg: *const usize = &interval;
         ret = unsafe { libc::ioctl(self.0, PERIOD as u64, arg) };
         if ret == -1 {
             return Err(SysErr::IoFail);
@@ -117,11 +114,11 @@ impl FileDesc {
 
     /// Return event ID value
     /// associated with `fd`.
-    pub fn id(&self) -> Result<u64, SysErr> {
+    pub fn id(&self) -> Result<usize, SysErr> {
         // forgive me father.
-        let mut ret: u64 = 0;
+        let mut ret: usize = 0;
         ret = unsafe {
-            let result: *mut u64 = &mut ret;
+            let result: *mut usize = &mut ret;
             if libc::ioctl(self.0, ID as u64, result) == -1 {
                 return Err(SysErr::IoFail);
             }
