@@ -1,5 +1,6 @@
 use crate::test::basic;
 use crate::test::pfm;
+use crate::test::RunSettings;
 use crate::test::Test;
 use crate::test::TestResult;
 use std::io::stdout;
@@ -21,11 +22,11 @@ pub fn make_tests() -> Vec<Test> {
 }
 
 /// Runs all tests and outputs results to stdout
-pub fn run_all_tests(tests: &Vec<Test>, to_skip: &Vec<String>) {
+pub fn run_all_tests(tests: &Vec<Test>, to_skip: &Vec<String>, settings: &RunSettings) {
     let mut should_skip;
     for (index, test) in tests.iter().enumerate() {
         should_skip = to_skip.iter().any(|i| *i == index.to_string());
-        run_single_test(&test, index, should_skip, "".to_string());
+        run_single_test(&test, index, should_skip, "".to_string(), &settings);
     }
 }
 
@@ -35,6 +36,7 @@ pub fn run_single_test(
     index: usize,
     should_skip: bool,
     parent_index_string: String,
+    settings: &RunSettings,
 ) -> TestResult {
     print!(
         "{:>2}{}: {:<60} : ",
@@ -50,29 +52,25 @@ pub fn run_single_test(
             let mut overall_result_type: TestResult = TestResult::Passed;
             for (i, subtest) in test.subtests.iter().enumerate() {
                 // TODO: change false to a given subtest skip
-                let result = run_single_test(subtest, i, false, index.to_string() + ".");
+                let result = run_single_test(subtest, i, false, index.to_string() + ".", settings);
                 match result {
-                    TestResult::Failed => overall_result_type = TestResult::Failed,
+                    TestResult::Failed(s) => {
+                        overall_result_type = TestResult::Failed(String::new())
+                    }
                     _ => {}
                 }
             }
             result_type = overall_result_type;
             return result_type;
         } else {
-            let result = (test.call)();
-            if result {
-                result_type = TestResult::Passed;
-            } else {
-                result_type = TestResult::Failed;
-            }
+            result_type = (test.call)(&settings);
         }
     }
-    let result_text: String = match result_type {
-        TestResult::Skipped => "\x1b[0;33mSkip\x1b[0m",
-        TestResult::Passed => "Ok",
-        TestResult::Failed => "\x1b[0;31mFAILED!\x1b[0m",
-    }
-    .to_string();
+    let result_text: String = match &result_type {
+        TestResult::Skipped => "\x1b[0;33mSkip\x1b[0m".to_string(),
+        TestResult::Passed => "Ok".to_string(),
+        TestResult::Failed(s) => format!("\x1b[0;31mFAILED!\x1b[0m {}", s),
+    };
     println!("{}", result_text);
     return result_type;
 }

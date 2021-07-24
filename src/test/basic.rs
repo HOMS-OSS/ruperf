@@ -1,16 +1,18 @@
+use crate::test::RunSettings;
 use crate::test::Test;
+use crate::test::TestResult;
 use std::{thread, time};
 
 // Dummy function for parent test with subtests
-fn dummy() -> bool {
-    true
+fn dummy(settings: &RunSettings) -> TestResult {
+    TestResult::Passed
 }
 
 // TODO: Remove this (it's just for testing the tests)
 // TEST: This test always passes
 pub fn test_always_passes() -> Test {
-    fn always_passes() -> bool {
-        true
+    fn always_passes(settings: &RunSettings) -> TestResult {
+        TestResult::Passed
     }
 
     Test {
@@ -25,8 +27,8 @@ pub fn test_always_passes() -> Test {
 // TODO: Remove this (it's just for testing the tests)
 // TEST: This test always fails
 pub fn test_always_fails() -> Test {
-    fn always_fails() -> bool {
-        false
+    fn always_fails(settings: &RunSettings) -> TestResult {
+        TestResult::Passed
     }
 
     Test {
@@ -41,10 +43,10 @@ pub fn test_always_fails() -> Test {
 // TODO: Remove this (it's just for testing the tests)
 // TEST: This test passes after 1 second
 pub fn test_passes_after_1sec() -> Test {
-    fn passes_after_1sec() -> bool {
+    fn passes_after_1sec(settings: &RunSettings) -> TestResult {
         let one_second = time::Duration::from_secs(1);
         thread::sleep(one_second);
-        true
+        TestResult::Passed
     }
 
     Test {
@@ -60,8 +62,8 @@ pub fn test_passes_after_1sec() -> Test {
 // TEST: This test has a bunch of pointless subtests
 pub fn test_with_pointless_subtests() -> Test {
     fn subtest_pointless_1() -> Test {
-        fn pointless_1() -> bool {
-            true
+        fn pointless_1(settings: &RunSettings) -> TestResult {
+            TestResult::Passed
         }
         Test {
             name: "pointless1".to_string(),
@@ -72,8 +74,14 @@ pub fn test_with_pointless_subtests() -> Test {
         }
     }
     fn subtest_pointless_2() -> Test {
-        fn pointless_2() -> bool {
-            false
+        fn pointless_2(settings: &RunSettings) -> TestResult {
+            if settings.verbose {
+                return TestResult::Failed(
+                    "\nINFO:\tthis test is destined to fail. nothing can be done to get it to pass."
+                    .to_string()
+                );
+            }
+            TestResult::Failed("(1)".to_string())
         }
         Test {
             name: "pointless2".to_string(),
@@ -84,8 +92,8 @@ pub fn test_with_pointless_subtests() -> Test {
         }
     }
     fn subtest_pointless_3() -> Test {
-        fn pointless_3() -> bool {
-            true
+        fn pointless_3(settings: &RunSettings) -> TestResult {
+            TestResult::Passed
         }
         Test {
             name: "pointless3".to_string(),
