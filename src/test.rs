@@ -59,7 +59,7 @@ pub fn run_test(options: &TestOptions) {
     let mut to_skip: Vec<String> = Vec::new();
     let tests = testutils::make_tests();
     if !options.to_skip.is_empty() {
-        for s in options.to_skip.split(",") {
+        for s in options.to_skip.split(',') {
             to_skip.push(s.to_string());
         }
     }
@@ -72,7 +72,7 @@ pub fn run_test(options: &TestOptions) {
     };
     if !options.to_run.is_empty() {
         to_skip = (0..tests.len()).map(|x| x.to_string()).collect();
-        for s in options.to_run.split(",") {
+        for s in options.to_run.split(',') {
             to_skip.retain(|x| *x != s);
         }
     }

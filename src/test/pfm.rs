@@ -18,7 +18,14 @@ pub fn test_check_for_libpfm4() -> Test {
                 return TestResult::Passed;
             }
         }
-        return TestResult::Failed("Failed".to_string()); //TODO fix this before pushing
+        if settings.verbose {
+            return TestResult::Failed(
+                "\nINFO: ldconfig didn't contain the string \"libpfm4\", \
+             signalling libpfm4 was not found on the machine."
+                    .to_string(),
+            );
+        }
+        TestResult::Failed(String::new())
     }
 
     Test {
