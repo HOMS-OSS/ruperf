@@ -4,14 +4,14 @@ use crate::test::TestResult;
 use std::{thread, time};
 
 // Dummy function for parent test with subtests
-fn dummy(settings: &RunSettings) -> TestResult {
+fn dummy(_settings: &RunSettings) -> TestResult {
     TestResult::Passed
 }
 
 // TODO: Remove this (it's just for testing the tests)
 // TEST: This test always passes
 pub fn test_always_passes() -> Test {
-    fn always_passes(settings: &RunSettings) -> TestResult {
+    fn always_passes(_settings: &RunSettings) -> TestResult {
         TestResult::Passed
     }
 
@@ -27,7 +27,7 @@ pub fn test_always_passes() -> Test {
 // TODO: Remove this (it's just for testing the tests)
 // TEST: This test always fails
 pub fn test_always_fails() -> Test {
-    fn always_fails(settings: &RunSettings) -> TestResult {
+    fn always_fails(_settings: &RunSettings) -> TestResult {
         TestResult::Passed
     }
 
@@ -43,7 +43,7 @@ pub fn test_always_fails() -> Test {
 // TODO: Remove this (it's just for testing the tests)
 // TEST: This test passes after 1 second
 pub fn test_passes_after_1sec() -> Test {
-    fn passes_after_1sec(settings: &RunSettings) -> TestResult {
+    fn passes_after_1sec(_settings: &RunSettings) -> TestResult {
         let one_second = time::Duration::from_secs(1);
         thread::sleep(one_second);
         TestResult::Passed
@@ -62,7 +62,7 @@ pub fn test_passes_after_1sec() -> Test {
 // TEST: This test has a bunch of pointless subtests
 pub fn test_with_pointless_subtests() -> Test {
     fn subtest_pointless_1() -> Test {
-        fn pointless_1(settings: &RunSettings) -> TestResult {
+        fn pointless_1(_settings: &RunSettings) -> TestResult {
             TestResult::Passed
         }
         Test {
@@ -92,7 +92,7 @@ pub fn test_with_pointless_subtests() -> Test {
         }
     }
     fn subtest_pointless_3() -> Test {
-        fn pointless_3(settings: &RunSettings) -> TestResult {
+        fn pointless_3(_settings: &RunSettings) -> TestResult {
             TestResult::Passed
         }
         Test {
