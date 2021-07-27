@@ -25,7 +25,19 @@ pub fn event_open(event: &StatEvent) -> Result<perf_event_attr, EventErr> {
             event_open.set_exclude_kernel(1);
             event_open.set_exclude_hv(1);
             Ok(*event_open)
-        }
+        },
+		StatEvent::Instructions => {
+			let event_open = &mut perf_event_attr {
+				type_: perf_type_id_PERF_TYPE_HARDWARE,
+				size: std::mem::size_of::<perf_event_attr>() as u32,
+				config: perf_hw_id_PERF_COUNT_HW_INSTRUCTIONS as u64,
+				..Default::default()
+			};
+			event_open.set_disabled(1);
+			event_open.set_exclude_kernel(1);
+			event_open.set_exclude_hv(1);
+			Ok(*event_open)
+		},
         _ => Err(EventErr::InvalidEvent),
     }
 }
@@ -57,8 +69,19 @@ impl Event {
 
 #[cfg(test)]
 #[test]
-fn event_open_test() {
+fn cycles_open_test() {
     let event = Event::new(StatEvent::Cycles);
+    let cnt: isize = event.start_counter().unwrap();
+    assert_ne!(cnt, 0);
+    assert_ne!(cnt, -1);
+    let cnt_2 = event.stop_counter().unwrap();
+    assert_ne!(cnt, cnt_2);
+    assert!(cnt < cnt_2);
+}
+
+#[test]
+fn inst_open_test() {
+    let event = Event::new(StatEvent::Instructions);
     let cnt: isize = event.start_counter().unwrap();
     assert_ne!(cnt, 0);
     assert_ne!(cnt, -1);
