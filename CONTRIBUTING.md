@@ -44,4 +44,4 @@ References
 ---
 [Using git hooks][1]
 
-[4]: https://git-scm.com/docs/githooks
+[1]: https://git-scm.com/docs/githooks
