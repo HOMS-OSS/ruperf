@@ -1,8 +1,9 @@
 //! Stat driver
 use crate::event::open::*;
 use crate::utils::ParseError;
-use std::str::FromStr;
+use std::str::{self, FromStr};
 extern crate structopt;
+use std::process::Command;
 use structopt::StructOpt;
 
 /// Supported events
@@ -38,30 +39,35 @@ pub struct StatOptions {
 
 /// Run perf stat on the given command and event combinations. Currently starts and stops a cycles timer in serial for each event specified.
 pub fn run_stat(options: &StatOptions) {
-    println!("{:?}:\n {:?}", options.command, options.event);
     //demonstrating from cli. In future rather than starting and stopping counter in series for each event, events will have the ability to be added in groups that will coordinate their timing.
+
     for event in &options.event {
         let e = Event::new(*event);
         let cnt: isize = e.start_counter().unwrap();
-        let mut sum = 0;
-        let additions = 1000000;
-        for i in 0..additions {
-            if i % 2 == 0 {
-                sum += 1;
-            } else {
-                sum -= 1;
-            }
-        }
+
+        //create another process from command
+        let output = Command::new(options.command.get(0).unwrap())
+            .output()
+            .expect("failed to execute process");
+
         let final_cnt = e.stop_counter().unwrap();
         let total_cnt = final_cnt - cnt;
-        println!("Counter value for {:?}: {} at start\n", event, cnt);
+
+        // Create buffer variable
+        let buf = &output.stdout;
+
+        // Convert &vec[u8] into string
+        let s = match str::from_utf8(buf) {
+            Ok(v) => v,
+            Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
+        };
+
+        //output command's output
         println!(
-            "Counter value for {:?}: {} at stop after counting to {}\nNumber of cycles: {}\n",
-            event, final_cnt, sum, total_cnt
+            "{}\nPerformance counter stats for '{}'\n",
+            s.to_string(),
+            options.command.get(0).unwrap()
         );
-        println!(
-            "Performed {:?} additions per cycle",
-            additions as f64 / total_cnt as f64
-        );
+        println!(" Number of cycles: {}\n", total_cnt);
     }
 }
