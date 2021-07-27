@@ -51,9 +51,9 @@ pub fn event_open(event: &StatEvent) -> Result<perf_event_attr, EventErr> {
 
 impl Event {
     /// Construct a new event
-    pub fn new(event: StatEvent) -> Self {
+    pub fn new(event: StatEvent, child: Option<&std::process::Child>) -> Self {
         let e: &mut perf_event_attr = &mut event_open(&event).unwrap();
-        let fd = fd::FileDesc::new(e, 0, -1, -1);
+        let fd = fd::FileDesc::new(e, child, -1, -1);
         Self { fd, event }
     }
 
