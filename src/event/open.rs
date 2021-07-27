@@ -1,3 +1,10 @@
+//! An `Event` abstracts away
+//! initializing `perf_event_attr` 
+//! structs for arbitrary events;
+//! and the need to use `FileDesc` methods 
+//! for interacting with `perf_event` 
+//! related file descriptors.
+
 use crate::bindings::*;
 use crate::event::fd;
 use crate::event::utils::*;
@@ -41,6 +48,7 @@ pub fn event_open(event: &StatEvent) -> Result<perf_event_attr, EventErr> {
         _ => Err(EventErr::InvalidEvent),
     }
 }
+
 impl Event {
     /// Construct a new event
     pub fn new(event: StatEvent) -> Self {
@@ -50,7 +58,6 @@ impl Event {
     }
 
     /// Start the counter on an event
-
     pub fn start_counter(&self) -> Result<isize, SysErr> {
         match self.fd.enable() {
             Ok(_) => self.fd.read(),
