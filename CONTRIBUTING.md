@@ -42,6 +42,7 @@ More ways to contribute
 
 References
 ---
+
 [Using git hooks][1]
 
 [1]: https://git-scm.com/docs/githooks
