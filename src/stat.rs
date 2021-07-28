@@ -3,6 +3,7 @@ use crate::event::open::*;
 use crate::utils::ParseError;
 use std::str::{self, FromStr};
 extern crate structopt;
+use libc::kill;
 use std::process::Command;
 use structopt::StructOpt;
 
@@ -43,9 +44,15 @@ pub fn run_stat(options: &StatOptions) {
 
     for command in &options.command {
         for event in &options.event {
-            let mut child = Command::new(command).spawn().unwrap();
+            let mut child = Command::new(&options.command[0])
+                .args(&options.command[1..])
+                .spawn()
+                .unwrap();
+            //prevent race condition on child program run time
+            unsafe { kill(child.id() as i32, libc::SIGSTOP) };
             let e = Event::new(*event, Some(&child));
             let cnt: isize = e.start_counter().unwrap();
+            unsafe { kill(child.id() as i32, libc::SIGCONT) };
 
             //create another process from command
             child.wait().expect("Failed to execute process");
