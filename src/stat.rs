@@ -1,10 +1,11 @@
 //! Stat driver
 use crate::event::open::*;
 use crate::utils::ParseError;
+use std::os::unix::process::CommandExt;
+use std::process;
 use std::str::{self, FromStr};
+use std::sync::mpsc::sync_channel;
 extern crate structopt;
-use libc::kill;
-use std::process::Command;
 use structopt::StructOpt;
 
 /// Supported events
@@ -58,14 +59,22 @@ pub fn run_stat(options: &StatOptions) {
     }
 
     let mut event_list: Vec<EventCounter> = Vec::new();
-    let mut child = Command::new(&options.command[0])
-        .args(&options.command[1..])
-        .spawn()
-        .unwrap();
-    //prevent race condition on child program run time on most programs
-    unsafe { kill(child.id() as i32, libc::SIGSTOP) };
+
+    // Sets up a synchronous bounded channel,
+    // with a buffer size of 1.
+    // The sender thread will be blocked until
+    // the receiver thread has received the data.
+    let (tx, rx) = sync_channel::<u32>(1);
+    let mut child = unsafe {
+        process::Command::new(&options.command[0])
+            .args(&options.command[1..])
+            .pre_exec(move || Ok(tx.send(0).unwrap()))
+            .spawn()
+            .unwrap()
+    };
+
     for event in &options.event {
-        let e = Event::new(*event, Some(&child));
+        let e = Event::new(*event, Some(&child.id()));
         let start = e.start_counter().unwrap();
         event_list.push(EventCounter {
             event: e,
@@ -73,10 +82,13 @@ pub fn run_stat(options: &StatOptions) {
             stop: 0,
         });
     }
-    unsafe { kill(child.id() as i32, libc::SIGCONT) };
 
-    //create another process from command
-    child.wait().expect("Failed to execute process");
+    // Receive data from `tx`
+    // Yes, it returns a result.
+    // No I am not handling it right now.
+    rx.recv();
+    // create another process from command
+    child.wait().expect("Failed to execute command");
 
     for e in event_list.iter_mut() {
         e.stop = e.event.stop_counter().unwrap();
