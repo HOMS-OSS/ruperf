@@ -24,11 +24,11 @@ impl FileDesc {
     /// Set up performance monitoring for
     /// configured event without any flags.
     /// Panics if `perf_event_open()` fails.
-    pub fn new(event: &mut perf_event_attr, pid: Option<u32>, cpu: i32, group_fd: i32) -> Self {
+    pub fn new(event: &mut perf_event_attr, pid: Option<i32>, cpu: i32, group_fd: i32) -> Self {
         let ret: i32;
         let pid = match pid {
             Some(x) => x as pid_t,
-            None => 0 as pid_t,
+            None => 0_i32,
         };
         ret = perf_event_open(event, pid as pid_t, cpu, group_fd, 0) as i32;
         if ret == -1 {
