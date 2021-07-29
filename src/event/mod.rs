@@ -29,7 +29,7 @@ fn wrapper_test() {
     event.set_exclude_kernel(1);
     event.set_exclude_hv(1);
     // Panic on failure.
-    let fd = fd::FileDesc::new(event, 0, -1, -1);
+    let fd = fd::FileDesc::new(event, Some(0), -1, -1);
     // Make sure ioctls are working.
     fd.reset().unwrap();
     fd.disable().unwrap();
