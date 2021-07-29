@@ -15,6 +15,7 @@ pub struct Test {
 }
 
 /// TestResult
+#[derive(Clone)]
 pub enum TestResult {
     Passed,
     Failed(String),
@@ -28,8 +29,17 @@ pub struct TestOptions {
     #[structopt(short = "v", long = "verbose", help = "provide additional output")]
     pub verbose: bool,
 
-    #[structopt(short = "l", long = "list", help = "list runnable tests")]
+    // Should list runnable tests instead of performing them
+    #[structopt(
+        short = "l",
+        long = "list",
+        help = "list runnable tests instead of running"
+    )]
     pub should_list: bool,
+
+    // Should format output as json
+    #[structopt(short = "j", long = "json", help = "format output as json")]
+    pub json: bool,
 
     // A comma-seperated list of tests to skip
     #[structopt(
@@ -52,6 +62,7 @@ pub struct TestOptions {
 
 pub struct RunSettings {
     pub verbose: bool,
+    pub json: bool,
 }
 
 /// Handles the running of the "test" command.
@@ -69,6 +80,7 @@ pub fn run_test(options: &TestOptions) {
     }
     let settings = RunSettings {
         verbose: options.verbose,
+        json: options.json,
     };
     if !options.to_run.is_empty() {
         to_skip = (0..tests.len()).map(|x| x.to_string()).collect();
