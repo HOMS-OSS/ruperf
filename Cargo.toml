@@ -27,4 +27,5 @@ directories-next = "2.0"
 members = [
 	"samples/fp-calc",
 	"samples/file-io",
+	"samples/reads-writes",
 ]
