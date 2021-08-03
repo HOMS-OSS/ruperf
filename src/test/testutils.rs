@@ -1,3 +1,7 @@
+//!
+//!
+//!
+
 use crate::test::basic;
 use crate::test::pfm;
 use crate::test::RunSettings;
@@ -7,6 +11,7 @@ use serde_json::json;
 use serde_json::to_string_pretty;
 use std::io::stdout;
 use std::io::Write;
+
 /// Gathers all tests and returns a Vec with them all
 pub fn make_tests() -> Vec<Test> {
     let tests = vec![
@@ -19,7 +24,7 @@ pub fn make_tests() -> Vec<Test> {
     tests
 }
 
-/// Runs all tests and outputs results to stdout
+/// Run all tests and print results.
 pub fn run_all_tests(tests: &[Test], to_skip: &[String], settings: &RunSettings) {
     let mut should_skip;
     let mut tests_passed = 0;
@@ -67,7 +72,7 @@ pub fn run_all_tests(tests: &[Test], to_skip: &[String], settings: &RunSettings)
     }
 }
 
-/// Runs a single test (or subtest)
+/// Run a single test or subtest and print results.
 pub fn run_single_test(
     test: &Test,
     index: usize,
@@ -112,7 +117,7 @@ pub fn run_single_test(
     result_type
 }
 
-/// Lists all tests and outputs results to stdout
+/// List all tests and their descriptions.
 pub fn list_all_tests(tests: &[Test]) {
     for (index, test) in tests.iter().enumerate() {
         println!("{:>2}: {:<60}", index, test.description);
