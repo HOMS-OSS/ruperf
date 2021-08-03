@@ -1,20 +1,17 @@
-//! A simple test program to run ruperf against
-//!
-//! Do some calculations
-//!
-//! usage:
-//!     ruperf stat ./fp-calc
+//! Sample program to run `ruperf stat` against. 
+//! Performs some floating point computations. 
+
 use structopt::StructOpt;
 
 #[derive(StructOpt)]
 #[structopt(name = "fp-calc", about = "A test program to run ruperf against")]
 struct Opt {
     // Starting position
-    #[structopt(short, long, default_value="100")]
+    #[structopt(short, long, default_value = "100")]
     start: i32,
 
     // Ending position
-    #[structopt(short, long, default_value="10000000")]
+    #[structopt(short, long, default_value = "10000000")]
     end: i32,
 }
 
