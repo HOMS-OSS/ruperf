@@ -120,7 +120,6 @@ pub fn run_stat(options: &StatOptions) {
     let mut status: libc::c_int = 0;
     let result = unsafe { libc::waitpid(pid_child, (&mut status) as *mut libc::c_int, 0) };
     assert_eq!(result, pid_child);
-    assert_eq!(status, 0);
 
     for e in event_list.iter_mut() {
         e.stop = e.event.stop_counter().unwrap();
