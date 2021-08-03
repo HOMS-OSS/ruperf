@@ -38,7 +38,7 @@ enum Gui {
     Loaded(State),
 }
 
-/// Configuration settings for running test
+/// Configuration settings for running the GUI
 #[derive(Debug, StructOpt)]
 pub struct GuiOptions {}
 
