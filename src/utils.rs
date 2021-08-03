@@ -1,4 +1,4 @@
-//! Utility functions
+//! Errors for `ruperf stat`.
 use thiserror::Error;
 
 /// Parse errors for CLI

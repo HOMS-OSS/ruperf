@@ -1,12 +1,15 @@
-//! Stat driver
+//! # Stat driver.
+//! <p> Usage: <em> ruperf stat [COMMAND] [ARGS] </em>
+//! Where COMMAND and ARGS are a shell command and it's arguments. </p>
+
+extern crate structopt;
 use crate::event::open::*;
 use crate::utils::ParseError;
-use std::str::{self, FromStr};
-extern crate structopt;
 use os_pipe::pipe;
 use std::io::prelude::*;
 use std::os::unix::process::CommandExt;
 use std::process::Command;
+use std::str::{self, FromStr};
 use structopt::StructOpt;
 
 /// Supported events
@@ -77,9 +80,12 @@ fn launch_command_process(
     }
 }
 
-/// Run perf stat on the given command and event combinations. Currently starts and stops a cycles timer in serial for each event specified.
+/// Run perf stat on the given command and event combinations.
+/// Currently starts and stops a cycles timer in serial for each event specified.
 pub fn run_stat(options: &StatOptions) {
-    //demonstrating from cli. In future rather than starting and stopping counter in series for each event, events will have the ability to be added in groups that will coordinate their timing.
+    // In future rather than starting and stopping counter
+    // in series for each event, events will have the ability
+    // to be added in groups that will coordinate their timing.
     struct EventCounter {
         event: Event,
         start: isize,
@@ -103,7 +109,7 @@ pub fn run_stat(options: &StatOptions) {
         });
     }
 
-    // Wait for child to say it is set up to execute
+    // Wait for child to say it is set up to execute.
     let mut buf = [0];
     let nread = parent_reader.read(&mut buf).unwrap();
     assert_eq!(nread, 1);
@@ -112,11 +118,11 @@ pub fn run_stat(options: &StatOptions) {
         e.start = e.event.start_counter().unwrap();
     }
 
-    // Notify child counters are set up
+    // Notify child counters are set up.
     writer.write_all(&[1]).unwrap();
     drop(writer);
 
-    //wait for process to exit
+    // Wait for process to exit.
     let mut status: libc::c_int = 0;
     let result = unsafe { libc::waitpid(pid_child, (&mut status) as *mut libc::c_int, 0) };
     assert_eq!(result, pid_child);
@@ -126,11 +132,11 @@ pub fn run_stat(options: &StatOptions) {
         e.stop = e.event.stop_counter().unwrap();
     }
 
-    //output command's output
     println!(
-        "Performance counter stats for '{}'\n",
+        "Performance counter stats for '{}:'\n",
         options.command.get(0).unwrap()
     );
+
     for event in event_list {
         println!(
             " Number of {}: {}\n",

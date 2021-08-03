@@ -1,7 +1,7 @@
-//! #  Sample driver for perf-rust tool
-//! <p> Usage: <em> perf-rust [COMMAND] [OPTION] </em>
+//! # Main driver.
+//! <p> Usage: <em> ruperf [COMMAND] [OPTION] </em>
 //! where COMMAND is one of: </p>
-//!<ul>
+//! <ul>
 //! <li>test</li>
 //! <li>stat</li>
 //! <li>gui</li>
@@ -14,13 +14,12 @@ mod stat;
 mod test;
 mod utils;
 
+extern crate structopt;
 use event::*;
 use gui::*;
 use stat::*;
-use test::*;
-extern crate structopt;
-
 use structopt::StructOpt;
+use test::*;
 
 /// Define command line options.
 #[derive(Debug, StructOpt)]

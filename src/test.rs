@@ -1,9 +1,20 @@
-//! Test driver
-extern crate structopt;
-use structopt::StructOpt;
+//! # Test driver.
+//! <p> Usage: <em> ruperf test [OPTION] </em>
+//! where OPTION is one of:
+//! <ul>
+//! <li>v, verbose</li>
+//! <li>l, list</li>
+//! <li>j, json</li>
+//! <li>s, skip</li>
+//! <li>o, only</li>
+//! </ul>
+
 mod basic;
 mod pfm;
 mod testutils;
+
+extern crate structopt;
+use structopt::StructOpt;
 
 /// Test Struct
 pub struct Test {
