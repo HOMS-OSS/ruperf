@@ -50,22 +50,20 @@ pub fn event_open(event: &StatEvent) -> Result<perf_event_attr, EventErr> {
 }
 
 impl Event {
-    /// Construct a new event
+    /// Construct a new event.
     pub fn new(event: StatEvent, pid: Option<i32>) -> Self {
         let e: &mut perf_event_attr = &mut event_open(&event).unwrap();
         let fd = fd::FileDesc::new(e, pid, -1, -1);
         Self { fd, event }
     }
-
-    /// Start the counter on an event
+    /// Start the counter on an event.
     pub fn start_counter(&self) -> Result<isize, SysErr> {
         match self.fd.enable() {
             Ok(_) => self.fd.read(),
             Err(e) => Err(e),
         }
     }
-
-    ///Stop the counter on an event
+    ///Stop the counter on an event.
     pub fn stop_counter(&self) -> Result<isize, SysErr> {
         match self.fd.disable() {
             Ok(_) => self.fd.read(),
