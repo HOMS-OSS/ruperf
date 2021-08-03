@@ -1,15 +1,11 @@
-//! Run ruperf against some file calls
-//!
-//! This is a small program to run ruperf against. Write and read a file. This 
-//! should call `syscall_write` and `syscall_read`. 
-//! 
-//! Usage:
-//!     ruperf stat ./file-io
+//! Sample program to run `ruperf stat` against. 
+//! Writes to and reads from a file. 
+
+use std::env;
 use std::fs;
 use std::io::prelude::*;
-use std::process;
 use std::path::PathBuf;
-use std::env;
+use std::process;
 use structopt::StructOpt;
 
 #[derive(Debug, StructOpt)]
@@ -35,7 +31,11 @@ fn main() {
 
     if path.exists() {
         match fs::remove_file(&path) {
-            Err(e) => panic!("Could not remove existing file. {} because {}", path.display(), e),
+            Err(e) => panic!(
+                "Could not remove existing file. {} because {}",
+                path.display(),
+                e
+            ),
             Ok(_) => (),
         }
     }
@@ -51,7 +51,7 @@ fn main() {
             Err(e) => {
                 fs::remove_file(&path).unwrap();
                 panic!("Failed to write to file because {}", e);
-            },
+            }
             Ok(_) => (),
         }
     }
@@ -64,17 +64,17 @@ fn main() {
         Err(e) => {
             fs::remove_file(&path).unwrap();
             panic!("Could not open the file because {}", e);
-        },
+        }
         Ok(file) => file,
     };
 
-    let mut contents: Vec::<u8> = Vec::new();
+    let mut contents: Vec<u8> = Vec::new();
     let size: usize;
     match file.read_to_end(&mut contents) {
         Err(e) => {
             fs::remove_file(&path).unwrap();
             panic!("Could not read the entire file because {}", e);
-        },
+        }
         Ok(sz) => size = sz,
     }
 
@@ -82,6 +82,6 @@ fn main() {
 
     match fs::remove_file(&path) {
         Err(e) => panic!("Could not remove file {} because {}", path.display(), e),
-        Ok(_) => ()
+        Ok(_) => (),
     }
 }
