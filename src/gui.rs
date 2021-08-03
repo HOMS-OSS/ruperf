@@ -7,6 +7,9 @@ use iced::{
     Align, Application, Clipboard, Command, Element, Length, Settings,
 };
 
+extern crate structopt;
+use structopt::StructOpt;
+
 mod pane_content;
 mod perf_event;
 mod save_state;
@@ -19,7 +22,7 @@ use save_state::*;
 use state::*;
 
 /// Run the Gui Launcher
-pub fn run_gui() -> iced::Result {
+pub fn run_gui(options: &GuiOptions) -> iced::Result {
     Gui::run(Settings::default())
 }
 
@@ -28,6 +31,10 @@ enum Gui {
     Loading,
     Loaded(State),
 }
+
+/// Configuration settings for running test
+#[derive(Debug, StructOpt)]
+pub struct GuiOptions {}
 
 /// Messages to be sent to the parent widget from
 /// other child widgets, and consumed on update

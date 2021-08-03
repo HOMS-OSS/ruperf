@@ -45,7 +45,7 @@ enum Opt {
         name = "gui",
         about = "Launches gui"
     )]
-    Gui(TestOptions),
+    Gui(GuiOptions),
 }
 
 fn main() {
@@ -54,7 +54,7 @@ fn main() {
         Opt::Stat(x) => run_stat(&x),
         Opt::Test(x) => run_test(&x),
         Opt::Gui(x) => {
-            run_gui().unwrap();
+            run_gui(&x).unwrap();
         }
     }
 }
