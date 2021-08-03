@@ -1,3 +1,8 @@
+//! This file may contain more items in the
+//! future. For now it defines a generic `Result`
+//! type for handling system call failures and
+//! invalid event requests.
+
 type Result<T, E> = std::result::Result<T, E>;
 
 /// Errors related to system calls.

@@ -1,8 +1,11 @@
-//! For notes about Rust bindings necessary for
-//! `perf_event_open()` see /src/bindings/perf_event.rs.
+//! For details about Rust bindings for
+//! the `perf_event_open()` system call,
+//! see /src/bindings/perf_event.rs.
+//! Bindings may vary by architecture.
 
-//! Disable cargo build warnings created due to using bindgen
+// Disable cargo build warnings created due to using bindgen.
 #![allow(dead_code)]
+
 mod fd;
 pub mod open;
 mod sys;

@@ -5,13 +5,12 @@
 //! A wrapper is not provided for the `perf_event_open()` system call.
 //! Necessitating the use of `unsafe { syscall(..) }`.
 //! See linux man-page NOTES for details.
-extern crate libc;
 
+extern crate libc;
 use crate::bindings::*;
 use crate::event::sys::linux::*;
 use crate::event::sys::wrapper::*;
 use crate::event::utils::*;
-
 use libc::{c_int, c_ulong, pid_t, syscall, SYS_perf_event_open};
 
 /// Stores a raw file descriptor
@@ -36,7 +35,6 @@ impl FileDesc {
         }
         Self(ret)
     }
-
     /// Enable the performance counter
     /// associated with `fd`.
     pub fn enable(&self) -> Result<(), SysErr> {
@@ -47,7 +45,6 @@ impl FileDesc {
         }
         Ok(())
     }
-
     /// Disable the performance counter
     /// associated with `fd`.
     pub fn disable(&self) -> Result<(), SysErr> {
@@ -58,7 +55,6 @@ impl FileDesc {
         }
         Ok(())
     }
-
     /// Refresh the overflow counter.
     /// `count` is added to a register
     /// that is decremented each time
@@ -79,7 +75,6 @@ impl FileDesc {
         }
         Ok(())
     }
-
     /// Reset the performance counter to 0.
     pub fn reset(&self) -> Result<(), SysErr> {
         let ret: i32;
@@ -89,7 +84,6 @@ impl FileDesc {
         }
         Ok(())
     }
-
     /// Set the overflow period.
     /// NOTE: The `__bindgen_anon_1` and `sample_type` fields
     /// must be initialized for the `perf_event_attr`
@@ -103,19 +97,16 @@ impl FileDesc {
         }
         Ok(())
     }
-
     /// Report counter information to
     /// specific file descriptor.
     pub fn set_output(&self) -> Result<(), SysErr> {
         todo!()
     }
-
     /// Ignore counter output for event
     /// associated with `fd`.
     pub fn ignore_output(&self) -> Result<(), SysErr> {
         todo!()
     }
-
     /// Return event ID value
     /// associated with `fd`.
     pub fn id(&self) -> Result<usize, SysErr> {
@@ -133,25 +124,23 @@ impl FileDesc {
         }
         Ok(ret)
     }
-
     /// Pause writing to ring-buffer
     /// for associated file descriptor.
     pub fn pause_output(&self) -> Result<(), SysErr> {
         todo!()
     }
-
     /// Resume writing to ring-buffer
     /// for associated file descriptor.
     pub fn resume_output(&self) -> Result<(), SysErr> {
         todo!()
     }
-
     /// Modify the attributes for
     /// a specified event.
     pub fn modify_attributes(&self, _event: *const perf_event_attr) -> Result<(), SysErr> {
         todo!()
     }
-
+    /// Read counter value associated
+    /// with field of `FileDesc` caller.
     pub fn read(&self) -> Result<isize, SysErr> {
         let ret = read_wrap(self.0);
         if ret == -1 {
@@ -206,7 +195,7 @@ fn read_test() {
     let event = &mut perf_event_attr {
         type_: perf_type_id_PERF_TYPE_HARDWARE,
         size: std::mem::size_of::<perf_event_attr>() as u32,
-        // something to consider fixing. For now leave alone.
+        // Something to consider fixing. For now leave alone.
         config: perf_hw_id_PERF_COUNT_HW_CPU_CYCLES as u64,
         ..Default::default()
     };
@@ -215,10 +204,10 @@ fn read_test() {
     event.set_exclude_hv(1);
     let fd: isize;
     fd = perf_event_open(&event, 0, -1, -1, 0);
-    //read treats each counter as virtualized u64
+    // Read treats each counter as a virtualized u64.
     let mut cnt: u64 = 0;
-    //buf must be *mut lbc::c_void type, mimics void pointer
-    //package count into buf so it is easy to read
+    // `buf` must be *mut lbc::c_void type, mimics void pointer.
+    // Package count into buf so it is easy to read.
     let buf: *mut libc::c_void = &mut cnt as *mut _ as *mut libc::c_void;
     unsafe {
         ioctl(fd as i32, ENABLE as u64, 0);
