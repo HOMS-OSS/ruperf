@@ -1,5 +1,5 @@
-//! Sample program to run `ruperf stat` against. 
-//! Performs some floating point computations. 
+//! Sample program to run `ruperf stat` against.
+//! Performs some floating point computations.
 
 use structopt::StructOpt;
 
