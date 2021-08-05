@@ -50,7 +50,7 @@ enum Opt {
 fn main() {
     let opt = Opt::from_args();
     match opt {
-        Opt::Stat(x) => run_stat(&x),
+        Opt::Stat(x) => run_stat(x),
         Opt::Test(x) => run_test(&x),
         Opt::Gui(x) => {
             run_gui(&x).unwrap();

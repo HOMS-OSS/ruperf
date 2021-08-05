@@ -82,10 +82,12 @@ fn launch_command_process(
 
 /// Run perf stat on the given command and event combinations.
 /// Currently starts and stops a cycles timer in serial for each event specified.
-pub fn run_stat(options: &StatOptions) {
+pub fn run_stat(options: StatOptions) {
     // In future rather than starting and stopping counter
     // in series for each event, events will have the ability
     // to be added in groups that will coordinate their timing.
+    let mut options = options;
+
     struct EventCounter {
         event: Event,
         start: isize,
@@ -101,6 +103,10 @@ pub fn run_stat(options: &StatOptions) {
     let child_writer = parent_writer.try_clone().unwrap();
     let pid_child = launch_command_process(options.command.clone(), child_reader, child_writer);
 
+    if options.event.is_empty() {
+        options.event.push(StatEvent::Cycles);
+        options.event.push(StatEvent::Instructions);
+    }
     for event in &options.event {
         event_list.push(EventCounter {
             event: Event::new(*event, Some(pid_child)),
