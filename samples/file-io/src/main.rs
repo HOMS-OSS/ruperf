@@ -1,5 +1,5 @@
-//! Sample program to run `ruperf stat` against. 
-//! Writes to and reads from a file. 
+//! Sample program to run `ruperf stat` against.
+//! Writes to and reads from a file.
 
 use std::env;
 use std::fs;
