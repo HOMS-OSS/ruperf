@@ -1,6 +1,8 @@
-//!
-//!
-//!
+//! This test checks the value of the linux
+//! /proc/sys/kernel/perf_event_paranoid flag and will pass if the
+//! value in the file is 0 or less. Some counts from perf_event_open
+//! require this flag to be 0 or less, so this test will read the value
+//! value from it and check.
 
 use crate::test::RunSettings;
 use crate::test::Test;
@@ -8,10 +10,10 @@ use crate::test::TestResult;
 use std::fs;
 use std::path::Path;
 
-// TEST: Check for presence of libpfm4
+// TEST: Check the value of /proc/sys/kernel/perf_event_paranoid flag is 0 or less
 pub fn test_check_paranoid_flag() -> Test {
-    // This uses the linux command "ldconfig" and returns
-    // based on whether or not the output contains "libpfm."
+    // This test checks the value of /proc/sys/kernel/perf_event_paranoid
+    // and passes if it is equal to 0 or less.
     fn check_paranoid_flag(settings: &RunSettings) -> TestResult {
         let paranoid_flag = "/proc/sys/kernel/perf_event_paranoid".to_string();
         let paranoid_flag_path = Path::new(&paranoid_flag);
