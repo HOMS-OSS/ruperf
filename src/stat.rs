@@ -49,7 +49,7 @@ pub struct StatOptions {
 
     // Allows multiple arguments to be passed, collects everything remaining on
     // the command line
-    #[structopt(required = false, help = "Command to run")]
+    #[structopt(required = true, help = "Command to run")]
     pub command: Vec<String>,
 }
 
