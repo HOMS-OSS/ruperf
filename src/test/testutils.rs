@@ -3,6 +3,7 @@
 //!
 
 use crate::test::basic;
+use crate::test::paranoid;
 use crate::test::pfm;
 use crate::test::RunSettings;
 use crate::test::Test;
@@ -20,6 +21,7 @@ pub fn make_tests() -> Vec<Test> {
         basic::test_passes_after_1sec(),
         basic::test_with_pointless_subtests(),
         pfm::test_check_for_libpfm4(),
+        paranoid::test_check_paranoid_flag(),
     ];
     tests
 }
@@ -30,11 +32,12 @@ pub fn run_all_tests(tests: &[Test], to_skip: &[String], settings: &RunSettings)
     let mut tests_passed = 0;
     let mut tests_failed = 0;
     let mut tests_skipped = 0;
+    let mut additional_info: Vec<String> = Vec::new();
     let mut results_as_json: Vec<serde_json::Value> = Vec::new();
     if settings.json {}
     for (index, test) in tests.iter().enumerate() {
         should_skip = to_skip.iter().any(|i| *i == index.to_string());
-        let result = run_single_test(&test, index, should_skip, "".to_string(), &settings);
+        let result = run_single_test(test, index, should_skip, "".to_string(), settings);
         if settings.json {
             let result_string: String;
             match result {
@@ -42,7 +45,10 @@ pub fn run_all_tests(tests: &[Test], to_skip: &[String], settings: &RunSettings)
                     tests_passed += 1;
                     result_string = String::from("passed");
                 }
-                TestResult::Failed(_) => {
+                TestResult::Failed(info) => {
+                    if !info.is_empty() {
+                        additional_info.push(info);
+                    }
                     tests_failed += 1;
                     result_string = String::from("failed");
                 }
@@ -55,7 +61,8 @@ pub fn run_all_tests(tests: &[Test], to_skip: &[String], settings: &RunSettings)
                 "name": test.name,
                 "description": test.description,
                 "result": result_string,
-                "number": index as u32
+                "number": index as u32,
+                "additional_info": additional_info
             }));
         }
     }
@@ -91,7 +98,7 @@ pub fn run_single_test(
     if should_skip {
         result_type = TestResult::Skipped;
     } else if test.subtests.is_empty() {
-        result_type = (test.call)(&settings);
+        result_type = (test.call)(settings);
     } else {
         if !settings.json {
             println!();

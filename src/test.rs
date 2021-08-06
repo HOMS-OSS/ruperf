@@ -10,6 +10,7 @@
 //! </ul>
 
 mod basic;
+mod paranoid;
 mod pfm;
 mod testutils;
 
@@ -90,7 +91,7 @@ pub fn run_test(options: &TestOptions) {
         return;
     }
     let settings = RunSettings {
-        verbose: options.verbose,
+        verbose: options.verbose || options.json,
         json: options.json,
     };
     if !options.to_run.is_empty() {
