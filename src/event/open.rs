@@ -45,6 +45,30 @@ pub fn event_open(event: &StatEvent) -> Result<perf_event_attr, EventErr> {
             event_open.set_exclude_hv(1);
             Ok(*event_open)
         }
+        StatEvent::TaskClock => {
+            let event_open = &mut perf_event_attr {
+                type_: perf_type_id_PERF_TYPE_SOFTWARE,
+                size: std::mem::size_of::<perf_event_attr>() as u32,
+                config: perf_sw_ids_PERF_COUNT_SW_TASK_CLOCK as u64,
+                ..Default::default()
+            };
+            event_open.set_disabled(1);
+            event_open.set_exclude_kernel(1);
+            event_open.set_exclude_hv(1);
+            Ok(*event_open)
+        }
+        StatEvent::ContextSwitches => {
+            let event_open = &mut perf_event_attr {
+                type_: perf_type_id_PERF_TYPE_SOFTWARE,
+                size: std::mem::size_of::<perf_event_attr>() as u32,
+                config: perf_sw_ids_PERF_COUNT_SW_CONTEXT_SWITCHES as u64,
+                ..Default::default()
+            };
+            event_open.set_disabled(1);
+            event_open.set_exclude_kernel(0);
+            event_open.set_exclude_hv(1);
+            Ok(*event_open)
+        }
         _ => Err(EventErr::InvalidEvent),
     }
 }
