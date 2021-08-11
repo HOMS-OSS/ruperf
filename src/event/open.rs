@@ -118,3 +118,23 @@ fn inst_open_test() {
     assert_ne!(cnt, cnt_2);
     assert!(cnt < cnt_2);
 }
+
+#[test]
+fn taskclock_open_test() {
+    let event = Event::new(StatEvent::TaskClock, None);
+    let cnt: isize = event.start_counter().unwrap();
+    assert_ne!(cnt, 0);
+    assert_ne!(cnt, -1);
+    let cnt_2 = event.stop_counter().unwrap();
+    assert_ne!(cnt, cnt_2);
+    assert!(cnt < cnt_2);
+}
+
+#[test]
+fn cs_open_test() {
+    let event = Event::new(StatEvent::ContextSwitches, None);
+    let cnt: isize = event.start_counter().unwrap();
+    assert_ne!(cnt, -1);
+    let cnt_2 = event.stop_counter().unwrap();
+    assert_ne!(cnt_2, -1);
+}
