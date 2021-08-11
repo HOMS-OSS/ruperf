@@ -1,6 +1,8 @@
-//!
-//!
-//!
+//! `testutils.rs` provides utility functions used for the
+//! test program. It provides a function that makes a list
+//! of the tests from this directory, as well as a function
+//! that runs all the tests in this directory and collects
+//! the results.
 
 use crate::test::basic;
 use crate::test::events;

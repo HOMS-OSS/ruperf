@@ -1,6 +1,9 @@
-//!
-//!
-//!
+//! The test in `pfm.rs` checks for the presence of the library
+//! `libpfm4`, which will be required for future features of
+//! ruperf. It uses `ldconfig` to determine whether the library
+//! present on the machine or not. This test structure could
+//! be used to verify the presence of any library that can be
+//! seen by `ldconfig`.
 
 use crate::test::RunSettings;
 use crate::test::Test;
