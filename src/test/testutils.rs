@@ -32,10 +32,11 @@ pub fn run_all_tests(tests: &[Test], to_skip: &[String], settings: &RunSettings)
     let mut tests_passed = 0;
     let mut tests_failed = 0;
     let mut tests_skipped = 0;
-    let mut additional_info: Vec<String> = Vec::new();
+    let mut additional_info: Vec<String>;
     let mut results_as_json: Vec<serde_json::Value> = Vec::new();
     if settings.json {}
     for (index, test) in tests.iter().enumerate() {
+        additional_info = Vec::new();
         should_skip = to_skip.iter().any(|i| *i == index.to_string());
         let result = run_single_test(test, index, should_skip, "".to_string(), settings);
         if settings.json {
