@@ -1,5 +1,5 @@
-//! This test checks the value of the linux
-//! /proc/sys/kernel/perf_event_paranoid flag and will pass if the
+//! The test in `paranoid.rs` checks the value of the linux
+//! `/proc/sys/kernel/perf_event_paranoid` flag and will pass if the
 //! value in the file is 0 or less. Some counts from perf_event_open
 //! require this flag to be 0 or less, so this test will read the value
 //! value from it and check.
@@ -34,7 +34,7 @@ pub fn test_check_paranoid_flag() -> Test {
                         x
                     ));
                 }
-                TestResult::Failed("(1)".to_string())
+                TestResult::Failed(format!("({})", x))
             }
         }
     }
