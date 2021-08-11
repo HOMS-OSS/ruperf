@@ -49,7 +49,11 @@ impl ToString for StatEvent {
     }
 }
 
-/// Configuration settings for running stat. A program to profile is a required argument. Default events will run on that program if no events are specified. Specify events using the flag `-e or --event`. See `./ruperf stat --help' for more information.
+/// Configuration settings for running stat. A program to profile is a required
+/// argument. Default events will run on that program if no events are
+/// specified. Specify events using the flag `-e or --event`. See `./ruperf stat
+/// --help' for more information.
+
 #[derive(Debug, StructOpt)]
 pub struct StatOptions {
     #[structopt(short, long, help = "Event to collect", number_of_values = 1)]
