@@ -10,6 +10,7 @@ use std::io::prelude::*;
 use std::os::unix::process::CommandExt;
 use std::process::Command;
 use std::str::{self, FromStr};
+use std::time::Instant;
 use structopt::StructOpt;
 
 /// Supported events
@@ -17,6 +18,8 @@ use structopt::StructOpt;
 pub enum StatEvent {
     Cycles,
     Instructions,
+    TaskClock,
+    ContextSwitches,
 }
 
 /// Match on each supported event to parse from command line
@@ -26,22 +29,27 @@ impl FromStr for StatEvent {
         match s {
             "cycles" => Ok(StatEvent::Cycles),
             "instructions" => Ok(StatEvent::Instructions),
+            "task-clock" => Ok(StatEvent::TaskClock),
+            "context-switches" => Ok(StatEvent::ContextSwitches),
             _ => Err(ParseError::InvalidEvent),
         }
     }
 }
 
-/// Match on each supported event to parse from command line
+/// Match on each supported event to parse from command line.
+/// Note that the context-switches event runs in kernel mode and requires a perf_event_paranoid setting < 1.
 impl ToString for StatEvent {
     fn to_string(&self) -> String {
         match self {
             StatEvent::Cycles => "cycles".to_string(),
             StatEvent::Instructions => "instructions".to_string(),
+            StatEvent::TaskClock => "task clock".to_string(),
+            StatEvent::ContextSwitches => "context switches".to_string(),
         }
     }
 }
 
-/// Configuration settings for running stat
+/// Configuration settings for running stat. A program to profile is a required argument. Default events will run on that program if no events are specified. Specify events using the flag `-e or --event`. See `./ruperf stat --help' for more information.
 #[derive(Debug, StructOpt)]
 pub struct StatOptions {
     #[structopt(short, long, help = "Event to collect", number_of_values = 1)]
@@ -107,6 +115,7 @@ pub fn run_stat(options: StatOptions) {
         options.event.push(StatEvent::Cycles);
         options.event.push(StatEvent::Instructions);
     }
+
     for event in &options.event {
         event_list.push(EventCounter {
             event: Event::new(*event, Some(pid_child)),
@@ -123,7 +132,7 @@ pub fn run_stat(options: StatOptions) {
     for e in event_list.iter_mut() {
         e.start = e.event.start_counter().unwrap();
     }
-
+    let now = Instant::now();
     // Notify child counters are set up.
     writer.write_all(&[1]).unwrap();
     drop(writer);
@@ -132,7 +141,7 @@ pub fn run_stat(options: StatOptions) {
     let mut status: libc::c_int = 0;
     let result = unsafe { libc::waitpid(pid_child, (&mut status) as *mut libc::c_int, 0) };
     assert_eq!(result, pid_child);
-
+    let t = now.elapsed();
     for e in event_list.iter_mut() {
         e.stop = e.event.stop_counter().unwrap();
     }
@@ -143,10 +152,18 @@ pub fn run_stat(options: StatOptions) {
     );
 
     for event in event_list {
-        println!(
-            " Number of {}: {}\n",
-            event.event.event.to_string(),
-            event.stop - event.start
-        );
+        if matches!(event.event.event, StatEvent::TaskClock) {
+            println!(
+                " {:.2} msec task-clock\n CPU utilized: {:.3}",
+                (event.stop - event.start) as f64 / 1_000_000.0,
+                (event.stop - event.start) as f64 / t.as_nanos() as f64
+            );
+        } else {
+            println!(
+                " Number of {}: {}",
+                event.event.event.to_string(),
+                event.stop - event.start
+            );
+        }
     }
 }
