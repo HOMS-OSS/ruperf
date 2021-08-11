@@ -3,6 +3,7 @@
 //!
 
 use crate::test::basic;
+use crate::test::events;
 use crate::test::paranoid;
 use crate::test::pfm;
 use crate::test::RunSettings;
@@ -22,6 +23,7 @@ pub fn make_tests() -> Vec<Test> {
         basic::test_with_pointless_subtests(),
         pfm::test_check_for_libpfm4(),
         paranoid::test_check_paranoid_flag(),
+        events::test_cycles_open(),
     ];
     tests
 }
