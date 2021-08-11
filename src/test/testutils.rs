@@ -23,7 +23,7 @@ pub fn make_tests() -> Vec<Test> {
         basic::test_with_pointless_subtests(),
         pfm::test_check_for_libpfm4(),
         paranoid::test_check_paranoid_flag(),
-        events::test_cycles_open(),
+        events::test_events(),
     ];
     tests
 }
