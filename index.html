@@ -1,5 +1,87 @@
-Greetings, Rustacean. At long last, faith in a smarter, more powerful, and more insightful performance analysis crab has been rewarded. <br>
-Indeed; though weary, you have followed the calls within your heart for something better. <br>
-Ruperf The Crab, cousin of Ferris The Crab, humble servant of optimization; <br>
-casts a watchful eye over courageous travellers descending down into the dark and uncertain depths of computer systems. <br>
-Fear not, ye weary traveller; though petrified with fear and uncertainty you may be; the mighty and agile claws of Ruperf will guide you. <br>
+Hail, Traveller! At long last, faith in a smart, sophisticated, and insightful performance analysis crab has been rewarded. <br>
+Ruperf The Crab, friend of Ferris The Crab, and humble servant of optimization; <br>
+casts a watchful eye over courageous travellers descending into the dark and uncertain depths of computer systems. <br>
+Fear not, ye weary traveller; though petrified with uncertainty you may be; the nimble and agile claws of Ruperf will guide you. <br>
+
+
+# Introduction 
+
+All software should perform at a high level. That means going underneath the hood, 
+locating areas of improvement, and fine tuning the machine. 
+Hardware instructions, computer cycles, cache-accesses,
+and context switches; how much memory is being used or how long a process takes; 
+these and more, are all things to observe when seeking insight into where and how to improve performance.
+
+`ruperf` was borne out of a desire to achieve three things:
+
+- Provide a well-documented, high-level, performance analysis tool that adds to the existing landscape 
+  by improving upon what current tools lack, and in some cases adding new features altogether.
+
+- Leverage the safety of Rust and and it's module system for a secure and fine-grained approach 
+  to performance analysis.
+
+- Explore Rust in the Linux Kernel. We would like to eventually lower the scope in which Rust is used
+  to beneath the system call level, and experiment with it's safety and performance features there.
+
+# Existing landscape
+
+The current landscape of analyzing software performance has many tools. 
+They all have different features, and work at various levels of the machine.
+These are the tools that inspired our project:
+
+For more about other tools and how they relate to ruperf, see the wiki.
+
+#### `perf`
+`perf` is a profiler tool for linux-based systems that abstracts away CPU hardware differences in 
+Linux performance measurements and presents a simple command-line interface. 
+
+#### VTune
+VTune is a closed-source performance analysis tool provided by Intel. It identifies
+time-intensive functions, time spent on I/O, cache misses, branch mispredictions, and more.
+
+#### Gprof
+Gprof is for Unix applications, and uses instrumentation and sampling to 
+track code execution time and locate program hot spots. 
+
+#### DHAT: dynamic heap analysis tool
+Part of Valgrind, DHAT examines program use of heap allocation. 
+It tracks allocated blocks, and inspects memory access. 
+It also identifies process-lifetime leaks, excessive turnover, 
+short-lived blocks, unused or underused allocations, and inefficiently laid-out blocks.
+
+#### flamegraph
+FlameGraph is a tool that provides a visual representation of profiled software.
+which makes it easier to understand where a program is spending it's time.
+
+Here is an example of a flamgraph: 
+
+The X-axis shows the stack profile in alphabetic order;
+the Y-axis shows stack depth.
+
+(image-of-flamegraph)
+
+- stuff about what other tools have, don't have, 
+- how our tool adds to the existing landscape, instead of being redundant
+- show case some of our tools features and compare them to other tools
+
+# Rust's Safety and Modularity
+
+- stuff about exploits and perf event open safety why rust is safe
+- stuff about using rust's module system to provide fine grained control, testing, 
+  and how adding features is easy as pie (the GUI is a really good example of a cool feature)
+
+# Rust in the Linux Kernel
+
+- stuff about how we want to lower it beneath the sys call level
+- stuff about how Rust is safe and fast
+- stuff about how lowering rust to that level can help expose areas where rust may improve and why
+  that's a good thing (RUST!)
+
+\section{References}
+Eranian, Stephane, et al. “Main Page.” Perf Wiki, Kernel.org,
+\\perf.wiki.kernel.org/index.php/Main\_Page.
+``GNU gprof'', sourceware.org,
+https://sourceware.org/binutils/docs/gprof/Implementation.html.
+Nethercote, Nicholas and others.''Profiling''. \underline{The Rust Performance Book}. November 2020.
+Gregg, Brendan. ``Flame Graphs''. http://www.brendangregg.com/flamegraphs.html.
+\end{document}
