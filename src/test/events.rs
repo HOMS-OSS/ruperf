@@ -64,7 +64,7 @@ fn dummy(_settings: &RunSettings) -> TestResult {
 }
 
 // This is the parent test for all the event subtests.
-pub fn test_cycles_open() -> Test {
+pub fn test_events() -> Test {
     // This tests StatEvent::Cycles for proper functionality
     fn test_cycles_open() -> Test {
         fn cycles_open(settings: &RunSettings) -> TestResult {
