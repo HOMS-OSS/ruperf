@@ -126,40 +126,6 @@ pub fn event_open(event: &StatEvent) -> Result<perf_event_attr, EventErr> {
             event_open.set_exclude_hv(1);
             Ok(*event_open)
         }
-        StatEvent::L1DCacheWriteMiss => {
-            let config: u64 = cache_config(
-                perf_hw_cache_id_PERF_COUNT_HW_CACHE_L1D,
-                perf_hw_cache_op_id_PERF_COUNT_HW_CACHE_OP_WRITE,
-                perf_hw_cache_op_result_id_PERF_COUNT_HW_CACHE_RESULT_MISS,
-            );
-            let event_open = &mut perf_event_attr {
-                type_: perf_type_id_PERF_TYPE_HW_CACHE,
-                size: PERF_EVENT_ATTR_SIZE,
-                config,
-                ..Default::default()
-            };
-            event_open.set_disabled(1);
-            event_open.set_exclude_kernel(1);
-            event_open.set_exclude_hv(1);
-            Ok(*event_open)
-        }
-        StatEvent::L1ICacheRead => {
-            let config: u64 = cache_config(
-                perf_hw_cache_id_PERF_COUNT_HW_CACHE_L1I,
-                perf_hw_cache_op_id_PERF_COUNT_HW_CACHE_OP_READ,
-                perf_hw_cache_op_result_id_PERF_COUNT_HW_CACHE_RESULT_ACCESS,
-            );
-            let event_open = &mut perf_event_attr {
-                type_: perf_type_id_PERF_TYPE_HW_CACHE,
-                size: PERF_EVENT_ATTR_SIZE,
-                config,
-                ..Default::default()
-            };
-            event_open.set_disabled(1);
-            event_open.set_exclude_kernel(1);
-            event_open.set_exclude_hv(1);
-            Ok(*event_open)
-        }
         StatEvent::L1ICacheReadMiss => {
             let config: u64 = cache_config(
                 perf_hw_cache_id_PERF_COUNT_HW_CACHE_L1I,
@@ -274,28 +240,6 @@ fn l1_data_cache_write_open_test() {
 #[test]
 fn l1_data_cache_read_miss_open_test() {
     let event = Event::new(StatEvent::L1DCacheReadMiss, None);
-    let cnt: isize = event.start_counter().unwrap();
-    assert_ne!(cnt, 0);
-    assert_ne!(cnt, -1);
-    let cnt_2 = event.stop_counter().unwrap();
-    assert_ne!(cnt, cnt_2);
-    assert!(cnt < cnt_2);
-}
-
-#[test]
-fn l1_data_cache_write_miss_open_test() {
-    let event = Event::new(StatEvent::L1DCacheWriteMiss, None);
-    let cnt: isize = event.start_counter().unwrap();
-    assert_ne!(cnt, 0);
-    assert_ne!(cnt, -1);
-    let cnt_2 = event.stop_counter().unwrap();
-    assert_ne!(cnt, cnt_2);
-    assert!(cnt < cnt_2);
-}
-
-#[test]
-fn l1_inst_cache_read_open_test() {
-    let event = Event::new(StatEvent::L1ICacheRead, None);
     let cnt: isize = event.start_counter().unwrap();
     assert_ne!(cnt, 0);
     assert_ne!(cnt, -1);
