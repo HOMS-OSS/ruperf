@@ -1,4 +1,4 @@
-![Ruperf The Crab](./assets/Ruperf-The-Crab.jpg)
+![Ruperf The Crab](./assets/Ruperf-The-Crab.jpg =250x250)
 ## Introduction
 
 All software should perform at a high level. That means going underneath the hood, 
