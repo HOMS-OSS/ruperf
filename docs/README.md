@@ -1,13 +1,10 @@
-Hail, Traveller! At long last, faith in a smart, sophisticated, and insightful performance analysis crab has been rewarded. <br>
-Ruperf The Crab, friend of Ferris The Crab, and humble servant of optimization; <br>
-casts a watchful eye over courageous travellers descending into the dark and uncertain depths of computer systems. <br>
-Fear not, ye weary traveller; though petrified with uncertainty you may be; the nimble and agile claws of Ruperf will guide you. <br>
-<br>
-<br>
-<img src="./assets/'Ruperf(1).jpg'" width="333" height="333">
-<br>
-<br>
-# Introduction 
+---
+permalink: /ruperf/
+---
+
+
+![Ruperf The Crab](./assets/Ruperf-The-Crab.jpg)
+## Introduction
 
 All software should perform at a high level. That means going underneath the hood, 
 locating areas of improvement, and fine tuning the machine. 
@@ -18,7 +15,7 @@ these and more, are all things to observe when seeking insight into where and ho
 `ruperf` was borne out of a desire to achieve three things:
 
 - Provide a well-documented, high-level, performance analysis tool that adds to the existing landscape 
-  by improving upon what current tools lack, and in some cases adding new features altogether.
+  by improving and expanding upon what current tools offer.
 
 - Leverage the safety of Rust and and it's module system for a secure and fine-grained approach 
   to performance analysis.
@@ -26,56 +23,71 @@ these and more, are all things to observe when seeking insight into where and ho
 - Explore Rust in the Linux Kernel. We would like to eventually lower the scope in which Rust is used
   to beneath the system call level, and experiment with it's safety and performance features there.
 
-# Existing landscape
+
+## Existing landscape
 
 The current landscape of analyzing software performance has many tools. 
 They all have different features, and work at various levels of the machine.
-These are the tools that inspired our project:
-
-For more about other tools and how they relate to ruperf, see the wiki.
+These are some of the tools that inspired our project:
 
 #### `perf`
+
 `perf` is a profiler tool for linux-based systems that abstracts away CPU hardware differences in 
 Linux performance measurements and presents a simple command-line interface. 
 
 #### VTune
+
 VTune is a closed-source performance analysis tool provided by Intel. It identifies
 time-intensive functions, time spent on I/O, cache misses, branch mispredictions, and more.
 
 #### Gprof
+
 Gprof is for Unix applications, and uses instrumentation and sampling to 
 track code execution time and locate program hot spots. 
 
 #### DHAT: dynamic heap analysis tool
+
 Part of Valgrind, DHAT examines program use of heap allocation. 
 It tracks allocated blocks, and inspects memory access. 
 It also identifies process-lifetime leaks, excessive turnover, 
 short-lived blocks, unused or underused allocations, and inefficiently laid-out blocks.
 
 #### flamegraph
+
 FlameGraph is a tool that provides a visual representation of profiled software.
 which makes it easier to understand where a program is spending it's time.
 
-Here is an example of a flamgraph: 
 
-The X-axis shows the stack profile in alphabetic order;
-the Y-axis shows stack depth.
+## Overview of `ruperf`
 
-(image-of-flamegraph)
+Each of these tools are powerful in their own context. Utilizing them together 
+can provide even greater leverage for calibrating software. By looking to the past
+and identifying which features are essential, which are unnecessary, and which can be added,
+we can more effectively address performance problems in the modern era of software.
 
-- stuff about what other tools have, don't have, 
-- how our tool adds to the existing landscape, instead of being redundant
-- show case some of our tools features and compare them to other tools
+While `ruperf` is still in the beginning stages of development, we believe a solid
+and innovative foundation is there. `stat` and `test` currently mimic their `perf` counterparts,
+and our goals for expanding upon them further involve adding timer support for events.
+`gui` is an extremely helpful sub-command that combines the aid of data-visualization with the ease of a CLI.
+While these are the minimum features we've described in our MVP, we are planning to add more.
 
-# Rust's Safety and Modularity
+Our goals for lowering the scope of Rust beneath the system call level are so that
+we may further explore it's potential as a safe and high-performing systems language.
+As you can probably guess, some of us really love Rust, and there isn't much
+performance-analysis related Rust stuff in the current scope of things. Our hope is that
+this project highlights the pros of using Rust in a context as sensitive as 
+hardware performance counter information.
 
-- stuff about exploits and perf event open safety why rust is safe
-- stuff about using rust's module system to provide fine grained control, testing, 
-  and how adding features is easy as pie (the GUI is a really good example of a cool feature)
 
-# Rust in the Linux Kernel
+## What's in Development
 
-- stuff about how we want to lower it beneath the sys call level
-- stuff about how Rust is safe and fast
-- stuff about how lowering rust to that level can help expose areas where rust may improve and why
-  that's a good thing (RUST!)
+Want to contribute? Interested in what we're working on? Here are things we need done!
+For how to contribute, see `CONTRIBUTING.md`.
+
+
+- [] A safe wrapper for the `mmap()` Linux system call.
+- [] Adding support for `ruperf record`
+- [] Adding support for timers.
+- [] Adding programs to profile.
+- [] Lowering the scope of Rust beneath the system call level.
+
