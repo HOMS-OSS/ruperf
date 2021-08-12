@@ -1,8 +1,3 @@
----
-permalink: /ruperf/
----
-
-
 ![Ruperf The Crab](./assets/Ruperf-The-Crab.jpg)
 ## Introduction
 
