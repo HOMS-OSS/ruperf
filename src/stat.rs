@@ -18,15 +18,12 @@ use structopt::StructOpt;
 pub enum StatEvent {
     Cycles,
     Instructions,
-<<<<<<< HEAD
     TaskClock,
     ContextSwitches,
-=======
     L1DCacheRead,
     L1DCacheWrite,
     L1DCacheReadMiss,
     L1ICacheReadMiss,
->>>>>>> Feat: added cache events
 }
 
 /// Match on each supported event to parse from command line
@@ -36,15 +33,12 @@ impl FromStr for StatEvent {
         match s {
             "cycles" => Ok(StatEvent::Cycles),
             "instructions" => Ok(StatEvent::Instructions),
-<<<<<<< HEAD
             "task-clock" => Ok(StatEvent::TaskClock),
             "context-switches" => Ok(StatEvent::ContextSwitches),
-=======
             "L1D-cache-reads" => Ok(StatEvent::L1DCacheRead),
             "L1D-cache-writes" => Ok(StatEvent::L1DCacheWrite),
             "L1D-cache-read-misses" => Ok(StatEvent::L1DCacheReadMiss),
             "L1I-cache-read-misses" => Ok(StatEvent::L1ICacheReadMiss),
->>>>>>> Feat: added cache events
             _ => Err(ParseError::InvalidEvent),
         }
     }
@@ -57,15 +51,12 @@ impl ToString for StatEvent {
         match self {
             StatEvent::Cycles => "cycles".to_string(),
             StatEvent::Instructions => "instructions".to_string(),
-<<<<<<< HEAD
             StatEvent::TaskClock => "task clock".to_string(),
             StatEvent::ContextSwitches => "context switches".to_string(),
-=======
             StatEvent::L1DCacheRead => "L1D-cache-reads".to_string(),
             StatEvent::L1DCacheWrite => "L1D-cache-writes".to_string(),
             StatEvent::L1DCacheReadMiss => "L1D-cache-read-misses".to_string(),
             StatEvent::L1ICacheReadMiss => "L1I-cache-read-misses".to_string(),
->>>>>>> Feat: added cache events
         }
     }
 }

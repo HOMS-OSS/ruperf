@@ -52,24 +52,11 @@ pub fn event_open(event: &StatEvent) -> Result<perf_event_attr, EventErr> {
             event_open.set_exclude_hv(1);
             Ok(*event_open)
         }
-<<<<<<< HEAD
         StatEvent::TaskClock => {
             let event_open = &mut perf_event_attr {
                 type_: perf_type_id_PERF_TYPE_SOFTWARE,
                 size: std::mem::size_of::<perf_event_attr>() as u32,
                 config: perf_sw_ids_PERF_COUNT_SW_TASK_CLOCK as u64,
-=======
-        StatEvent::L1DCacheRead => {
-            let config: u64 = cache_config(
-                perf_hw_cache_id_PERF_COUNT_HW_CACHE_L1D,
-                perf_hw_cache_op_id_PERF_COUNT_HW_CACHE_OP_READ,
-                perf_hw_cache_op_result_id_PERF_COUNT_HW_CACHE_RESULT_ACCESS,
-            );
-            let event_open = &mut perf_event_attr {
-                type_: perf_type_id_PERF_TYPE_HW_CACHE,
-                size: PERF_EVENT_ATTR_SIZE,
-                config,
->>>>>>> Feat: added cache events
                 ..Default::default()
             };
             event_open.set_disabled(1);
@@ -77,7 +64,6 @@ pub fn event_open(event: &StatEvent) -> Result<perf_event_attr, EventErr> {
             event_open.set_exclude_hv(1);
             Ok(*event_open)
         }
-<<<<<<< HEAD
         StatEvent::ContextSwitches => {
             let event_open = &mut perf_event_attr {
                 type_: perf_type_id_PERF_TYPE_SOFTWARE,
@@ -90,8 +76,23 @@ pub fn event_open(event: &StatEvent) -> Result<perf_event_attr, EventErr> {
             event_open.set_exclude_hv(1);
             Ok(*event_open)
         }
-        _ => Err(EventErr::InvalidEvent),
-=======
+        StatEvent::L1DCacheRead => {
+            let config: u64 = cache_config(
+                perf_hw_cache_id_PERF_COUNT_HW_CACHE_L1D,
+                perf_hw_cache_op_id_PERF_COUNT_HW_CACHE_OP_READ,
+                perf_hw_cache_op_result_id_PERF_COUNT_HW_CACHE_RESULT_ACCESS,
+            );
+            let event_open = &mut perf_event_attr {
+                type_: perf_type_id_PERF_TYPE_HW_CACHE,
+                size: PERF_EVENT_ATTR_SIZE,
+                config,
+                ..Default::default()
+            };
+            event_open.set_disabled(1);
+            event_open.set_exclude_kernel(1);
+            event_open.set_exclude_hv(1);
+            Ok(*event_open)
+        }
         StatEvent::L1DCacheWrite => {
             let config: u64 = cache_config(
                 perf_hw_cache_id_PERF_COUNT_HW_CACHE_L1D,
@@ -143,8 +144,7 @@ pub fn event_open(event: &StatEvent) -> Result<perf_event_attr, EventErr> {
             event_open.set_exclude_hv(1);
             Ok(*event_open)
         }
-        _ => Err(EventErr::InvalidEvent)
->>>>>>> Feat: added cache events
+        _ => Err(EventErr::InvalidEvent),
     }
 }
 
@@ -203,13 +203,17 @@ fn inst_open_test() {
 }
 
 #[test]
-<<<<<<< HEAD
 fn taskclock_open_test() {
     let event = Event::new(StatEvent::TaskClock, None);
-=======
+    let cnt: isize = event.start_counter().unwrap();
+    assert_ne!(cnt, 0);
+    assert_ne!(cnt, -1);
+    let cnt_2 = event.stop_counter().unwrap();
+    assert_ne!(cnt, cnt_2);
+    assert!(cnt < cnt_2);
+}
 fn l1_data_cache_read_open_test() {
     let event = Event::new(StatEvent::L1DCacheRead, None);
->>>>>>> Feat: added cache events
     let cnt: isize = event.start_counter().unwrap();
     assert_ne!(cnt, 0);
     assert_ne!(cnt, -1);
@@ -219,14 +223,13 @@ fn l1_data_cache_read_open_test() {
 }
 
 #[test]
-<<<<<<< HEAD
 fn cs_open_test() {
     let event = Event::new(StatEvent::ContextSwitches, None);
     let cnt: isize = event.start_counter().unwrap();
     assert_ne!(cnt, -1);
     let cnt_2 = event.stop_counter().unwrap();
     assert_ne!(cnt_2, -1);
-=======
+}
 fn l1_data_cache_write_open_test() {
     let event = Event::new(StatEvent::L1DCacheWrite, None);
     let cnt: isize = event.start_counter().unwrap();
@@ -257,5 +260,4 @@ fn l1_inst_cache_read_miss_open_test() {
     let cnt_2 = event.stop_counter().unwrap();
     assert_ne!(cnt, cnt_2);
     assert!(cnt < cnt_2);
->>>>>>> Feat: added cache events
 }
