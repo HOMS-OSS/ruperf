@@ -58,15 +58,15 @@ which makes it easier to understand where a program is spending it's time.
 ## Overview of `ruperf`
 
 Each of these tools are powerful in their own context. Utilizing them together 
-can provide even greater leverage for calibrating software. By looking to the past
-and identifying which features are essential, which are unnecessary, and which can be added,
-we can more effectively address performance problems in the modern era of software.
+can provide even greater leverage for calibrating software. Expanding upon what current tools 
+provide will further bridge the gap between problems in modern software performance analysis
+and the tools we use to solve them.
 
 While `ruperf` is still in the beginning stages of development, we believe a solid
-and innovative foundation is there. `stat` and `test` currently mimic their `perf` counterparts,
+and novel foundation is there. `stat` and `test` currently mimic their `perf` counterparts,
 and our goals for expanding upon them further involve adding timer support for events.
-`gui` is an extremely helpful sub-command that combines the aid of data-visualization with the ease of a CLI.
-While these are the minimum features we've described in our MVP, we are planning to add more.
+`gui` is an extremely useful sub-command that combines the aid of data-visualization with the ease of a CLI.
+These are the minimum features we've described in our MVP, and we are planning to add more.
 
 Our goals for lowering the scope of Rust beneath the system call level are so that
 we may further explore it's potential as a safe and high-performing systems language.

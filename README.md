@@ -1,6 +1,6 @@
 ## Overview
 
-For an introduction to the project, see the [overview](https://HOMS-OSS.github.io/ruperf/docs/overview).
+See the [overview](https://HOMS-OSS.github.io/ruperf/docs/overview) for an introduction to the project.
 
 ## Requirements
 
@@ -76,7 +76,7 @@ For Linux 5.8+, use `CAP_PERFMON`; otherwise use `CAP_SYSADMIN`.
 
 Ruperf is an open source project and is open to recieving contributions!
 
-Please see [`CONTRIBUTING.md`](https://github.com/HOMS-OSS/ruperf/blob/main/CONTRIBUTING.md)
+Please see [`CONTRIBUTING`](https://github.com/HOMS-OSS/ruperf/blob/main/CONTRIBUTING.md)
 
 ## Code of Conduct
 
