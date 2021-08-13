@@ -7,7 +7,7 @@ Hardware instructions, computer cycles, cache-accesses,
 and context switches; how much memory is being used or how long a process takes; 
 these and more, are all things to observe when seeking insight into where and how to improve performance.
 
-`ruperf` was borne out of a desire to achieve three things:
+Currently, `ruperf` aims to achieve three things:
 
 - Provide a well-documented, high-level, performance analysis tool that adds to the existing landscape 
   by improving and expanding upon what current tools offer.
@@ -57,12 +57,12 @@ which makes it easier to understand where a program is spending it's time.
 
 Each of these tools are powerful in their own context. Utilizing them together 
 can provide even greater leverage for calibrating software. Expanding upon what current tools 
-provide will further bridge the gap between problems in modern software performance analysis
+provide will further bridge the gap between problems in modern software performance
 and the tools we use to solve them.
 
 While `ruperf` is still in the beginning stages of development, we believe a solid
 and novel foundation is there. `stat` and `test` currently mimic their `perf` counterparts,
-and our goals for expanding upon them further involve adding timer support for events.
+and our goals for expanding upon them further involve adding timer information.
 `gui` is an extremely useful sub-command that combines the aid of data-visualization with the ease of a CLI.
 These are the minimum features we've described in our MVP, and we are planning to add more.
 
