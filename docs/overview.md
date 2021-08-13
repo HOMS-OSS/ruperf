@@ -1,4 +1,4 @@
-<img src="./assets/Ruperf-The-Crab.jpg" width="333" height="333">
+<img src="./assets/Ruperf-The-Crab.jpg" class="center" width="500" height="333">
 ## Introduction
 
 All software should perform at a high level. That means going underneath the hood, 
