@@ -8,9 +8,7 @@ Rust is required for this project.
 
 To download Rustup and install Rust:
 
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
+`curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
 
 More information about installing Rust [here][3].
 

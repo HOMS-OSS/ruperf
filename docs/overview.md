@@ -78,7 +78,7 @@ hardware performance counter information.
 
 Want to contribute? Interested in what we're working on? Here are things we need done!
 
-#### For how to contribute, [see `CONTRIBUTING.md`](https://github.com/HOMS-OSS/ruperf/blob/main/CONTRIBUTING.md).
+#### For how to contribute, [see `CONTRIBUTING`](https://github.com/HOMS-OSS/ruperf/blob/main/CONTRIBUTING.md).
 
 
 - A safe wrapper for the `mmap()` Linux system call.
