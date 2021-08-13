@@ -77,7 +77,7 @@ pub struct StatOptions {
     pub command: Vec<String>,
 }
 
-fn launch_command_process(
+pub fn launch_command_process(
     command: Vec<String>,
     mut child_reader: os_pipe::PipeReader,
     mut child_writer: os_pipe::PipeWriter,
