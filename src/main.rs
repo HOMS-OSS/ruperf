@@ -15,7 +15,6 @@ mod test;
 mod utils;
 
 extern crate structopt;
-use event::*;
 use gui::*;
 use stat::*;
 use structopt::StructOpt;

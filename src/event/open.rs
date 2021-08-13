@@ -144,7 +144,6 @@ pub fn event_open(event: &StatEvent) -> Result<perf_event_attr, EventErr> {
             event_open.set_exclude_hv(1);
             Ok(*event_open)
         }
-        _ => Err(EventErr::InvalidEvent),
     }
 }
 
