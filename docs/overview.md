@@ -77,12 +77,13 @@ hardware performance counter information.
 ## What's in Development
 
 Want to contribute? Interested in what we're working on? Here are things we need done!
-For how to contribute, see `CONTRIBUTING.md`.
+
+#### For how to contribute, [see `CONTRIBUTING.md`](https://github.com/HOMS-OSS/ruperf/blob/main/CONTRIBUTING.md).
 
 
-- [] A safe wrapper for the `mmap()` Linux system call.
-- [] Adding support for `ruperf record`
-- [] Adding support for timers.
-- [] Adding programs to profile.
-- [] Lowering the scope of Rust beneath the system call level.
-
+- A safe wrapper for the `mmap()` Linux system call.
+- `ruperf record`.
+- `ruperf report`.
+- Adding support for timers.
+- New programs to profile.
+- Lowering the scope of Rust beneath the system call level.
