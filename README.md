@@ -113,6 +113,16 @@ Please see [`CONTRIBUTING.md`](https://github.com/HOMS-OSS/ruperf/blob/main/CONT
 
 - Briana Oursler. My contributions to the project principally relate to the `stat` functionality performed by ruperf, including support for `read`, the `event struct`, and additions to hardware and software event counters. I implemented initial support for the CLI tool using the `structopt` crate. I worked along with Timothy Maloney on the team to set up `perf_event_open`. I collaborated with Timothy Maloney and Michael Scherrer on using `bindgen` for C code we needed bindings for that we couldn't access through `libc`, principally related to `perf_event`, and on establishing support for running a program to profile.
 
+- Sam Little. My contributions to this project were mostly contained in the `test`
+subcommand, which runs a collection of various environment checks and sanity tests
+required for `ruperf`. I tried to keep the structure of it as similar as possible
+to the real `perf test`, which is used for the same purpose. The output of `test`
+looks visually similar to `perf test`, tests can be skipped (and only some can be
+run if specified), and it can also be `>`-ed as JSON to a file with a `--json`
+flag for ease-of-programmatic-use. I also wrote some tests that relate to `ruperf`'s
+MVP, and when designing `test` tried to keep extensibility in mind so that it would
+be easy to add more complex tests later.
+
 ## Further Reading
 
 See `whitepaper.tex`
