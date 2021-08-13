@@ -96,7 +96,8 @@ body size, race, ethnicity, age, religion, nationality, or other similar charact
 ## License
 [Gplv2][2]
 
-## [Core Team](https://HOMS-OSS.github.io/ruperf/docs/team)
+### [Core Team](https://HOMS-OSS.github.io/ruperf/docs/team)
+
 
 
 
