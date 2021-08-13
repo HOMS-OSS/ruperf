@@ -4,13 +4,11 @@ See the [overview](https://HOMS-OSS.github.io/ruperf/docs/overview) for an intro
 
 ## Requirements
 
-Rust is required for this project.
-
-To download Rustup and install Rust:
+Rust is required for this project. To download Rustup and install Rust:
 
 `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
 
-More information about installing Rust [here][3].
+[More on installing Rust][3].
 
 Linux 5.x+ is required to run this project.
 
@@ -66,7 +64,7 @@ Verification is done through a combination of `cargo test`, manual inspection co
 ## Permissions
 
 This tool uses the `perf_event_open()` system call, which requires some special permissions. 
-While our tool currently checks if `/proc/sys/kernel/perf_event_paranoid` is equal to 0,
+While our tool currently checks if `perf_event_paranoid` is equal to 0,
 this is less than ideal is some situations. A way around this is to change
 the capabilities of the `ruperf` executable using [`setcap`](https://man7.org/linux/man-pages/man8/setcap.8.html). 
 
@@ -74,7 +72,7 @@ For Linux 5.8+, use `CAP_PERFMON`; otherwise use `CAP_SYSADMIN`.
 
 ## Contributing Guidelines
 
-Ruperf is an open source project and is open to recieving contributions!
+`ruperf` is an open source project and is open to recieving contributions!
 
 Please see [`CONTRIBUTING`](https://github.com/HOMS-OSS/ruperf/blob/main/CONTRIBUTING.md)
 
