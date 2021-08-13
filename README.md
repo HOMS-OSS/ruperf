@@ -1,6 +1,6 @@
 ## Overview
 
-For an introduction to the project, see the [overview](HOMS-OSS.github.io/ruperf/overview).
+For an introduction to the project, see the [overview](HOMS-OSS.github.io/ruperf/docs/overview).
 
 ## Requirements
 
