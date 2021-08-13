@@ -54,8 +54,7 @@ pub fn test_counts() -> Test {
             );
         }
         start = event.start_counter().unwrap();
-        let now = Instant::now();
-        writer.write_fmt(format_args!(" ")).unwrap();
+        writer.write_all(&[1]).unwrap();
         drop(writer);
 
         // wait for process to exit
@@ -71,7 +70,6 @@ pub fn test_counts() -> Test {
                 settings,
             );
         }
-        let t = now.elapsed();
         stop = event.stop_counter().unwrap();
         let count = stop - start;
         if count < sane_number {
@@ -79,9 +77,7 @@ pub fn test_counts() -> Test {
                 format!(
                     "\nINFO:\tThe command {} had a count of {}, which was
                     less than the sane expected count of {}.",
-                    command_to_count,
-                    t.as_nanos(),
-                    sane_number
+                    command_to_count, count, sane_number
                 ),
                 settings,
             );
