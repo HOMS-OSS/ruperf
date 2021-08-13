@@ -81,9 +81,11 @@ Want to contribute? Interested in what we're working on? Here are things we need
 #### For how to contribute, [see `CONTRIBUTING`](https://github.com/HOMS-OSS/ruperf/blob/main/CONTRIBUTING.md).
 
 
-- A safe wrapper for the `mmap()` Linux system call.
-- `ruperf record`.
-- `ruperf report`.
-- Adding support for timers.
-- New programs to profile.
-- Lowering the scope of Rust beneath the system call level.
+- A safe wrapper for the `mmap()` Linux system call
+- Extend `ruperf stat` capabilities
+- Tests for `ruperf test`
+- `ruperf record`
+- `ruperf report`
+- Adding support for timers
+- New programs to profile
+- Lowering the scope of Rust beneath the system call level
