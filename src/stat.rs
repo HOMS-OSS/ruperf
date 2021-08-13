@@ -130,6 +130,12 @@ pub fn run_stat(options: StatOptions) {
     if options.event.is_empty() {
         options.event.push(StatEvent::Cycles);
         options.event.push(StatEvent::Instructions);
+        options.event.push(StatEvent::TaskClock);
+        options.event.push(StatEvent::ContextSwitches);
+        options.event.push(StatEvent::L1DCacheRead);
+        options.event.push(StatEvent::L1DCacheWrite);
+        options.event.push(StatEvent::L1DCacheReadMiss);
+        options.event.push(StatEvent::L1ICacheReadMiss);
     }
 
     for event in &options.event {
