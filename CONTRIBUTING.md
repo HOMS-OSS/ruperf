@@ -1,7 +1,9 @@
 Contributing
 ===
 
-Thanks for considering contibuting to Ruperf! Be sure to read the `whitepaper.tex` document before to get an even better idea of the project.
+Thanks for considering contibuting to Ruperf! 
+Be sure to read the [overview](https://HOMS-OSS.github.io/ruperf/docs/overview) 
+to get a better idea of the project.
 
 Before sending a Pull Request
 ---
