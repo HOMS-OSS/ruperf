@@ -7,12 +7,12 @@
 //! </ul>
 
 extern crate structopt;
-use structopt::StructOpt;
 use iced::{
     executor,
     widget::{Column, Container, Text},
     Align, Application, Clipboard, Command, Element, Length, Settings,
 };
+use structopt::StructOpt;
 
 mod events;
 mod messages;
