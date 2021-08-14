@@ -1,3 +1,4 @@
+//! SPDX-License-Identifier: GPL-2.0
 //! An `Event` abstracts away
 //! initializing `perf_event_attr`
 //! structs for arbitrary events;

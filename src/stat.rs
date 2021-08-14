@@ -1,3 +1,4 @@
+//! SPDX-License-Identifier: GPL-2.0
 //! # Stat driver.
 //! <p> Usage: <em> ruperf stat [COMMAND] [ARGS] </em>
 //! Where COMMAND and ARGS are a shell command and it's arguments. </p>

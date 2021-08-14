@@ -12,6 +12,7 @@ Before sending a Pull Request
 - Overview of the file itself, located at the top. Use `//!`.
 - All data structures, methods, types, etc. Use `///`.
 - Referenced code must be cited; with a brief description and the source in a comment.
+- Code must be licensed under [Gplv2][2]
 
 2. Configure git hooks for formatting and other pre-commit checks using clippy and `cargo format`.
 
@@ -48,3 +49,4 @@ References
 [Using git hooks][1]
 
 [1]: https://git-scm.com/docs/githooks
+[2]:https://github.com/HOMS-OSS/ruperf/blob/main/LICENSE

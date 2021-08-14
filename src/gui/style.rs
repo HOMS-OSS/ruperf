@@ -1,3 +1,4 @@
+//! SPDX-License-Identifier: GPL-2.0
 /// Widget Style
 pub mod widget {
     use iced::{button, container, Background, Color, Vector};

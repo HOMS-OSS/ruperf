@@ -1,3 +1,4 @@
+//! SPDX-License-Identifier: GPL-2.0
 pub mod perf {
     use serde::{Deserialize, Serialize};
     /// Perf Commands to be used

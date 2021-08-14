@@ -1,3 +1,4 @@
+//! SPDX-License-Identifier: GPL-2.0
 //! Errors for `ruperf stat`.
 use thiserror::Error;
 

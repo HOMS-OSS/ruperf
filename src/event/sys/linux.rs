@@ -1,3 +1,4 @@
+//! SPDX-License-Identifier: GPL-2.0
 //! Rust implementations of `_IO()` macros
 //! defined in `/usr/include/asm-generic/ioctl.h`.
 //! Note that some constant values defined

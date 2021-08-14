@@ -1,3 +1,4 @@
+//! SPDX-License-Identifier: GPL-2.0
 //! events.rs contains sanity tests for each of the
 //! events recordable by the event start_counter() and
 //! stop_counter() methods. A simple program with a lot

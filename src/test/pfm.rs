@@ -1,3 +1,4 @@
+//! SPDX-License-Identifier: GPL-2.0
 //! The test in `pfm.rs` checks for the presence of the library
 //! `libpfm4`, which will be required for future features of
 //! ruperf. It uses `ldconfig` to determine whether the library

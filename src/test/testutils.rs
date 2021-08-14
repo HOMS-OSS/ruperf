@@ -1,3 +1,4 @@
+//! SPDX-License-Identifier: GPL-2.0
 //! `testutils.rs` provides utility functions used for the
 //! test program. It provides a function that makes a list
 //! of the tests from this directory, as well as a function

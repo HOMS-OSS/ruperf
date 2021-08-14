@@ -1,3 +1,4 @@
+//! SPDX-License-Identifier: GPL-2.0
 //! A `FileDesc` provides a safe interface for
 //! accessing and interacting with the `perf_event_open()`
 //! and `ioctl()` system calls, and their raw file descriptors.

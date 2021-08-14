@@ -1,3 +1,4 @@
+//! SPDX-License-Identifier: GPL-2.0
 //! A safe wrapper for the `read()`
 //! Linux system call. For more on
 //! `read()` see the Linux man-page.

@@ -1,3 +1,4 @@
+//! SPDX-License-Identifier: GPL-2.0
 #![allow(unknown_lints)]
 #![allow(clippy::all)]
 #![allow(non_upper_case_globals)]

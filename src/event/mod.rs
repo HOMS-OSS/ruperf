@@ -1,3 +1,4 @@
+//! SPDX-License-Identifier: GPL-2.0
 //! For details about Rust bindings for
 //! the `perf_event_open()` system call,
 //! see /src/bindings/perf_event.rs.

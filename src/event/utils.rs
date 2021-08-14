@@ -1,3 +1,4 @@
+//! SPDX-License-Identifier: GPL-2.0
 //! This file may contain more items in the
 //! future. For now it defines a generic `Result`
 //! type for handling system call failures and

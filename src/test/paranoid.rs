@@ -1,3 +1,4 @@
+//! SPDX-License-Identifier: GPL-2.0
 //! The test in `paranoid.rs` checks the value of the linux
 //! `/proc/sys/kernel/perf_event_paranoid` flag and will pass if the
 //! value in the file is 0 or less. Some counts from perf_event_open

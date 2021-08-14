@@ -1,3 +1,4 @@
+//! SPDX-License-Identifier: GPL-2.0
 pub mod main {
     use super::task::TaskMessage;
     use crate::gui::events::perf::PerfEvent;

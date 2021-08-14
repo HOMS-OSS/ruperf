@@ -1,3 +1,4 @@
+//! SPDX-License-Identifier: GPL-2.0
 //! # Test driver.
 //! <p> Usage: <em> ruperf test [OPTION] </em>
 //! where OPTION is one of:

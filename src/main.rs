@@ -1,3 +1,4 @@
+//! SPDX-License-Identifier: GPL-2.0
 //! # Main driver.
 //! <p> Usage: <em> ruperf [COMMAND] [OPTION] </em>
 //! where COMMAND is one of: </p>

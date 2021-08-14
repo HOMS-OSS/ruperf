@@ -1,3 +1,4 @@
+//! SPDX-License-Identifier: GPL-2.0
 //! `basic.rs` contains basic tests used to demonstrate the use
 //! of `ruperf test`. These tests don't do much other than provide
 //! a basic example of how the test program works.

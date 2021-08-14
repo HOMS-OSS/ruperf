@@ -1,3 +1,4 @@
+//! SPDX-License-Identifier: GPL-2.0
 //! # GUI driver.
 //! <p> Usage: <em> ruperf gui [COMMAND] </em>
 //! where COMMAND is one of: </p>

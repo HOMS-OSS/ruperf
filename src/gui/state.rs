@@ -1,3 +1,4 @@
+//! SPDX-License-Identifier: GPL-2.0
 pub mod main {
     use super::pane::*;
     use crate::gui::widgets::task::Task;
