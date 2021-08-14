@@ -59,7 +59,9 @@ Verification is done through a combination of `cargo test`, manual inspection co
 
 ## Demo/Walkthrough
 
+Watch our demo video about `ruperf` on YouTube:
 
+[![Ruperf Demo / Walkthrough](https://i.imgur.com/dFAPTuE.png)](https://youtu.be/tS1O9fe4wSM "Ruperf Demo / Walkthrough")
 
 ## Permissions
 
