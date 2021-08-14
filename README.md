@@ -22,12 +22,12 @@ To build this project:
 
 To build a sample program:
 - ```bash
-cargo build -p file-io
-```
+  cargo build -p file-io
+  ```
 
 - ```bash
-cargo build -p fp-calc
-```
+  cargo build -p fp-calc
+  ```
 
 ## Install
 
@@ -43,14 +43,16 @@ To install this project:
 
 - Examples:
   - ```bash
-  ./ruperf stat -e cycles -e instructions -e task-clock -e L1D-cache-reads ls -a
-  ```
+    ./ruperf stat -e cycles -e instructions -e task-clock -e L1D-cache-reads ls -a
+    ```
+    
   - ```bash
-  ./ruperf test --json
-  ```
+    ./ruperf test --json
+    ```
+    
   - ``` bash
-  ./ruperf gui
-  ```
+    ./ruperf gui
+    ```
 - See our rustdocs for more documentation by running ```cargo doc --no-deps --open``` in the ruperf repository.
 
 ## Verification
