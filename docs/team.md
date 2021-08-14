@@ -23,6 +23,7 @@ to `ruperf stat`; and am the creator and maintaner of our [website](https://HOMS
 
 ## Michael Scherrer
 
+My Contributions include developing and extensible graphical user interface to run commands such as `ruperf test` and `ruperf stat` in a clean, easy to use environment, it includes loading and saving of previously ran commands, so that they may be used again at any time. In addition I initialized rust C bindings for the rust compiler. 
 
 
 
