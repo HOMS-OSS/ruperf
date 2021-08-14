@@ -37,7 +37,7 @@ looks visually similar to `perf test`, tests can be skipped (and only some can b
 run if specified), and it can also be `>`-ed as JSON to a file with a `--json`
 flag for ease-of-programmatic-use. I also wrote some tests that relate to `ruperf`'s
 MVP, and when designing `test` tried to keep extensibility in mind so that it would
-be easy to add more complex tests later.# Core Team
+be easy to add more complex tests later.
 
 
 ## Greg Hairfield
