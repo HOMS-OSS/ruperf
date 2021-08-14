@@ -1,6 +1,5 @@
 use std::io::Read;
 use std::io::Write;
-use std::time::Instant;
 
 use crate::event::open::Event;
 use crate::stat::launch_command_process;
