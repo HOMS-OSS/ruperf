@@ -42,6 +42,6 @@ be easy to add more complex tests later.
 
 ## Greg Hairfield
 
-
+I helped with testing of `ruperf` and wrote sample programs to run `ruperf` against.
 
 
