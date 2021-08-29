@@ -45,7 +45,8 @@ impl FromStr for StatEvent {
 }
 
 /// Match on each supported event to parse from command line.
-/// Note that the context-switches event runs in kernel mode and requires a perf_event_paranoid setting < 1.
+/// Note that the context-switches event runs in kernel mode
+/// and requires a perf_event_paranoid setting < 1.
 impl ToString for StatEvent {
     fn to_string(&self) -> String {
         match self {
@@ -65,7 +66,6 @@ impl ToString for StatEvent {
 /// argument. Default events will run on that program if no events are
 /// specified. Specify events using the flag `-e or --event`. See `./ruperf stat
 /// --help' for more information.
-
 #[derive(Debug, StructOpt)]
 pub struct StatOptions {
     #[structopt(short, long, help = "Event to collect", number_of_values = 1)]
@@ -77,6 +77,40 @@ pub struct StatOptions {
     pub command: Vec<String>,
 }
 
+struct Counter {
+    event: Event,
+    start: isize,
+    stop: isize,
+}
+
+impl Counter {
+    /// Generate list of timers for a given `pid`.
+    pub fn counters(options: &mut StatOptions, pid: i32) -> Vec<Counter> {
+        let mut counters: Vec<Counter> = Vec::new();
+
+        if options.event.is_empty() {
+            options.event.push(StatEvent::Cycles);
+            options.event.push(StatEvent::Instructions);
+            options.event.push(StatEvent::TaskClock);
+            options.event.push(StatEvent::ContextSwitches);
+            options.event.push(StatEvent::L1DCacheRead);
+            options.event.push(StatEvent::L1DCacheWrite);
+            options.event.push(StatEvent::L1DCacheReadMiss);
+            options.event.push(StatEvent::L1ICacheReadMiss);
+        }
+
+        for event in &options.event {
+            counters.push(Counter {
+                event: Event::new(*event, Some(pid)),
+                start: 0,
+                stop: 0,
+            });
+        }
+
+        counters
+    }
+}
+
 pub fn launch_command_process(
     command: Vec<String>,
     mut child_reader: os_pipe::PipeReader,
@@ -85,9 +119,9 @@ pub fn launch_command_process(
     match unsafe { libc::fork() as i32 } {
         0 => {
             //set up command to execute and initialize read buffer
-            let mut buf = [0];
             let mut comm = Command::new(&command[0]);
             comm.args(&command[1..]);
+            let mut buf = [0];
 
             // Hear from parent that we may start.
             let nread = child_reader.read(&mut buf).unwrap();
@@ -122,49 +156,24 @@ pub fn run_stat(options: StatOptions) {
     // to be added in groups that will coordinate their timing.
     let mut options = options;
 
-    struct EventCounter {
-        event: Event,
-        start: isize,
-        stop: isize,
-    }
-
-    let mut event_list: Vec<EventCounter> = Vec::new();
-
     let (reader, mut writer) = pipe().unwrap();
     let (mut parent_reader, parent_writer) = pipe().unwrap();
-
     let child_reader = reader.try_clone().unwrap();
     let child_writer = parent_writer.try_clone().unwrap();
+
     let pid_child = launch_command_process(options.command.clone(), child_reader, child_writer);
-
-    if options.event.is_empty() {
-        options.event.push(StatEvent::Cycles);
-        options.event.push(StatEvent::Instructions);
-        options.event.push(StatEvent::TaskClock);
-        options.event.push(StatEvent::ContextSwitches);
-        options.event.push(StatEvent::L1DCacheRead);
-        options.event.push(StatEvent::L1DCacheWrite);
-        options.event.push(StatEvent::L1DCacheReadMiss);
-        options.event.push(StatEvent::L1ICacheReadMiss);
-    }
-
-    for event in &options.event {
-        event_list.push(EventCounter {
-            event: Event::new(*event, Some(pid_child)),
-            start: 0,
-            stop: 0,
-        });
-    }
-
-    for e in event_list.iter_mut() {
-        e.start = e.event.start_counter().unwrap();
-    }
+    let mut counters = Counter::counters(&mut options, pid_child);
 
     let mut start_time: [u8; 16] = [0; 16];
     let mut status: libc::c_int = 0;
     // Notify child we are ready.
     writer.write_all(&[1]).unwrap();
     writer.flush().unwrap();
+    // Child will flush until parent has read;
+    // start counters beforehand.
+    for counter in counters.iter_mut() {
+        counter.start = counter.event.start_counter().unwrap();
+    }
     // Read child's start time as [u8; 16]
     let nread = parent_reader.read(&mut start_time).unwrap();
     let result = unsafe { libc::waitpid(pid_child, (&mut status) as *mut libc::c_int, 0) };
@@ -174,8 +183,8 @@ pub fn run_stat(options: StatOptions) {
         .unwrap()
         .as_nanos()
         - u128::from_ne_bytes(start_time);
-    for e in event_list.iter_mut() {
-        e.stop = e.event.stop_counter().unwrap();
+    for counter in counters.iter_mut() {
+        counter.stop = counter.event.stop_counter().unwrap();
     }
     assert_eq!(nread, 16);
     assert_eq!(result, pid_child);
@@ -187,18 +196,18 @@ pub fn run_stat(options: StatOptions) {
         options.command.get(0).unwrap()
     );
 
-    for event in event_list {
-        if matches!(event.event.event, StatEvent::TaskClock) {
+    for counter in counters {
+        if matches!(counter.event.event, StatEvent::TaskClock) {
             println!(
                 " {:.2} msec task-clock\n CPU utilized: {:.3}",
-                (event.stop - event.start) as f64 / 1_000_000.0,
-                (event.stop - event.start) as f64 / t as f64
+                (counter.stop - counter.start) as f64 / 1_000_000.0,
+                (counter.stop - counter.start) as f64 / t as f64
             );
         } else {
             println!(
                 " Number of {}: {}",
-                event.event.event.to_string(),
-                event.stop - event.start
+                counter.event.event.to_string(),
+                counter.stop - counter.start
             );
         }
     }
