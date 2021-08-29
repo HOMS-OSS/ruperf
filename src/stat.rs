@@ -10,7 +10,7 @@ use std::io::prelude::*;
 use std::os::unix::process::CommandExt;
 use std::process::Command;
 use std::str::{self, FromStr};
-use std::time::Instant;
+use std::time::SystemTime;
 use structopt::StructOpt;
 
 /// Supported events
@@ -89,13 +89,23 @@ pub fn launch_command_process(
             let mut comm = Command::new(&command[0]);
             comm.args(&command[1..]);
 
-            // Tell parent program child is set up to execute
-            child_writer.write_all(&[1]).unwrap();
-            drop(child_writer);
-
-            //hear from parent that counters are set up
+            // Hear from parent that we may start.
             let nread = child_reader.read(&mut buf).unwrap();
             assert_eq!(nread, 1);
+
+            // Write start start time in nanos as [u8; 16].
+            child_writer
+                .write_all(
+                    &SystemTime::now()
+                        .duration_since(SystemTime::UNIX_EPOCH)
+                        .unwrap()
+                        .as_nanos()
+                        .to_ne_bytes(),
+                )
+                .expect("Could not write start time");
+            // Make sure parent has received start time.
+            child_writer.flush().unwrap();
+            drop(child_writer);
 
             let e = comm.exec();
             panic!("child command failed: {}", e);
@@ -146,24 +156,31 @@ pub fn run_stat(options: StatOptions) {
         });
     }
 
-    // Wait for child to say it is set up to execute.
-    let mut buf = [0];
-    let nread = parent_reader.read(&mut buf).unwrap();
-    assert_eq!(nread, 1);
-
     for e in event_list.iter_mut() {
         e.start = e.event.start_counter().unwrap();
     }
-    let now = Instant::now();
-    // Notify child counters are set up.
-    writer.write_all(&[1]).unwrap();
-    drop(writer);
 
-    // Wait for process to exit.
+    // Buffer to contain start time.
+    let mut start_time: [u8; 16] = [0; 16];
+    // Notify child we are ready.
+    writer.write_all(&[1]).unwrap();
+    writer.flush().unwrap();
+    // Read child's start time as [u8; 16]
+    let nread = parent_reader.read(&mut start_time).unwrap();
+    // Wait for child to finish.
     let mut status: libc::c_int = 0;
     let result = unsafe { libc::waitpid(pid_child, (&mut status) as *mut libc::c_int, 0) };
+    // Child has finished, let's check the time.
+    let t = SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .unwrap()
+        .as_nanos()
+        - u128::from_ne_bytes(start_time);
+    assert_eq!(nread, 16);
     assert_eq!(result, pid_child);
-    let t = now.elapsed();
+    // Drop writer here instead
+    // to
+    drop(writer);
     for e in event_list.iter_mut() {
         e.stop = e.event.stop_counter().unwrap();
     }
@@ -178,7 +195,7 @@ pub fn run_stat(options: StatOptions) {
             println!(
                 " {:.2} msec task-clock\n CPU utilized: {:.3}",
                 (event.stop - event.start) as f64 / 1_000_000.0,
-                (event.stop - event.start) as f64 / t.as_nanos() as f64
+                (event.stop - event.start) as f64 / t as f64
             );
         } else {
             println!(
