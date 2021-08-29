@@ -160,30 +160,27 @@ pub fn run_stat(options: StatOptions) {
         e.start = e.event.start_counter().unwrap();
     }
 
-    // Buffer to contain start time.
     let mut start_time: [u8; 16] = [0; 16];
+    let mut status: libc::c_int = 0;
     // Notify child we are ready.
     writer.write_all(&[1]).unwrap();
     writer.flush().unwrap();
     // Read child's start time as [u8; 16]
     let nread = parent_reader.read(&mut start_time).unwrap();
-    // Wait for child to finish.
-    let mut status: libc::c_int = 0;
     let result = unsafe { libc::waitpid(pid_child, (&mut status) as *mut libc::c_int, 0) };
-    // Child has finished, let's check the time.
+    // Let's see how long they took.
     let t = SystemTime::now()
         .duration_since(SystemTime::UNIX_EPOCH)
         .unwrap()
         .as_nanos()
         - u128::from_ne_bytes(start_time);
-    assert_eq!(nread, 16);
-    assert_eq!(result, pid_child);
-    // Drop writer here instead
-    // to
-    drop(writer);
     for e in event_list.iter_mut() {
         e.stop = e.event.stop_counter().unwrap();
     }
+    assert_eq!(nread, 16);
+    assert_eq!(result, pid_child);
+    // Don't forget to drop the writer!
+    drop(writer);
 
     println!(
         "Performance counter stats for '{}:'\n",
