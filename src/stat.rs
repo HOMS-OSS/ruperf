@@ -137,7 +137,6 @@ pub fn launch_command_process(
                         .to_ne_bytes(),
                 )
                 .expect("Could not write start time");
-            // Make sure parent has received start time.
             child_writer.flush().unwrap();
             drop(child_writer);
 
@@ -164,28 +163,29 @@ pub fn run_stat(options: StatOptions) {
     let pid_child = launch_command_process(options.command.clone(), child_reader, child_writer);
     let mut counters = Counter::counters(&mut options, pid_child);
 
-    let mut start_time: [u8; 16] = [0; 16];
+    let mut buffer: [u8; 16] = [0; 16];
     let mut status: libc::c_int = 0;
-    // Notify child we are ready.
-    writer.write_all(&[1]).unwrap();
-    writer.flush().unwrap();
-    // Child will flush until parent has read;
-    // start counters beforehand.
+    // Start all the counters.
     for counter in counters.iter_mut() {
         counter.start = counter.event.start_counter().unwrap();
     }
-    // Read child's start time as [u8; 16]
-    let nread = parent_reader.read(&mut start_time).unwrap();
+    // Notify child we are ready.
+    writer.write_all(&[1]).unwrap();
+    writer.flush().unwrap();
+    // NOTE: `read` does not block. Refactor to block.
+    let nread = parent_reader.read(&mut buffer).unwrap();
     let result = unsafe { libc::waitpid(pid_child, (&mut status) as *mut libc::c_int, 0) };
     // Let's see how long they took.
-    let t = SystemTime::now()
+    let stop_time = SystemTime::now()
         .duration_since(SystemTime::UNIX_EPOCH)
         .unwrap()
-        .as_nanos()
-        - u128::from_ne_bytes(start_time);
+        .as_nanos();
     for counter in counters.iter_mut() {
         counter.stop = counter.event.stop_counter().unwrap();
     }
+    let start_time = u128::from_ne_bytes(buffer);
+    let t = stop_time - start_time;
+    assert!(t > 0);
     assert_eq!(nread, 16);
     assert_eq!(result, pid_child);
     // Don't forget to drop the writer!
