@@ -2,12 +2,40 @@ use std::io::Read;
 use std::io::Write;
 
 use crate::event::open::Event;
-use crate::stat::launch_command_process;
 use crate::stat::StatEvent;
 use crate::test::RunSettings;
 use crate::test::Test;
 use crate::test::TestResult;
 use os_pipe::pipe;
+use std::os::unix::process::CommandExt;
+use std::process::Command;
+
+pub fn launch_test_process(
+    command: Vec<String>,
+    mut child_reader: os_pipe::PipeReader,
+    mut child_writer: os_pipe::PipeWriter,
+) -> i32 {
+    match unsafe { libc::fork() as i32 } {
+        0 => {
+            //set up command to execute and initialize read buffer
+            let mut buf = [0];
+            let mut comm = Command::new(&command[0]);
+            comm.args(&command[1..]);
+
+            // Tell parent program child is set up to execute
+            child_writer.write_all(&[1]).unwrap();
+            drop(child_writer);
+
+            //hear from parent that counters are set up
+            let nread = child_reader.read(&mut buf).unwrap();
+            assert_eq!(nread, 1);
+
+            let e = comm.exec();
+            panic!("child command failed: {}", e);
+        }
+        pid_child => pid_child,
+    }
+}
 
 // Dummy function for parent test with subtests
 fn dummy(_settings: &RunSettings) -> TestResult {
@@ -33,7 +61,7 @@ pub fn test_counts() -> Test {
         let (mut parent_reader, parent_writer) = pipe().unwrap();
         let child_reader = reader.try_clone().unwrap();
         let child_writer = parent_writer.try_clone().unwrap();
-        let pid_child = launch_command_process(
+        let pid_child = launch_test_process(
             vec![String::from(&command_to_count), String::from(&command_args)],
             child_reader,
             child_writer,
