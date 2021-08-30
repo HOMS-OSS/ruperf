@@ -10,7 +10,7 @@ use std::io::prelude::*;
 use std::os::unix::process::CommandExt;
 use std::process::Command;
 use std::str::{self, FromStr};
-use std::time::SystemTime;
+use std::time::Instant;
 use structopt::StructOpt;
 
 /// Supported events
@@ -111,7 +111,8 @@ impl Counter {
     }
 }
 
-pub fn launch_command_process(
+pub fn launch_stat_process(
+    instant: Instant,
     command: Vec<String>,
     mut child_reader: os_pipe::PipeReader,
     mut child_writer: os_pipe::PipeWriter,
@@ -129,13 +130,7 @@ pub fn launch_command_process(
 
             // Write start start time in nanos as [u8; 16].
             child_writer
-                .write_all(
-                    &SystemTime::now()
-                        .duration_since(SystemTime::UNIX_EPOCH)
-                        .unwrap()
-                        .as_nanos()
-                        .to_ne_bytes(),
-                )
+                .write_all(&instant.elapsed().as_nanos().to_ne_bytes())
                 .expect("Could not write start time");
             child_writer.flush().unwrap();
             drop(child_writer);
@@ -160,7 +155,13 @@ pub fn run_stat(options: StatOptions) {
     let child_reader = reader.try_clone().unwrap();
     let child_writer = parent_writer.try_clone().unwrap();
 
-    let pid_child = launch_command_process(options.command.clone(), child_reader, child_writer);
+    let instant = Instant::now();
+    let pid_child = launch_stat_process(
+        instant.clone(),
+        options.command.clone(),
+        child_reader,
+        child_writer,
+    );
     let mut counters = Counter::counters(&mut options, pid_child);
 
     let mut buffer: [u8; 16] = [0; 16];
@@ -172,20 +173,15 @@ pub fn run_stat(options: StatOptions) {
     // Notify child we are ready.
     writer.write_all(&[1]).unwrap();
     writer.flush().unwrap();
-    // NOTE: `read` does not block. Refactor to block.
     let nread = parent_reader.read(&mut buffer).unwrap();
     let result = unsafe { libc::waitpid(pid_child, (&mut status) as *mut libc::c_int, 0) };
     // Let's see how long they took.
-    let stop_time = SystemTime::now()
-        .duration_since(SystemTime::UNIX_EPOCH)
-        .unwrap()
-        .as_nanos();
+    let stop_time: u128 = instant.elapsed().as_nanos();
     for counter in counters.iter_mut() {
         counter.stop = counter.event.stop_counter().unwrap();
     }
     let start_time = u128::from_ne_bytes(buffer);
     let t = stop_time - start_time;
-    assert!(t > 0);
     assert_eq!(nread, 16);
     assert_eq!(result, pid_child);
     // Don't forget to drop the writer!
